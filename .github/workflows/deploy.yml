@@ -75,7 +75,7 @@ jobs:
       # l'endpoint REST correspondant exige des droits d'administration que
       # `GITHUB_TOKEN` n'a pas, même avec `pages: write` (403).
       - id: deployment
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
 
   # Le déploiement peut réussir sur un site cassé : artefact vide, page 404 non
   # servie, CSP absente. Ce job interroge l'URL réellement publiée.
