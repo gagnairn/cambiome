@@ -8,7 +8,7 @@ import GalerieRealisations from '~/components/GalerieRealisations.astro';
 import AppelContact from '~/components/AppelContact.astro';
 import { site, metiers, demarche } from '~/data/site';
 import { realisations } from '~/data/realisations';
-import hero from '~/assets/realisations/charpente-aretier.jpg';
+import hero from '~/assets/realisations/comble-charpente-chantier.jpg';
 import { base } from '~/lib/base';
 
 const apercu = realisations.slice(0, 3);
@@ -18,11 +18,23 @@ const apercu = realisations.slice(0, 3);
   <!-- Hero -->
   <section class="relative">
     <div class="absolute inset-0">
+      <!--
+        La photo est en portrait (1542 × 2048). Sur un écran large,
+        `object-cover` n'en montre qu'une bande centrale — rampant en panneaux,
+        percée sur le paysage, poutre sur tréteaux ; sur mobile, le cadrage
+        d'origine passe presque entier. `widths` s'arrête à la largeur native,
+        il n'y a rien à gagner à demander plus grand.
+
+        `quality` est descendue sous le défaut : la photo est saturée de détail
+        fin (panneaux OSB, feuillage, sciure) qui coûte cher à encoder, et le
+        voile sombre posé par-dessus masque de toute façon les artefacts.
+      -->
       <Image
         src={hero}
         alt=""
-        widths={[900, 1400, 2000, 2400]}
+        widths={[640, 900, 1200, 1542]}
         sizes="100vw"
+        quality={62}
         loading="eager"
         fetchpriority="high"
         class="h-full w-full object-cover"
