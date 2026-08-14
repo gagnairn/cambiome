@@ -74,8 +74,8 @@ export const contact = {
  *
  * ⚠ La qualification expire. Passée `fin`, l'afficher serait trompeur : les
  * composants la masquent alors d'eux-mêmes (voir `rgeEnCours` ci-dessous).
- * Comme le site est statique, ce retrait ne prend effet qu'au build suivant —
- * il faut donc renouveler auprès de Qualibat, pas seulement laisser expirer.
+ * Comme le site est statique, ce retrait ne prend effet qu'au build suivant :
+ * sans push après cette date, la mention resterait en ligne.
  */
 export const rge = {
   organisme: 'Qualibat',

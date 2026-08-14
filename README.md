@@ -92,23 +92,27 @@ concernés plutôt que d'afficher de fausses informations.
       **déjà** comme hébergeur, ce qui ne sera exact qu'une fois la bascule
       faite (voir « Migrer vers un hébergeur »). Tant qu'elle ne l'est pas, la
       page nomme un hébergeur qui ne sert pas le site.
-- [ ] Photos supplémentaires par métier (les quatre ont désormais une
-      illustration, mais une seule chacun pour certains)
-- [ ] `astro.config.mjs` → `site` / `base` si un nom de domaine est acheté
+- [ ] Photos supplémentaires dans la galerie — les quatre métiers y sont
+      représentés, mais la rénovation thermique n'a qu'une seule photo alors
+      que c'est le métier mis en avant par la qualification RGE
+- [ ] `astro.config.mjs` → `site` / `base`, au moment de la bascule vers
+      `www.cambiome.fr` (voir « Passer à un domaine propre »)
 
-## Qualification RGE — à renouveler avant le 9 décembre 2026
+## Qualification RGE
 
-La mention « RGE Qualibat » apparaît sur la page Métiers (bloc Rénovation
-thermique), en pastille dans le pied de page et dans les mentions légales. Elle
-est pilotée par `rge` dans `src/data/site.ts`, dont les valeurs proviennent du
-registre public de l'ADEME.
+La mention « RGE Qualibat » apparaît à trois endroits : la page Métiers (bloc
+Rénovation thermique), le bandeau du pied de page (logo et numéro de
+certificat) et les mentions légales. Les trois sont pilotés par `rge` dans
+`src/data/site.ts`, dont les valeurs proviennent du registre public de l'ADEME.
 
 Passée la date `rge.fin`, les trois emplacements se masquent d'eux-mêmes :
 afficher une qualification expirée serait une allégation trompeuse. Mais le
 site est statique — **le retrait ne prend effet qu'au build suivant**. Un push
 quelconque après la date suffit à l'appliquer ; sans push, la mention resterait
-en ligne. Au renouvellement, mettre à jour `debut`, `fin`, `certificat` et
-`attestation`.
+en ligne.
+
+Quand une nouvelle attestation est délivrée, mettre à jour `debut`, `fin`,
+`certificat` et `attestation`.
 
 Le logo `src/assets/logos/rge-qualibat.png` a été extrait de l'attestation
 Qualibat elle-même (`pdfimages`, puis normalisation du fond que la compression
@@ -155,6 +159,12 @@ Les deux dernières étapes existent parce que le reste ne suffit pas.
 deux commits sans que rien ne devienne rouge. Et un déploiement peut réussir
 sur un artefact vide. `verifier` attrape le premier cas avant publication,
 `fumee` le second après.
+
+Les actions du workflow sont épinglées sur un SHA de commit, pas sur un tag.
+`.github/dependabot.yml` les tient à jour : Dependabot connaît la convention
+`@<sha> # <version>` et propose chaque semaine le SHA **et** le commentaire
+correspondants. Les dépendances npm suivent au mois, mineures et correctives
+groupées en une seule demande pour éviter le bruit.
 
 Le test de fumée se rejoue en local sur le site en ligne :
 
@@ -266,6 +276,10 @@ ajoute déjà un en-tête, il faut y recopier cette liste.
       empêche un tiers de s'en servir pour inonder la boîte de réception.
 - [ ] **Compte GitHub `gagnairn`** : activer l'authentification à deux facteurs.
       Qui prend le compte prend le site.
+- [ ] **Settings → Advanced Security** : activer *Dependabot alerts* et
+      *Dependabot security updates*. Le fichier `.github/dependabot.yml` ne
+      commande que les mises à jour de routine ; les alertes de vulnérabilité,
+      elles, sont un réglage du dépôt et ne s'activent pas depuis le code.
 
 ### Vérifier après mise en ligne
 
