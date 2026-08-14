@@ -89,7 +89,16 @@ const annee = 2026; // mise à jour manuelle : le site est statique, pas de JS d
             </li>
           )
         }
-        {contact.adresse && <li class="text-ardoise-200">{contact.adresse}</li>}
+        {/* La colonne est étroite : l'adresse se coupe après la voie plutôt
+            que de retomber au hasard de la largeur. La donnée reste sur une
+            ligne — les mentions légales, elles, la veulent d'un tenant. */}
+        {
+          contact.adresse && (
+            <li class="whitespace-pre-line text-ardoise-200">
+              {contact.adresse.replace(/,\s*/, ',\n')}
+            </li>
+          )
+        }
         {
           !contact.telephone && !contact.email && (
             <li>
