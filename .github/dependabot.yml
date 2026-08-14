@@ -1,0 +1,36 @@
+# Mises à jour automatiques des dépendances.
+#
+# Contrepartie indispensable de l'épinglage sur SHA dans les workflows : figer
+# une action sur un commit immuable met à l'abri d'un tag repointé, mais fige
+# aussi ses correctifs de sécurité. Dependabot lève cette contrepartie.
+#
+# La présence de ce fichier suffit à activer les mises à jour de version. Les
+# *alertes* de sécurité, elles, se règlent dans Settings → Advanced Security.
+version: 2
+
+updates:
+  # Dependabot connaît la convention `uses: action@<sha> # <version>` : il met
+  # à jour le SHA *et* le commentaire de version, l'épinglage reste lisible.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: 'CI'
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    # Une seule PR pour l'ensemble des mises à jour mineures et correctives :
+    # sur un site vitrine, une PR par paquet et par mois n'apporte rien qu'un
+    # bruit qu'on finit par ne plus ouvrir. Les majeures restent séparées,
+    # elles méritent d'être regardées une par une.
+    groups:
+      mineures-et-correctifs:
+        update-types:
+          - minor
+          - patch
+    commit-message:
+      prefix: 'Dépendances'
