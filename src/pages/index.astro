@@ -25,6 +25,13 @@ const apercu = realisations.slice(0, 3);
         d'origine passe presque entier. `widths` s'arrête à la largeur native,
         il n'y a rien à gagner à demander plus grand.
 
+        `object-position` descend le cadrage à 68 % au lieu du centre : les
+        tréteaux et la poutre qu'ils portent sont dans le tiers bas de la photo,
+        et un cadrage centré les coupait au ras du bord inférieur. À 68 % ils
+        passent entiers, sous le bloc de texte, sans perdre la panne faîtière
+        ni la percée sur le paysage. Sans effet sur mobile : la photo y déborde
+        en largeur, pas en hauteur, seul l'axe horizontal joue.
+
         `quality` est descendue sous le défaut : la photo est saturée de détail
         fin (panneaux OSB, feuillage, sciure) qui coûte cher à encoder, et le
         voile sombre posé par-dessus masque de toute façon les artefacts.
@@ -37,9 +44,12 @@ const apercu = realisations.slice(0, 3);
         quality={62}
         loading="eager"
         fetchpriority="high"
-        class="h-full w-full object-cover"
+        class="h-full w-full object-cover object-[50%_68%]"
       />
-      <div class="absolute inset-0 bg-gradient-to-b from-encre/70 via-encre/50 to-encre/70"></div>
+      {/* Le voile reste le plus épais en haut et au milieu, là où se posent le
+          titre et le paragraphe ; il s'allège en bas pour laisser lire les
+          tréteaux, sans descendre au point de fragiliser le bouton en contour. */}
+      <div class="absolute inset-0 bg-gradient-to-b from-encre/70 via-encre/50 to-encre/45"></div>
     </div>
 
     <div class="relative container-page flex min-h-[78vh] flex-col justify-center py-24">

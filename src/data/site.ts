@@ -26,7 +26,7 @@ export const contact = {
   // LCEN). Le capital est celui inscrit aux statuts.
   formeJuridique: 'SASU',
   formeJuridiqueLongue: 'société par actions simplifiée unipersonnelle',
-  capital: '' as string, // TODO ex. '5 000 €'
+  capital: '6 000 €',
   // Immatriculée au greffe de Grenoble le 20/09/2024.
   rcs: '933 226 086 R.C.S. Grenoble',
   // Numéro de TVA intracommunautaire : FR + clé de contrôle + SIREN.

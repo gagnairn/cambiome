@@ -76,8 +76,6 @@ Charte relevée sur les logos du brief :
 Ces éléments manquent au brief. Tant qu'ils sont vides, le site masque les blocs
 concernés plutôt que d'afficher de fausses informations.
 
-- [ ] `src/data/site.ts` → `contact.capital` : capital social inscrit aux
-      statuts — **obligatoire** pour une société (art. 6-III LCEN)
 - [ ] `src/data/site.ts` → `contact.assuranceDecennale.assureur` : nom de
       l'assureur et numéro de contrat, dont la mention est obligatoire
 - [ ] `src/data/site.ts` → `contact.web3formsCle` : clé obtenue sur
