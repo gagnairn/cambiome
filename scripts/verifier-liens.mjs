@@ -112,7 +112,7 @@ for (const page of pages) {
     }
 
     // Le chemin doit valoir `base`, ou commencer par `base/`. Sans le second
-    // slash, `/cambiomefavicon.svg` se résoudrait vers `favicon.svg` — qui
+    // slash, `/cambiomefavicon.ico` se résoudrait vers `favicon.ico` — qui
     // existe — et le lien mort passerait inaperçu.
     if (chemin !== base && !chemin.startsWith(`${base}/`)) {
       problemes.push(`${relatif} : ${url} — hors du préfixe « ${base}/ »`);

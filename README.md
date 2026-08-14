@@ -36,8 +36,15 @@ npm run dev        # http://localhost:4321/cambiome
 
 Les fichiers produits par `npm run images` (favicon `.ico`, icônes 192/512,
 `apple-touch-icon`, `og-image.jpg`) sont versionnés, mais ne se retouchent pas à
-la main : on modifie `public/favicon.svg` ou la photo source, puis on relance la
-commande. Le détail des sources est en tête de `scripts/generer-images.mjs`.
+la main : on modifie le logo source ou la photo, puis on relance la commande. Le
+détail des sources est en tête de `scripts/generer-images.mjs`.
+
+Toutes les icônes sont dérivées du logo (`src/assets/logos/bloc-bleu.png`), dont
+la marque est détourée automatiquement. En dessous de 96 px, ses cernes
+concentriques ne tiennent plus dans les pixels disponibles : le script les fond
+en une silhouette pleine, seule forme lisible dans un onglet. Il n'y a pas de
+favicon SVG — le logo n'existe qu'en raster, et un SVG serait un redessin qui
+divergerait de la marque.
 
 ## Où modifier quoi
 
