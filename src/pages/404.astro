@@ -1,0 +1,22 @@
+---
+import Base from '~/layouts/Base.astro';
+import Bouton from '~/components/Bouton.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<Base titre="Page introuvable" description="La page demandée n'existe pas.">
+  <section class="container-page flex min-h-[55vh] flex-col justify-center py-24">
+    <p class="font-display text-xs tracking-[0.28em] text-ardoise-600 uppercase">
+      Erreur 404
+    </p>
+    <h1 class="mt-4 text-4xl leading-tight sm:text-5xl">Cette page n'existe pas.</h1>
+    <p class="mt-6 max-w-md text-encre/70">
+      Le lien est peut-être obsolète, ou l'adresse comporte une faute de frappe.
+    </p>
+    <div class="mt-9 flex flex-wrap gap-3">
+      <Bouton href={`${base}/`}>Retour à l'accueil</Bouton>
+      <Bouton href={`${base}/realisations`} variante="contour">Voir les réalisations</Bouton>
+    </div>
+  </section>
+</Base>

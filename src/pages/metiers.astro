@@ -1,0 +1,113 @@
+---
+import { Image } from 'astro:assets';
+import Base from '~/layouts/Base.astro';
+import TitreSection from '~/components/TitreSection.astro';
+import AppelContact from '~/components/AppelContact.astro';
+import { metiers } from '~/data/site';
+import { realisations } from '~/data/realisations';
+
+const illustrations = new Map(
+  metiers.map((m) => [m.slug, realisations.find((r) => r.metierSlug === m.slug)])
+);
+---
+
+<Base
+  titre="Nos métiers"
+  description="Charpente et ossature bois, rénovation thermique, couverture et zinguerie, structure bois et menuiserie : les quatre savoir-faire de CAMBIOME."
+>
+  <section class="container-page pt-16">
+    <TitreSection surtitre="Savoir-faire" titre="Nos réalisations par métiers">
+      <p>
+        Quatre familles de chantiers, menées par des équipes formées à
+        l'éco-construction et au bâti ancien.
+      </p>
+    </TitreSection>
+
+    <nav aria-label="Sommaire des métiers" class="mt-10">
+      <ul class="flex flex-wrap gap-2">
+        {
+          metiers.map((m) => (
+            <li>
+              <a
+                href={`#${m.slug}`}
+                class="inline-block rounded-full border border-sable-300 px-4 py-2 text-sm text-encre/75 transition-colors hover:border-ardoise-400 hover:text-ardoise-700"
+              >
+                {m.titre}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </section>
+
+  {
+    metiers.map((m, i) => {
+      const illu = illustrations.get(m.slug);
+      const inverse = i % 2 === 1;
+      return (
+        <section
+          id={m.slug}
+          class:list={[
+            'scroll-mt-24 py-20',
+            i % 2 === 1 ? 'bg-sable-100' : '',
+            i === 0 ? 'mt-8' : '',
+          ]}
+        >
+          <div
+            class:list={[
+              'container-page grid items-center gap-12',
+              illu && 'lg:grid-cols-2',
+            ]}
+          >
+            {illu && (
+              <div class:list={['overflow-hidden rounded-lg bg-sable-200', inverse && 'lg:order-2']}>
+                <Image
+                  src={illu.image}
+                  alt={illu.alt}
+                  widths={[600, 900, 1400]}
+                  sizes="(min-width: 1024px) 560px, 92vw"
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  class="aspect-4/3 w-full object-cover"
+                />
+              </div>
+            )}
+
+            <div class:list={[!illu && 'mx-auto max-w-3xl']}>
+              <span class="font-display text-sm text-ardoise-500">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <h2 class="mt-2 text-3xl leading-tight sm:text-4xl">{m.titre}</h2>
+              <div class="rule-cernes mt-6 h-px w-24" />
+              <p class="mt-6 text-lg leading-relaxed text-encre/80">{m.chapo}</p>
+
+              {m.texte.map((p) => (
+                <p class="mt-4 leading-relaxed text-encre/70">{p}</p>
+              ))}
+
+              <ul class="mt-8 space-y-2.5">
+                {m.points.map((pt) => (
+                  <li class="flex gap-3 text-sm text-encre/80">
+                    <svg
+                      class="mt-1 h-4 w-4 shrink-0 text-ardoise-500"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.75"
+                      aria-hidden="true"
+                    >
+                      <path d="m5 12.5 4.5 4.5L19 7" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <span>{pt}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+      );
+    })
+  }
+
+  <AppelContact />
+</Base>

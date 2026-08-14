@@ -1,0 +1,18 @@
+# build
+dist/
+.astro/
+
+# dépendances
+node_modules/
+
+# environnement
+.env
+.env.production
+
+# système / éditeurs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+npm-debug.log*

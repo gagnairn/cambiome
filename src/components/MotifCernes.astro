@@ -1,0 +1,35 @@
+---
+/**
+ * Panneau décoratif reprenant les cernes du logo.
+ * Sert de substitut visuel quand un métier n'a pas encore de photo de chantier
+ * (cf. README, section « À compléter ») — préférable à un trou dans la grille
+ * ou à une photo empruntée à un autre métier.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: classe = '' } = Astro.props;
+---
+
+<div
+  class:list={[
+    'flex items-center justify-center overflow-hidden bg-ardoise-700',
+    classe,
+  ]}
+  aria-hidden="true"
+>
+  <svg viewBox="0 0 200 150" class="h-full w-full" preserveAspectRatio="xMidYMid slice">
+    <g fill="none" stroke="#ffffff" stroke-opacity="0.28" stroke-linecap="round">
+      {
+        [16, 30, 44, 58, 72, 86].map((r, i) => (
+          <path
+            d={`M96 ${75 - r}a${r} ${r} 0 0 0 0 ${r * 2}`}
+            stroke-width={1.6 - i * 0.15}
+          />
+        ))
+      }
+      <path d="M104 -11 154 39v122" stroke-width="2" stroke-opacity="0.4" stroke-linejoin="round" />
+    </g>
+  </svg>
+</div>
