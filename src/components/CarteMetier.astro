@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import MotifCernes from '~/components/MotifCernes.astro';
 import type { Metier } from '~/data/site';
 import { realisations } from '~/data/realisations';
+import { base } from '~/lib/base';
 
 interface Props {
   metier: Metier;
@@ -11,7 +12,6 @@ interface Props {
 
 const { metier, index } = Astro.props;
 
-const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const illustration = realisations.find((r) => r.metierSlug === metier.slug);
 ---
 

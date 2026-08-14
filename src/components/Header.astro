@@ -2,9 +2,7 @@
 import { Image } from 'astro:assets';
 import logoNoir from '~/assets/logos/logo-noir.png';
 import { site } from '~/data/site';
-
-const base = import.meta.env.BASE_URL;
-const lien = (p: string) => `${base.replace(/\/$/, '')}${p}`;
+import { lien } from '~/lib/base';
 
 const nav = [
   { href: lien('/metiers'), label: 'Métiers' },
@@ -69,8 +67,11 @@ const actif = (href: string) => ici === href.replace(/\/$/, '');
     <details class="group relative md:hidden">
       <summary
         class="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full border border-sable-300 text-encre [&::-webkit-details-marker]:hidden"
-        aria-label="Ouvrir le menu"
       >
+        {/* Le libellé suit l'état du <details>, en CSS seule : un aria-label
+            figé annoncerait « Ouvrir » alors que le menu est déjà ouvert. */}
+        <span class="sr-only group-open:hidden">Ouvrir le menu</span>
+        <span class="sr-only hidden group-open:block">Fermer le menu</span>
         <svg
           class="h-5 w-5 group-open:hidden"
           viewBox="0 0 24 24"

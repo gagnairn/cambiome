@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://gagnairn.github.io/cambiome/sitemap-index.xml
