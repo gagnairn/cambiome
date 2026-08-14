@@ -1,0 +1,50 @@
+# En-têtes de sécurité — Apache (OVH, o2switch, Infomaniak, Ionos… la plupart
+# des hébergements mutualisés français).
+#
+# Ce fichier n'a aucun effet sur GitHub Pages ; il est là pour que la migration
+# vers un vrai hébergeur consiste à téléverser `dist/` et rien d'autre.
+#
+# Voir public/_headers pour la version Netlify / Cloudflare Pages et le
+# commentaire qui explique pourquoi la CSP complète n'est pas répétée ici
+# (Astro la génère en <meta> avec les hachages des scripts ; un en-tête CSP
+# supplémentaire s'intersecterait avec elle et bloquerait ces scripts).
+
+<IfModule mod_headers.c>
+  # Clickjacking : `frame-ancestors` est la forme moderne, X-Frame-Options le
+  # repli pour les navigateurs anciens.
+  Header always set Content-Security-Policy "frame-ancestors 'none'"
+  Header always set X-Frame-Options "DENY"
+
+  # Pas de devinette de type MIME.
+  Header always set X-Content-Type-Options "nosniff"
+
+  # URL complète en interne, domaine seul vers l'extérieur.
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Le site n'utilise aucune de ces API.
+  Header always set Permissions-Policy "accelerometer=(), autoplay=(), camera=(), display-capture=(), encrypted-media=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), usb=(), xr-spatial-tracking=()"
+
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+
+  # HTTPS obligatoire deux ans. À n'activer qu'une fois le certificat en place
+  # et le site joignable en HTTPS, sinon le site devient inaccessible.
+  # `preload` volontairement omis (désinscription très lente).
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains" "expr=%{HTTPS} == 'on'"
+</IfModule>
+
+# Redirection HTTP -> HTTPS.
+# À DÉCOMMENTER seulement après avoir vérifié le comportement de l'hébergeur :
+# quand TLS est terminé par un reverse proxy en amont, %{HTTPS} vaut toujours
+# "off" côté Apache et la règle boucle. Dans ce cas, tester à la place
+# %{HTTP:X-Forwarded-Proto} != "https".
+#
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTPS} !=on
+#   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# </IfModule>
+
+# Le site est statique : aucun listing de répertoire.
+<IfModule mod_autoindex.c>
+  Options -Indexes
+</IfModule>
