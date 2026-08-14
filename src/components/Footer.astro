@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import logoBlanc from '~/assets/logos/logo-blanc.png';
+import marque from '~/assets/logos/marque-blanche.png';
 import { site, contact, metiers } from '~/data/site';
 import { lien } from '~/lib/base';
 
@@ -10,7 +10,8 @@ const annee = 2026; // mise à jour manuelle : le site est statique, pas de JS d
 <footer class="mt-24 bg-ardoise-800 text-ardoise-100">
   <div class="container-page grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-4">
     <div class="sm:col-span-2 lg:col-span-1">
-      <Image src={logoBlanc} alt="" width={56} height={56} class="h-14 w-14" />
+      {/* Marque seule : le nom et la baseline suivent en texte, juste dessous. */}
+      <Image src={marque} alt="" width={56} height={56} densities={[1, 2, 3]} class="h-14 w-14" />
       <p class="mt-4 font-display text-lg tracking-[0.22em] text-white">
         {site.nom}
       </p>

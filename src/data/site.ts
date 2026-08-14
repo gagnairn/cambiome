@@ -19,18 +19,20 @@ export const contact = {
   // TODO renseigner
   email: 'contact@cambiome.fr',
   telephone: '06 27 80 42 38',
-  adresse: '' as string, // ex. '12 rue des Charpentiers, 38000 Grenoble'
+  adresse: '36 avenue Jean Jaurès, 38600 Fontaine',
   instagram: 'https://instagram.com/cambiome_charpente',
   siret: '933 226 086 00017',
   // Forme juridique et capital : obligatoires pour une société (art. 6-III
   // LCEN). Le capital est celui inscrit aux statuts.
-  formeJuridique: 'SARL',
+  formeJuridique: 'SASU',
+  formeJuridiqueLongue: 'société par actions simplifiée unipersonnelle',
   capital: '' as string, // TODO ex. '5 000 €'
-  // Numéro d'immatriculation au RCS : les neuf premiers chiffres du SIRET,
-  // suivis de la ville du greffe. TODO confirmer la ville d'immatriculation.
-  rcs: '' as string, // ex. 'RCS Grenoble 933 226 086'
-  // Le directeur de la publication est le représentant légal — pour une SARL,
-  // le gérant.
+  // Immatriculée au greffe de Grenoble le 20/09/2024.
+  rcs: '933 226 086 R.C.S. Grenoble',
+  // Numéro de TVA intracommunautaire : FR + clé de contrôle + SIREN.
+  tva: 'FR56933226086',
+  // Le directeur de la publication est le représentant légal — pour une SASU,
+  // le président.
   directeurPublication: 'Nicolas Hans',
   /**
    * Garantie décennale (obligatoire, art. L241-1 du code des assurances).

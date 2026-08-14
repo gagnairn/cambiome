@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import logoNoir from '~/assets/logos/logo-noir.png';
+import marque from '~/assets/logos/marque-noire.png';
 import { site } from '~/data/site';
 import { lien } from '~/lib/base';
 
@@ -22,11 +22,15 @@ const actif = (href: string) => ici === href.replace(/\/$/, '');
       class="flex items-center gap-3"
       aria-label={`${site.nom} — accueil`}
     >
+      {/* La marque seule : le nom et la baseline sont juste à droite, en
+          texte. `densities` sert les écrans à forte densité — sans lui, une
+          image de 44 px est étirée et les cernes se brouillent. */}
       <Image
-        src={logoNoir}
+        src={marque}
         alt=""
         width={44}
         height={44}
+        densities={[1, 2, 3]}
         loading="eager"
         class="h-11 w-11"
       />

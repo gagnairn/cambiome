@@ -13,14 +13,16 @@ const manquants = [
   contact.adresse,
   contact.capital,
   contact.rcs,
+  contact.tva,
   contact.directeurPublication,
   contact.assuranceDecennale.assureur,
 ].filter((v) => !v).length;
 
-// « SARL au capital de 5 000 € », ou « SARL » seule tant que le capital manque.
+// « SASU au capital de 5 000 € », ou la forme seule tant que le capital manque.
+const forme = `${contact.formeJuridique} (${contact.formeJuridiqueLongue})`;
 const formeEtCapital = contact.capital
-  ? `${contact.formeJuridique} au capital de ${contact.capital}`
-  : `${contact.formeJuridique} — capital social : ⚠ à compléter`;
+  ? `${forme} au capital de ${contact.capital}`
+  : `${forme} — capital social : ⚠ à compléter`;
 ---
 
 <Base
@@ -35,8 +37,10 @@ const formeEtCapital = contact.capital
         manquants > 0 && (
           <div class="rounded-md border border-terre-200 bg-terre-50 p-5 text-terre-800">
             <strong class="font-medium">Page à compléter avant mise en ligne.</strong>
-            Les mentions légales sont obligatoires (art. 6-III de la LCEN). Les
-            {' '}{manquants} valeurs manquantes sont à renseigner dans
+            Les mentions légales sont obligatoires (art. 6-III de la LCEN).
+            {manquants > 1
+              ? ` Les ${manquants} valeurs manquantes sont à renseigner dans `
+              : ' La valeur manquante est à renseigner dans '}
             <code class="rounded bg-white px-1.5 py-0.5">src/data/site.ts</code>.
           </div>
         )
@@ -50,6 +54,7 @@ const formeEtCapital = contact.capital
           <li>Siège social : {aRemplir(contact.adresse)}</li>
           <li>SIRET : {aRemplir(contact.siret)}</li>
           <li>Immatriculation : {aRemplir(contact.rcs)}</li>
+          <li>TVA intracommunautaire : {aRemplir(contact.tva)}</li>
           <li>Téléphone : {aRemplir(contact.telephone)}</li>
           <li>Email : {aRemplir(contact.email)}</li>
           <li>
