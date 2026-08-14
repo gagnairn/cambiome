@@ -27,7 +27,10 @@
       "Bash(gh run *)",
       "Bash(git add *)",
       "Bash(git commit -q -m 'CI : laisser configure-pages activer GitHub Pages *)",
-      "Bash(git commit -q -m 'Corriger le chemin du favicon *)"
+      "Bash(git commit -q -m 'Corriger le chemin du favicon *)",
+      "Bash(node live.mjs)",
+      "Bash(kill 34962 35183)",
+      "Bash(git commit -q -m 'Contact : brancher le formulaire sur Web3Forms *)"
     ]
   }
 }

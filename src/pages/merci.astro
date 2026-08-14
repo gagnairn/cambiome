@@ -1,0 +1,43 @@
+---
+import Base from '~/layouts/Base.astro';
+import Bouton from '~/components/Bouton.astro';
+import { contact } from '~/data/site';
+
+// Page d'arrivée après un envoi du formulaire sans JavaScript : Web3Forms y
+// renvoie via le champ `redirect`. Avec JavaScript, la confirmation s'affiche
+// directement sur /contact et cette page n'est jamais atteinte.
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<Base
+  titre="Message envoyé"
+  description="Votre message a bien été transmis à CAMBIOME."
+  noindex
+>
+  <section class="container-page flex min-h-[55vh] flex-col justify-center py-24">
+    <p class="font-display text-xs tracking-[0.28em] text-ardoise-600 uppercase">
+      Contact
+    </p>
+    <h1 class="mt-4 text-4xl leading-tight sm:text-5xl">Message envoyé.</h1>
+    <div class="rule-cernes mt-6 h-px w-24"></div>
+    <p class="mt-6 max-w-md leading-relaxed text-encre/70">
+      Merci, nous avons bien reçu votre demande et vous répondrons sous quelques
+      jours ouvrés.{' '}
+      {
+        contact.telephone
+          ? 'Si le sujet est urgent, le téléphone reste le plus sûr.'
+          : ''
+      }
+    </p>
+    <div class="mt-9 flex flex-wrap gap-3">
+      <Bouton href={`${base}/`}>Retour à l'accueil</Bouton>
+      {
+        contact.telephone && (
+          <Bouton href={`tel:${contact.telephone.replace(/\s/g, '')}`} variante="contour">
+            {contact.telephone}
+          </Bouton>
+        )
+      }
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,258 @@
+---
+import { contact, site } from '~/data/site';
+
+/**
+ * Formulaire de contact.
+ *
+ * Le site est statique : c'est Web3Forms (https://web3forms.com) qui reçoit la
+ * requête et la réexpédie par email à CAMBIOME. La clé d'accès vit dans
+ * `contact.web3formsCle` ; sans elle, ce composant ne rend rien.
+ *
+ * L'envoi se fait en fetch pour rester sur la page, mais le formulaire reste un
+ * vrai <form> POST : sans JavaScript, le navigateur poste directement vers
+ * Web3Forms, qui renvoie ensuite sur la page /merci (champ `redirect`).
+ */
+const ENDPOINT = 'https://api.web3forms.com/submit';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const urlMerci = new URL(`${base}/merci`, Astro.site).href;
+
+const champ =
+  'mt-2 w-full rounded-md border border-sable-300 bg-white px-4 py-3 text-sm placeholder:text-encre/35 focus:border-ardoise-500';
+const label = 'block text-sm text-encre/80';
+---
+
+{
+  contact.web3formsCle ? (
+    <div class="max-w-xl">
+      {/* Panneau de confirmation — dévoilé par le script après un envoi réussi */}
+      <div
+        id="contact-succes"
+        tabindex="-1"
+        hidden
+        class="rounded-lg border border-ardoise-200 bg-ardoise-50 p-8"
+      >
+        <h2 class="text-xl">Message envoyé.</h2>
+        <p class="mt-4 text-sm leading-relaxed text-encre/75">
+          Merci, nous avons bien reçu votre demande et vous répondrons sous
+          quelques jours ouvrés. Si le sujet est urgent, le téléphone reste le
+          plus sûr.
+        </p>
+      </div>
+
+      <form id="contact-formulaire" action={ENDPOINT} method="POST">
+        {/* Champs de service Web3Forms */}
+        <input type="hidden" name="access_key" value={contact.web3formsCle} />
+        <input
+          type="hidden"
+          name="subject"
+          value={`${site.nom} — nouvelle demande depuis le site`}
+        />
+        <input type="hidden" name="from_name" value={`Site ${site.nom}`} />
+        {/* Retour après envoi quand JavaScript est indisponible */}
+        <input type="hidden" name="redirect" value={urlMerci} />
+
+        <div class="grid gap-6 sm:grid-cols-2">
+          <div>
+            <label class={label} for="nom">
+              Nom <span aria-hidden="true">*</span>
+            </label>
+            <input
+              class={champ}
+              id="nom"
+              name="nom"
+              type="text"
+              required
+              autocomplete="name"
+            />
+          </div>
+          <div>
+            <label class={label} for="email">
+              Email <span aria-hidden="true">*</span>
+            </label>
+            <input
+              class={champ}
+              id="email"
+              name="email"
+              type="email"
+              required
+              autocomplete="email"
+            />
+          </div>
+          <div>
+            <label class={label} for="telephone">
+              Téléphone
+            </label>
+            <input
+              class={champ}
+              id="telephone"
+              name="telephone"
+              type="tel"
+              autocomplete="tel"
+            />
+          </div>
+          <div>
+            <label class={label} for="commune">
+              Commune du chantier
+            </label>
+            <input
+              class={champ}
+              id="commune"
+              name="commune"
+              type="text"
+              autocomplete="address-level2"
+            />
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <label class={label} for="nature">
+            Nature du projet
+          </label>
+          <select class={champ} id="nature" name="nature">
+            <option>Charpente / ossature bois</option>
+            <option>Rénovation thermique</option>
+            <option>Couverture / zinguerie</option>
+            <option>Structure bois / menuiserie</option>
+            <option>Autre — je précise ci-dessous</option>
+          </select>
+        </div>
+
+        <div class="mt-6">
+          <label class={label} for="message">
+            Votre projet <span aria-hidden="true">*</span>
+          </label>
+          <textarea
+            class={champ}
+            id="message"
+            name="message"
+            rows="6"
+            required
+            placeholder="Type de bâtiment, surface, travaux envisagés, échéance…"
+          />
+        </div>
+
+        {/* Piège à robots Web3Forms : masqué aux humains, coché par les bots */}
+        <div class="hidden" aria-hidden="true">
+          <label for="botcheck">Ne pas remplir</label>
+          <input id="botcheck" name="botcheck" type="checkbox" tabindex="-1" />
+        </div>
+
+        <div class="mt-8 flex gap-3">
+          <input
+            id="consentement"
+            name="consentement"
+            type="checkbox"
+            value="oui"
+            required
+            class="mt-1 size-4 shrink-0 accent-ardoise-600"
+          />
+          <label class="text-xs leading-relaxed text-encre/65" for="consentement">
+            J'accepte que ces informations soient transmises à CAMBIOME pour
+            répondre à ma demande. Elles ne sont ni cédées ni utilisées à des
+            fins commerciales —{' '}
+            <a class="underline underline-offset-2" href={`${base}/mentions-legales`}>
+              en savoir plus
+            </a>
+            . <span aria-hidden="true">*</span>
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          class="mt-8 inline-flex rounded-full bg-ardoise-700 px-8 py-3 text-sm tracking-wide text-white transition-colors hover:bg-ardoise-800 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          Envoyer
+        </button>
+
+        {/* Région d'annonce : vide, elle ne s'affiche pas (variante `empty:`) */}
+        <p
+          id="contact-statut"
+          role="status"
+          aria-live="polite"
+          class="mt-5 text-sm leading-relaxed text-encre/70 empty:hidden data-[etat=erreur]:text-terre-700"
+        />
+      </form>
+    </div>
+  ) : (
+    <div class="max-w-xl rounded-lg border border-dashed border-sable-300 bg-sable-100 p-8">
+      <h2 class="text-xl">Formulaire à activer</h2>
+      <p class="mt-4 text-sm leading-relaxed text-encre/70">
+        Le site est statique : pour recevoir les messages, il faut une clé
+        Web3Forms. Indiquez l'adresse de réception sur{' '}
+        <a class="underline underline-offset-2" href="https://web3forms.com">
+          web3forms.com
+        </a>
+        , validez le mail de confirmation, puis collez la clé obtenue dans{' '}
+        <code class="rounded bg-white px-1.5 py-0.5 text-[0.8em]">
+          contact.web3formsCle
+        </code>{' '}
+        (fichier{' '}
+        <code class="rounded bg-white px-1.5 py-0.5 text-[0.8em]">
+          src/data/site.ts
+        </code>
+        ). Le formulaire complet s'affichera alors ici.
+      </p>
+    </div>
+  )
+}
+
+<script>
+  const formulaire = document.querySelector<HTMLFormElement>('#contact-formulaire');
+  const succes = document.querySelector<HTMLElement>('#contact-succes');
+  const statut = document.querySelector<HTMLElement>('#contact-statut');
+
+  // Sans le formulaire (clé absente), il n'y a rien à brancher.
+  if (formulaire && succes && statut) {
+    const bouton = formulaire.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+    const annoncer = (texte: string, etat?: 'erreur') => {
+      statut.textContent = texte;
+      if (etat) statut.dataset.etat = etat;
+      else delete statut.dataset.etat;
+    };
+
+    formulaire.addEventListener('submit', async (evenement) => {
+      // La validation native a déjà eu lieu : `submit` ne part que si le
+      // formulaire est valide.
+      evenement.preventDefault();
+
+      if (bouton) {
+        bouton.disabled = true;
+        bouton.textContent = 'Envoi…';
+      }
+      annoncer('Envoi en cours…');
+
+      try {
+        const reponse = await fetch(formulaire.action, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(Object.fromEntries(new FormData(formulaire))),
+        });
+        const resultat = await reponse.json();
+
+        if (!reponse.ok || !resultat.success) {
+          throw new Error(resultat.message ?? `HTTP ${reponse.status}`);
+        }
+
+        annoncer('');
+        formulaire.hidden = true;
+        succes.hidden = false;
+        succes.focus();
+      } catch (erreur) {
+        console.error("Échec de l'envoi du formulaire de contact", erreur);
+        annoncer(
+          "L'envoi a échoué. Réessayez dans un instant — ou écrivez-nous directement, les coordonnées sont ci-contre.",
+          'erreur'
+        );
+        if (bouton) {
+          bouton.disabled = false;
+          bouton.textContent = 'Envoyer';
+        }
+      }
+    });
+  }
+</script>
