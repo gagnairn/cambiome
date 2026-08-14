@@ -90,8 +90,10 @@ const formeEtCapital = contact.capital
 
       <div>
         <h2 class="text-xl text-encre">Hébergement</h2>
+        {/* Le téléphone est libellé : le numéro d'OVH est un court « 1007 »
+            qu'on ne reconnaîtrait pas comme tel en fin d'énumération. */}
         <p class="mt-4">
-          {hebergeur.nom} — {hebergeur.adresse} — {hebergeur.telephone}.
+          {hebergeur.nom} — {hebergeur.adresse}. Téléphone : {hebergeur.telephone}.
         </p>
       </div>
 

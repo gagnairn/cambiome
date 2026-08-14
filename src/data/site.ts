@@ -146,19 +146,21 @@ export const societeAMission = {
 
 /**
  * Hébergeur du site — nom, adresse et téléphone sont exigés par l'art. 6-III
- * de la LCEN, et la mention doit désigner l'hébergeur *réel du moment*.
+ * de la LCEN, et la mention doit désigner l'hébergeur *réel du moment* : elle
+ * sert à savoir qui détient les fichiers en cas de litige.
  *
- * Le site est aujourd'hui publié par GitHub Pages. Au basculement vers OVH,
- * il suffit de remplacer les trois valeurs ci-dessous par le bloc commenté :
+ * ⚠ Ces valeurs sont celles d'OVH, l'hébergement cible. Tant que la bascule
+ * n'est pas faite, les pages sont servies par GitHub Pages et la mention
+ * anticipe donc la réalité. Pour revenir à l'état exact :
  *
- *   nom: 'OVH SAS',
- *   adresse: '2 rue Kellermann, 59100 Roubaix, France',
- *   telephone: '1007',
+ *   nom: 'GitHub, Inc.',
+ *   adresse: '88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis',
+ *   telephone: '+1 877 448 4820',
  */
 export const hebergeur = {
-  nom: 'GitHub, Inc.',
-  adresse: '88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis',
-  telephone: '+1 877 448 4820',
+  nom: 'OVH SAS',
+  adresse: '2 rue Kellermann, 59100 Roubaix, France',
+  telephone: '1007',
 } as const;
 
 export type Metier = {

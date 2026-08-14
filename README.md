@@ -88,6 +88,10 @@ concernés plutôt que d'afficher de fausses informations.
       [web3forms.com](https://web3forms.com) (saisir l'adresse de réception,
       valider le mail de confirmation, aucun compte à créer) — sans elle le
       formulaire de contact n'est pas affiché
+- [ ] Basculer l'hébergement vers OVH — les mentions légales le désignent
+      **déjà** comme hébergeur, ce qui ne sera exact qu'une fois la bascule
+      faite (voir « Migrer vers un hébergeur »). Tant qu'elle ne l'est pas, la
+      page nomme un hébergeur qui ne sert pas le site.
 - [ ] Photos supplémentaires par métier (les quatre ont désormais une
       illustration, mais une seule chacun pour certains)
 - [ ] `astro.config.mjs` → `site` / `base` si un nom de domaine est acheté
@@ -176,10 +180,10 @@ Le site est entièrement statique : déployer, c'est téléverser le contenu de
 1. `astro.config.mjs` : mettre `site` à l'URL réelle et supprimer `base`.
 2. Rien à faire pour `robots.txt` ni le manifeste : ils sont générés depuis
    `site` et `base` (`src/pages/robots.txt.ts`, `src/pages/site.webmanifest.ts`).
-3. `src/data/site.ts` → `hebergeur` : nom, adresse et téléphone du nouvel
-   hébergeur — c'est une obligation légale, et la mention doit désigner
-   l'hébergeur réel. Les coordonnées d'OVH sont déjà écrites en commentaire
-   au-dessus du bloc.
+3. `src/data/site.ts` → `hebergeur` : rien à faire si la cible est bien OVH,
+   dont les coordonnées y figurent déjà. Pour tout autre hébergeur, ce sont
+   son nom, son adresse et son téléphone qu'il faut y mettre : la mention est
+   une obligation légale et doit désigner l'hébergeur réel.
 4. `npm run build`, puis téléverser `dist/`.
 5. Vérifier que les en-têtes de sécurité sortent bien (voir ci-dessous).
 
