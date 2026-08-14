@@ -1,0 +1,81 @@
+---
+import Base from '~/layouts/Base.astro';
+import TitreSection from '~/components/TitreSection.astro';
+import { site, contact } from '~/data/site';
+
+const aRemplir = (v: string) => v || '⚠ à compléter';
+---
+
+<Base
+  titre="Mentions légales"
+  description={`Mentions légales du site ${site.nom}.`}
+>
+  <section class="container-page pt-16 pb-8">
+    <TitreSection surtitre="Informations" titre="Mentions légales" />
+
+    <div class="mt-12 max-w-2xl space-y-10 text-sm leading-relaxed text-encre/75">
+      <div class="rounded-md border border-terre-200 bg-terre-50 p-5 text-terre-800">
+        <strong class="font-medium">Page à compléter avant mise en ligne.</strong>
+        Les mentions légales sont obligatoires (art. 6-III de la LCEN). Les
+        valeurs manquantes sont à renseigner dans
+        <code class="rounded bg-white px-1.5 py-0.5">src/data/site.ts</code>.
+      </div>
+
+      <div>
+        <h2 class="text-xl text-encre">Éditeur du site</h2>
+        <ul class="mt-4 space-y-1.5">
+          <li>Dénomination : {site.nom}</li>
+          <li>Forme juridique et capital social : ⚠ à compléter</li>
+          <li>Siège social : {aRemplir(contact.adresse)}</li>
+          <li>SIRET : {aRemplir(contact.siret)}</li>
+          <li>Téléphone : {aRemplir(contact.telephone)}</li>
+          <li>Email : {aRemplir(contact.email)}</li>
+          <li>Directeur de la publication : ⚠ à compléter</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-xl text-encre">Assurance professionnelle</h2>
+        <p class="mt-4">
+          Garantie décennale : {aRemplir(contact.assurance)}. Couverture
+          géographique : France.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xl text-encre">Hébergement</h2>
+        <p class="mt-4">⚠ à compléter — nom, adresse et téléphone de l'hébergeur.</p>
+      </div>
+
+      <div>
+        <h2 class="text-xl text-encre">Propriété intellectuelle</h2>
+        <p class="mt-4">
+          L'ensemble des contenus de ce site (textes, photographies, logotype)
+          est la propriété de {site.nom}, sauf mention contraire. Toute
+          reproduction sans autorisation préalable est interdite.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xl text-encre">Données personnelles</h2>
+        <p class="mt-4">
+          Les données transmises via le formulaire de contact sont utilisées
+          uniquement pour répondre à votre demande et ne font l'objet d'aucune
+          cession à des tiers. Conformément au RGPD, vous disposez d'un droit
+          d'accès, de rectification et de suppression de vos données, en écrivant
+          à {aRemplir(contact.email)}.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xl text-encre">Cookies</h2>
+        <p class="mt-4">
+          Ce site ne dépose aucun cookie et n'utilise aucun outil de mesure
+          d'audience. Les polices de caractères sont hébergées sur le site
+          lui-même : aucune requête n'est adressée à un service tiers lors de
+          votre visite.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>

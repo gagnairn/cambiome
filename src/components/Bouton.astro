@@ -1,0 +1,27 @@
+---
+interface Props {
+  href: string;
+  variante?: 'plein' | 'contour' | 'clair';
+  class?: string;
+}
+
+const { href, variante = 'plein', class: classe = '' } = Astro.props;
+
+const styles = {
+  plein: 'bg-ardoise-700 text-white hover:bg-ardoise-800',
+  contour:
+    'border border-ardoise-400 text-ardoise-700 hover:border-ardoise-600 hover:bg-ardoise-50',
+  clair: 'bg-white/95 text-encre hover:bg-white',
+} as const;
+---
+
+<a
+  href={href}
+  class:list={[
+    'inline-flex items-center justify-center gap-2 rounded-full px-7 py-3 text-sm tracking-wide transition-colors',
+    styles[variante],
+    classe,
+  ]}
+>
+  <slot />
+</a>

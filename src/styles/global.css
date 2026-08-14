@@ -1,0 +1,93 @@
+@import 'tailwindcss';
+
+/* Polices auto-hébergées (pas d'appel au CDN Google : conforme CNIL) */
+@import '@fontsource-variable/jost';
+@import '@fontsource-variable/inter';
+
+@theme {
+  /* --- Charte CAMBIOME ---------------------------------------------------
+     Bleu ardoise #41738D et terracotta #AD7B7A relevés directement sur les
+     logos fournis dans docs/brief. Les neutres sont volontairement chauds
+     (pierre / bois) plutôt que gris purs. */
+
+  --color-ardoise-50: #f3f7f9;
+  --color-ardoise-100: #e3ecf1;
+  --color-ardoise-200: #c6d9e3;
+  --color-ardoise-300: #9dbece;
+  --color-ardoise-400: #6e9cb4;
+  --color-ardoise-500: #41738d;
+  --color-ardoise-600: #386478;
+  --color-ardoise-700: #2f5263;
+  --color-ardoise-800: #294450;
+  --color-ardoise-900: #243944;
+
+  --color-terre-50: #faf5f5;
+  --color-terre-100: #f3e9e9;
+  --color-terre-200: #e7d3d2;
+  --color-terre-300: #d4b4b3;
+  --color-terre-400: #c09796;
+  --color-terre-500: #ad7b7a;
+  --color-terre-600: #946362;
+  --color-terre-700: #7a5150;
+  --color-terre-800: #654545;
+  --color-terre-900: #553c3c;
+
+  --color-sable-50: #fbfaf8;
+  --color-sable-100: #f4f1ec;
+  --color-sable-200: #e7e2d9;
+  --color-sable-300: #d3ccbf;
+  --color-sable-400: #b3a996;
+
+  --color-encre: #1a1d1f;
+
+  --font-display: 'Jost Variable', 'Jost', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    @apply bg-sable-50 text-encre font-sans antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display font-light tracking-tight text-balance;
+  }
+
+  /* Focus visible homogène — accessibilité clavier */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ardoise-500;
+  }
+}
+
+@utility container-page {
+  @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+}
+
+/* Petit filet décoratif rappelant les cernes du logo */
+@utility rule-cernes {
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--color-ardoise-300) 0 2px,
+    transparent 2px 7px
+  );
+}

@@ -1,0 +1,129 @@
+---
+import { Image } from 'astro:assets';
+import logoBlanc from '~/assets/logos/logo-blanc.png';
+import { site, contact, metiers } from '~/data/site';
+
+const base = import.meta.env.BASE_URL;
+const lien = (p: string) => `${base.replace(/\/$/, '')}${p}`;
+const annee = 2026; // mise à jour manuelle : le site est statique, pas de JS d'horloge
+---
+
+<footer class="mt-24 bg-ardoise-800 text-ardoise-100">
+  <div class="container-page grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="sm:col-span-2 lg:col-span-1">
+      <Image src={logoBlanc} alt="" width={56} height={56} class="h-14 w-14" />
+      <p class="mt-4 font-display text-lg tracking-[0.22em] text-white">
+        {site.nom}
+      </p>
+      <p class="font-display text-[0.62rem] tracking-[0.3em] text-ardoise-300 uppercase">
+        {site.baseline}
+      </p>
+      <p class="mt-5 max-w-xs text-sm leading-relaxed text-ardoise-200">
+        Éco-construction, charpente et rénovation thermique — {site.zone}.
+      </p>
+    </div>
+
+    <div>
+      <h2 class="text-xs tracking-[0.2em] text-ardoise-300 uppercase">Métiers</h2>
+      <ul class="mt-4 space-y-2.5 text-sm">
+        {
+          metiers.map((m) => (
+            <li>
+              <a
+                class="text-ardoise-100 underline-offset-4 hover:underline"
+                href={`${lien('/metiers')}#${m.slug}`}
+              >
+                {m.titre}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xs tracking-[0.2em] text-ardoise-300 uppercase">Le site</h2>
+      <ul class="mt-4 space-y-2.5 text-sm">
+        <li>
+          <a class="underline-offset-4 hover:underline" href={lien('/demarche')}>
+            Notre démarche
+          </a>
+        </li>
+        <li>
+          <a class="underline-offset-4 hover:underline" href={lien('/realisations')}>
+            Réalisations
+          </a>
+        </li>
+        <li>
+          <a class="underline-offset-4 hover:underline" href={lien('/contact')}>
+            Contact
+          </a>
+        </li>
+        <li>
+          <a class="underline-offset-4 hover:underline" href={lien('/mentions-legales')}>
+            Mentions légales
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xs tracking-[0.2em] text-ardoise-300 uppercase">Contact</h2>
+      <ul class="mt-4 space-y-2.5 text-sm">
+        {
+          contact.telephone && (
+            <li>
+              <a
+                class="underline-offset-4 hover:underline"
+                href={`tel:${contact.telephone.replace(/\s/g, '')}`}
+              >
+                {contact.telephone}
+              </a>
+            </li>
+          )
+        }
+        {
+          contact.email && (
+            <li>
+              <a class="underline-offset-4 hover:underline" href={`mailto:${contact.email}`}>
+                {contact.email}
+              </a>
+            </li>
+          )
+        }
+        {contact.adresse && <li class="text-ardoise-200">{contact.adresse}</li>}
+        {
+          contact.instagram && (
+            <li>
+              <a
+                class="underline-offset-4 hover:underline"
+                href={contact.instagram}
+                rel="me noopener"
+              >
+                Instagram
+              </a>
+            </li>
+          )
+        }
+        {
+          !contact.telephone && !contact.email && (
+            <li>
+              <a class="underline-offset-4 hover:underline" href={lien('/contact')}>
+                Nous écrire
+              </a>
+            </li>
+          )
+        }
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-ardoise-700">
+    <div
+      class="container-page flex flex-col gap-2 py-6 text-xs text-ardoise-300 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>© {annee} {site.nom}. Tous droits réservés.</p>
+      <p>Charpente · Couverture · Zinguerie · Rénovation thermique</p>
+    </div>
+  </div>
+</footer>

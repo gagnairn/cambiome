@@ -1,0 +1,27 @@
+---
+import Base from '~/layouts/Base.astro';
+import TitreSection from '~/components/TitreSection.astro';
+import GalerieRealisations from '~/components/GalerieRealisations.astro';
+import AppelContact from '~/components/AppelContact.astro';
+import { realisations } from '~/data/realisations';
+---
+
+<Base
+  titre="Réalisations"
+  description="Charpentes, solivages, extensions en ossature bois, zinguerie et structures bois : quelques chantiers réalisés par CAMBIOME."
+>
+  <section class="container-page pt-16">
+    <TitreSection surtitre="Chantiers" titre="Nos réalisations">
+      <p>
+        Une sélection de chantiers, du solivage en queue d'aronde dans un comble
+        ancien à l'habillage d'acrotères façonné à l'atelier.
+      </p>
+    </TitreSection>
+
+    <div class="mt-12">
+      <GalerieRealisations items={realisations} />
+    </div>
+  </section>
+
+  <AppelContact />
+</Base>

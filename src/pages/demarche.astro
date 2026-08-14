@@ -1,0 +1,86 @@
+---
+import { Image } from 'astro:assets';
+import Base from '~/layouts/Base.astro';
+import TitreSection from '~/components/TitreSection.astro';
+import AppelContact from '~/components/AppelContact.astro';
+import { demarche } from '~/data/site';
+import solivage from '~/assets/realisations/solivage-queue-daronde.jpg';
+import chene from '~/assets/realisations/charpente-chene.jpg';
+---
+
+<Base
+  titre="Notre démarche"
+  description="Isolation bio-sourcée dense pour le confort d'été, étanchéité à l'air maîtrisée, ventilation double flux et ventilation des parois de l'enveloppe."
+>
+  <section class="container-page pt-16">
+    <TitreSection surtitre="Éco-construction" titre="Une enveloppe pensée comme un tout">
+      <p>
+        Un bâtiment confortable n'est pas un empilement de bonnes intentions :
+        c'est une enveloppe cohérente. Isolation, étanchéité à l'air,
+        ventilation intérieure et ventilation des parois forment un même
+        système. Voici comment nous l'abordons.
+      </p>
+    </TitreSection>
+  </section>
+
+  <section class="container-page mt-16">
+    <div class="grid gap-12 lg:grid-cols-[1fr_auto] lg:gap-16">
+      <ol class="space-y-12">
+        {
+          demarche.map((d, i) => (
+            <li class="border-t border-sable-300 pt-7">
+              <span class="font-display text-sm text-ardoise-500">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <h2 class="mt-2 text-2xl leading-snug">{d.titre}</h2>
+              <p class="mt-4 max-w-2xl leading-relaxed text-encre/75">{d.texte}</p>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="hidden w-72 shrink-0 lg:block">
+        <Image
+          src={solivage}
+          alt="Comble ancien aux murs de pierre, solives neuves en bois clair posées sous une charpente d'origine."
+          widths={[300, 600]}
+          sizes="288px"
+          loading="lazy"
+          class="sticky top-28 aspect-3/4 w-full rounded-lg object-cover"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="mt-24 bg-sable-100 py-24">
+    <div class="container-page grid items-center gap-12 lg:grid-cols-2">
+      <div class="overflow-hidden rounded-lg bg-sable-200">
+        <Image
+          src={chene}
+          alt="Deux tasses à café émaillées posées sur une poutre de chêne fraîchement taillée."
+          widths={[600, 900, 1400]}
+          sizes="(min-width: 1024px) 560px, 92vw"
+          loading="lazy"
+          class="aspect-4/3 w-full object-cover"
+        />
+      </div>
+      <div>
+        <TitreSection surtitre="Travailler ensemble" titre="Bâti ancien, bureau d'études et auto-rénovation" niveau={2} />
+        <p class="mt-6 leading-relaxed text-encre/75">
+          Sur les charpentes existantes, nous travaillons en étroite
+          collaboration avec un bureau d'études structure : les reprises de
+          pièces, les modifications de pans et les créations d'ouvertures sont
+          calculées avant d'être taillées.
+        </p>
+        <p class="mt-4 leading-relaxed text-encre/75">
+          Nous proposons également un accompagnement à l'auto-rénovation. Nous
+          prenons en charge les lots techniques — charpente, couverture,
+          étanchéité à l'air — et vous gardez la main sur ce que vous pouvez
+          réaliser vous-même, avec nos conseils de mise en œuvre.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <AppelContact />
+</Base>

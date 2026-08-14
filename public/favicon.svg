@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="CAMBIOME">
+  <rect width="64" height="64" rx="10" fill="#41738D"/>
+  <g fill="none" stroke="#ffffff" stroke-linecap="round">
+    <!-- Cernes du bois : demi-cercles ouverts vers la droite -->
+    <path d="M31 12a20 20 0 0 0 0 40" stroke-width="2.4"/>
+    <path d="M31 19a13 13 0 0 0 0 26" stroke-width="1.5"/>
+    <path d="M31 26a6 6 0 0 0 0 12" stroke-width="1.1"/>
+    <!-- Pan de toiture -->
+    <path d="M33 12 47 26v26" stroke-width="2.4" stroke-linejoin="round"/>
+  </g>
+</svg>

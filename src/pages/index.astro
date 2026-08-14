@@ -1,0 +1,122 @@
+---
+import { Image } from 'astro:assets';
+import Base from '~/layouts/Base.astro';
+import Bouton from '~/components/Bouton.astro';
+import TitreSection from '~/components/TitreSection.astro';
+import CarteMetier from '~/components/CarteMetier.astro';
+import GalerieRealisations from '~/components/GalerieRealisations.astro';
+import AppelContact from '~/components/AppelContact.astro';
+import { site, metiers, demarche } from '~/data/site';
+import { realisations } from '~/data/realisations';
+import hero from '~/assets/realisations/charpente-aretier.jpg';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const apercu = realisations.slice(0, 3);
+---
+
+<Base titre="accueil">
+  <!-- Hero -->
+  <section class="relative">
+    <div class="absolute inset-0">
+      <Image
+        src={hero}
+        alt=""
+        widths={[900, 1400, 2000, 2400]}
+        sizes="100vw"
+        loading="eager"
+        fetchpriority="high"
+        class="h-full w-full object-cover"
+      />
+      <div class="absolute inset-0 bg-gradient-to-b from-encre/70 via-encre/50 to-encre/70"></div>
+    </div>
+
+    <div class="relative container-page flex min-h-[78vh] flex-col justify-center py-24">
+      <p class="font-display text-xs tracking-[0.32em] text-white/80 uppercase">
+        {site.baseline}
+      </p>
+      <h1 class="mt-6 max-w-3xl text-4xl leading-[1.1] text-white sm:text-5xl lg:text-6xl">
+        Construire et rénover avec des matériaux qui tiennent dans le temps.
+      </h1>
+      <p class="mt-7 max-w-xl text-lg leading-relaxed text-white/85">
+        CAMBIOME est une entreprise d'éco-construction : charpente et ossature
+        bois, couverture et zinguerie, rénovation thermique en matériaux
+        bio-sourcés.
+      </p>
+      <div class="mt-10 flex flex-wrap gap-3">
+        <Bouton href={`${base}/metiers`} variante="clair">Découvrir nos métiers</Bouton>
+        <Bouton
+          href={`${base}/contact`}
+          variante="contour"
+          class="border-white/50 text-white hover:border-white hover:bg-white/10"
+        >
+          Parler de votre projet
+        </Bouton>
+      </div>
+    </div>
+  </section>
+
+  <!-- Métiers -->
+  <section class="container-page mt-24">
+    <TitreSection surtitre="Nos réalisations par métiers" titre="Quatre savoir-faire, un même bâtiment">
+      <p>
+        Charpente, couverture, isolation et menuiserie sont traitées ensemble.
+        C'est la condition pour que l'enveloppe soit cohérente : pas de rupture
+        d'étanchéité à l'air entre deux corps de métier, pas de détail laissé au
+        suivant.
+      </p>
+    </TitreSection>
+
+    <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {metiers.map((m, i) => <CarteMetier metier={m} index={i} />)}
+    </div>
+  </section>
+
+  <!-- Démarche -->
+  <section class="mt-24 bg-sable-100 py-24">
+    <div class="container-page">
+      <TitreSection surtitre="Notre démarche" titre="Le confort d'abord, la performance ensuite">
+        <p>
+          Une isolation bio-sourcée dense pour le confort d'été, une étanchéité
+          à l'air maîtrisée, une ventilation double flux et des parois qui
+          respirent. Ces quatre points se tiennent : négliger l'un dégrade les
+          trois autres.
+        </p>
+      </TitreSection>
+
+      <dl class="mt-12 grid gap-x-10 gap-y-10 sm:grid-cols-2">
+        {
+          demarche.map((d, i) => (
+            <div class="border-t border-sable-300 pt-6">
+              <span class="font-display text-sm text-ardoise-500">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <dt class="mt-2 font-display text-xl font-light">{d.titre}</dt>
+              <dd class="mt-3 text-sm leading-relaxed text-encre/70">{d.texte}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <div class="mt-12">
+        <Bouton href={`${base}/demarche`} variante="contour">
+          En savoir plus sur notre démarche
+        </Bouton>
+      </div>
+    </div>
+  </section>
+
+  <!-- Réalisations -->
+  <section class="container-page mt-24">
+    <TitreSection surtitre="Chantiers" titre="Quelques réalisations" />
+    <div class="mt-12">
+      <GalerieRealisations items={apercu} />
+    </div>
+    <div class="mt-10">
+      <Bouton href={`${base}/realisations`} variante="contour">
+        Voir toutes les réalisations
+      </Bouton>
+    </div>
+  </section>
+
+  <AppelContact />
+</Base>

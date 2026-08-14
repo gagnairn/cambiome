@@ -1,0 +1,170 @@
+---
+import Base from '~/layouts/Base.astro';
+import TitreSection from '~/components/TitreSection.astro';
+import { site, contact } from '~/data/site';
+
+const aDesCoordonnees = Boolean(
+  contact.telephone || contact.email || contact.adresse
+);
+
+const champ =
+  'mt-2 w-full rounded-md border border-sable-300 bg-white px-4 py-3 text-sm placeholder:text-encre/35 focus:border-ardoise-500';
+const label = 'block text-sm text-encre/80';
+---
+
+<Base
+  titre="Contact"
+  description={`Contacter CAMBIOME pour un projet de charpente, de couverture ou de rénovation thermique — ${site.zone}.`}
+>
+  <section class="container-page pt-16">
+    <TitreSection surtitre="Contact" titre="Parlons de votre projet">
+      <p>
+        Décrivez-nous le bâtiment, ce que vous souhaitez faire et l'échéance que
+        vous avez en tête. Nous nous déplaçons pour évaluer le chantier avant
+        tout chiffrage.
+      </p>
+    </TitreSection>
+
+    <div class="mt-14 grid gap-14 lg:grid-cols-[1fr_20rem]">
+      <div>
+        {
+          contact.formulaireEndpoint ? (
+            <form action={contact.formulaireEndpoint} method="POST" class="max-w-xl">
+              <div class="grid gap-6 sm:grid-cols-2">
+                <div>
+                  <label class={label} for="nom">
+                    Nom <span aria-hidden="true">*</span>
+                  </label>
+                  <input class={champ} id="nom" name="nom" type="text" required autocomplete="name" />
+                </div>
+                <div>
+                  <label class={label} for="email">
+                    Email <span aria-hidden="true">*</span>
+                  </label>
+                  <input class={champ} id="email" name="email" type="email" required autocomplete="email" />
+                </div>
+                <div>
+                  <label class={label} for="telephone">Téléphone</label>
+                  <input class={champ} id="telephone" name="telephone" type="tel" autocomplete="tel" />
+                </div>
+                <div>
+                  <label class={label} for="commune">Commune du chantier</label>
+                  <input class={champ} id="commune" name="commune" type="text" />
+                </div>
+              </div>
+
+              <div class="mt-6">
+                <label class={label} for="nature">Nature du projet</label>
+                <select class={champ} id="nature" name="nature">
+                  <option>Charpente / ossature bois</option>
+                  <option>Rénovation thermique</option>
+                  <option>Couverture / zinguerie</option>
+                  <option>Structure bois / menuiserie</option>
+                  <option>Autre — je précise ci-dessous</option>
+                </select>
+              </div>
+
+              <div class="mt-6">
+                <label class={label} for="message">
+                  Votre projet <span aria-hidden="true">*</span>
+                </label>
+                <textarea
+                  class={champ}
+                  id="message"
+                  name="message"
+                  rows="6"
+                  required
+                  placeholder="Type de bâtiment, surface, travaux envisagés, échéance…"
+                />
+              </div>
+
+              {/* Piège à robots : masqué aux humains, rempli par les bots */}
+              <div class="hidden" aria-hidden="true">
+                <label for="site-web">Ne pas remplir</label>
+                <input id="site-web" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+              </div>
+
+              <p class="mt-6 text-xs leading-relaxed text-encre/55">
+                Les informations transmises servent uniquement à répondre à
+                votre demande. Elles ne sont ni cédées ni utilisées à des fins
+                commerciales.
+              </p>
+
+              <button
+                type="submit"
+                class="mt-6 inline-flex rounded-full bg-ardoise-700 px-8 py-3 text-sm tracking-wide text-white transition-colors hover:bg-ardoise-800"
+              >
+                Envoyer
+              </button>
+            </form>
+          ) : (
+            <div class="max-w-xl rounded-lg border border-dashed border-sable-300 bg-sable-100 p-8">
+              <h2 class="text-xl">Formulaire à activer</h2>
+              <p class="mt-4 text-sm leading-relaxed text-encre/70">
+                Le site est statique : pour recevoir les messages, il faut
+                brancher un service de formulaire (Formspree, Basin,
+                Web3Forms…). Renseignez son URL dans{' '}
+                <code class="rounded bg-white px-1.5 py-0.5 text-[0.8em]">
+                  contact.formulaireEndpoint
+                </code>{' '}
+                (fichier <code class="rounded bg-white px-1.5 py-0.5 text-[0.8em]">src/data/site.ts</code>)
+                et le formulaire complet s'affichera ici.
+              </p>
+            </div>
+          )
+        }
+      </div>
+
+      <aside class="lg:border-l lg:border-sable-200 lg:pl-10">
+        <h2 class="font-display text-xs tracking-[0.28em] text-ardoise-600 uppercase">
+          Nous joindre
+        </h2>
+
+        {
+          aDesCoordonnees ? (
+            <ul class="mt-6 space-y-5 text-sm">
+              {contact.telephone && (
+                <li>
+                  <span class="block text-encre/50">Téléphone</span>
+                  <a
+                    class="text-encre underline-offset-4 hover:underline"
+                    href={`tel:${contact.telephone.replace(/\s/g, '')}`}
+                  >
+                    {contact.telephone}
+                  </a>
+                </li>
+              )}
+              {contact.email && (
+                <li>
+                  <span class="block text-encre/50">Email</span>
+                  <a
+                    class="text-encre underline-offset-4 hover:underline"
+                    href={`mailto:${contact.email}`}
+                  >
+                    {contact.email}
+                  </a>
+                </li>
+              )}
+              {contact.adresse && (
+                <li>
+                  <span class="block text-encre/50">Atelier</span>
+                  <span class="text-encre">{contact.adresse}</span>
+                </li>
+              )}
+            </ul>
+          ) : (
+            <p class="mt-6 text-sm leading-relaxed text-encre/60">
+              Coordonnées à renseigner dans{' '}
+              <code class="rounded bg-sable-100 px-1.5 py-0.5 text-[0.8em]">src/data/site.ts</code>.
+            </p>
+          )
+        }
+
+        <h2 class="mt-10 font-display text-xs tracking-[0.28em] text-ardoise-600 uppercase">
+          Zone d'intervention
+        </h2>
+        <p class="mt-4 text-sm leading-relaxed text-encre/70">{site.zone}.</p>
+      </aside>
+    </div>
+  </section>
+</Base>

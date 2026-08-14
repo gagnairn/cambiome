@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm view *)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(npx --yes http-server dist -p 4399 --silent)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://127.0.0.1:4399/index.html)",
+      "Bash(curl -s -o /dev/null -w \"accueil:%{http_code} \" http://127.0.0.1:4400/cambiome/)",
+      "Bash(curl -s -o /dev/null -w \"metiers:%{http_code} \" http://127.0.0.1:4400/cambiome/metiers/)",
+      "Bash(curl -s -o /dev/null -w \"contact:%{http_code}\\\\n\" http://127.0.0.1:4400/cambiome/contact/)",
+      "Bash(nohup npx astro dev --port 4400)",
+      "Bash(curl -s -o /dev/null -w \"metiers:%{http_code}\\\\n\" http://127.0.0.1:4400/cambiome/metiers)",
+      "Bash(curl -s -o /dev/null -w \"accueil:%{http_code} \" http://127.0.0.1:4401/cambiome/)",
+      "Bash(curl -s -o /dev/null -w \"metiers:%{http_code} \" http://127.0.0.1:4401/cambiome/metiers)",
+      "Bash(curl -s -o /dev/null -w \"contact:%{http_code}\\\\n\" http://127.0.0.1:4401/cambiome/contact)",
+      "Bash(npx astro *)",
+      "Bash(lsof -nP -iTCP -sTCP:LISTEN)",
+      "Bash(npm init *)",
+      "Bash(node shot.mjs)"
+    ]
+  }
+}
