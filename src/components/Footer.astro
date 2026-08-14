@@ -1,10 +1,17 @@
 ---
 import { Image } from 'astro:assets';
 import marque from '~/assets/logos/marque-blanche.png';
+import logoRge from '~/assets/logos/rge-qualibat.png';
 import { site, contact, metiers, rge, rgeEnCours } from '~/data/site';
 import { lien } from '~/lib/base';
 
 const annee = 2026; // mise à jour manuelle : le site est statique, pas de JS d'horloge
+
+const finRge = new Date(rge.fin).toLocaleDateString('fr-FR', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
 ---
 
 <footer class="mt-24 bg-ardoise-800 text-ardoise-100">
@@ -118,40 +125,61 @@ const annee = 2026; // mise à jour manuelle : le site est statique, pas de JS d
     </div>
   </div>
 
+  {/* Bandeau des qualifications, à la place de la liste des métiers qui
+      recopiait la colonne juste au-dessus. Deux mentions vérifiables, chacune
+      renvoyant à sa preuve : l'attestation Qualibat et la mission statutaire.
+
+      Le logo RGE Qualibat est posé sur une pastille blanche — sa charte
+      l'impose sur fond clair, et il est lui-même sur fond blanc. Il n'a pas
+      d'équivalent en face : « société à mission » est une qualité juridique
+      (art. L210-10 du code de commerce), pas un label, et l'État ne délivre
+      aucun emblème. La mention reste donc typographique plutôt que d'imiter
+      une marque officielle qui n'existe pas. Le filet vertical apparie les
+      deux entrées à défaut d'un second logo. */}
+  <div class="border-t border-ardoise-700">
+    <div class="container-page flex flex-wrap items-center gap-x-10 gap-y-6 py-8">
+      {
+        rgeEnCours && (
+          <a class="group flex items-center gap-4" href={rge.attestation}>
+            <span class="shrink-0 rounded-md bg-white p-1.5">
+              <Image src={logoRge} alt="" width={44} densities={[1, 2]} class="w-11" />
+            </span>
+            <span class="text-xs leading-relaxed">
+              <span class="block font-display tracking-[0.16em] text-ardoise-100 uppercase">
+                Reconnu Garant de l'Environnement
+              </span>
+              <span class="block text-ardoise-300 underline-offset-4 group-hover:text-ardoise-100 group-hover:underline">
+                {rge.certificat}
+              </span>
+              <span class="block text-ardoise-400">Valable jusqu'au {finRge}</span>
+            </span>
+          </a>
+        )
+      }
+
+      <a
+        class="group flex items-center sm:border-l sm:border-ardoise-700 sm:pl-10"
+        href={`${lien('/demarche')}#mission`}
+      >
+        <span class="text-xs leading-relaxed">
+          <span class="block font-display tracking-[0.16em] text-ardoise-100 uppercase">
+            Société à mission
+          </span>
+          <span class="block text-ardoise-300 underline-offset-4 group-hover:text-ardoise-100 group-hover:underline">
+            Mission inscrite aux statuts
+          </span>
+          <span class="block text-ardoise-400">Art. L210-10 du code de commerce</span>
+        </span>
+      </a>
+    </div>
+  </div>
+
   <div class="border-t border-ardoise-700">
     <div
       class="container-page flex flex-col gap-2 py-6 text-xs text-ardoise-300 sm:flex-row sm:items-center sm:justify-between"
     >
       <p>© {annee} {site.nom}. Tous droits réservés.</p>
-
-      {/* Deux mentions vérifiables, à la place de la liste des métiers qui
-          recopiait la colonne juste au-dessus. Chacune renvoie à sa preuve :
-          l'attestation Qualibat, et la mission inscrite aux statuts. Ce sont
-          des faits opposables, pas des slogans — leur place est dans le
-          bandeau légal, avec le copyright. */}
-      <p class="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-        {
-          rgeEnCours && (
-            <>
-              <a
-                class="underline-offset-4 hover:text-ardoise-100 hover:underline"
-                href={rge.attestation}
-              >
-                {rge.certificat}
-              </a>
-              <span class="text-ardoise-500" aria-hidden="true">
-                ·
-              </span>
-            </>
-          )
-        }
-        <a
-          class="underline-offset-4 hover:text-ardoise-100 hover:underline"
-          href={`${lien('/demarche')}#mission`}
-        >
-          Société à mission
-        </a>
-      </p>
+      <p>{site.zone}</p>
     </div>
   </div>
 </footer>

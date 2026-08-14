@@ -106,6 +106,18 @@ quelconque après la date suffit à l'appliquer ; sans push, la mention resterai
 en ligne. Au renouvellement, mettre à jour `debut`, `fin`, `certificat` et
 `attestation`.
 
+Le logo `src/assets/logos/rge-qualibat.png` a été extrait de l'attestation
+Qualibat elle-même (`pdfimages`, puis normalisation du fond que la compression
+JPEG avait teinté). Il fait 144 × 175 px, ce qui suffit largement pour les
+44 px du pied de page, même en écran haute densité. La source officielle reste
+le kit de communication de l'espace client Qualibat : s'il faut un jour
+l'afficher plus grand, c'est là qu'il faut le prendre. Le droit d'usage de la
+marque est attaché à la certification — il tombe avec elle, à la même date.
+
+Il n'y a **pas** de logo en face pour « société à mission » : c'est une qualité
+juridique (art. L210-10 du code de commerce), pas un label, et l'État ne
+délivre aucun emblème. La mention du pied de page est donc typographique.
+
 Pour revérifier la qualification à la source :
 
 ```sh
