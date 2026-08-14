@@ -60,7 +60,12 @@ const aDesCoordonnees = Boolean(
               {contact.adresse && (
                 <li>
                   <span class="block text-encre/50">Atelier</span>
-                  <span class="text-encre">{contact.adresse}</span>
+                  {/* Coupée après la voie, comme au pied de page. La donnée
+                      reste sur une ligne : les mentions légales la veulent
+                      d'un tenant. */}
+                  <span class="block whitespace-pre-line text-encre">
+                    {contact.adresse.replace(/,\s*/, ',\n')}
+                  </span>
                 </li>
               )}
             </ul>
