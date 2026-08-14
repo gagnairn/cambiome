@@ -84,6 +84,9 @@ concernés plutôt que d'afficher de fausses informations.
 
 - [ ] `src/data/site.ts` → `contact.assuranceDecennale.assureur` : nom de
       l'assureur et numéro de contrat, dont la mention est obligatoire
+- [ ] `src/data/site.ts` → `societeAMission.raisonDetre` : la raison d'être
+      telle qu'elle figure aux statuts — le statut est affiché sur la page
+      Démarche, la formule elle-même manque
 - [ ] `src/data/site.ts` → `contact.web3formsCle` : clé obtenue sur
       [web3forms.com](https://web3forms.com) (saisir l'adresse de réception,
       valider le mail de confirmation, aucun compte à créer) — sans elle le
@@ -91,6 +94,26 @@ concernés plutôt que d'afficher de fausses informations.
 - [ ] Photos supplémentaires par métier (les quatre ont désormais une
       illustration, mais une seule chacun pour certains)
 - [ ] `astro.config.mjs` → `site` / `base` si un nom de domaine est acheté
+
+## Qualification RGE — à renouveler avant le 9 décembre 2026
+
+La mention « RGE Qualibat » apparaît sur la page Métiers (bloc Rénovation
+thermique), en pastille dans le pied de page et dans les mentions légales. Elle
+est pilotée par `rge` dans `src/data/site.ts`, dont les valeurs proviennent du
+registre public de l'ADEME.
+
+Passée la date `rge.fin`, les trois emplacements se masquent d'eux-mêmes :
+afficher une qualification expirée serait une allégation trompeuse. Mais le
+site est statique — **le retrait ne prend effet qu'au build suivant**. Un push
+quelconque après la date suffit à l'appliquer ; sans push, la mention resterait
+en ligne. Au renouvellement, mettre à jour `debut`, `fin`, `certificat` et
+`attestation`.
+
+Pour revérifier la qualification à la source :
+
+```sh
+curl -s "https://data.ademe.fr/data-fair/api/v1/datasets/liste-des-entreprises-rge-2/lines?siret_eq=93322608600017"
+```
 
 ## Déploiement
 

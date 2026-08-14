@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import marque from '~/assets/logos/marque-blanche.png';
-import { site, contact, metiers } from '~/data/site';
+import { site, contact, metiers, rge, rgeEnCours } from '~/data/site';
 import { lien } from '~/lib/base';
 
 const annee = 2026; // mise à jour manuelle : le site est statique, pas de JS d'horloge
@@ -21,6 +21,21 @@ const annee = 2026; // mise à jour manuelle : le site est statique, pas de JS d
       <p class="mt-5 max-w-xs text-sm leading-relaxed text-ardoise-200">
         Éco-construction, charpente et rénovation thermique — {site.zone}.
       </p>
+
+      {/* Deux mentions vérifiables, pas des slogans : la première conditionne
+          les aides du client, la seconde est un statut inscrit aux statuts. */}
+      <ul class="mt-5 flex flex-wrap gap-2 text-[0.7rem] tracking-[0.14em] uppercase">
+        {
+          rgeEnCours && (
+            <li class="rounded-full border border-ardoise-600 px-3 py-1 text-ardoise-200">
+              RGE {rge.organisme}
+            </li>
+          )
+        }
+        <li class="rounded-full border border-ardoise-600 px-3 py-1 text-ardoise-200">
+          Société à mission
+        </li>
+      </ul>
     </div>
 
     <div>

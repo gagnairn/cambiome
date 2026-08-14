@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
 import TitreSection from '~/components/TitreSection.astro';
 import AppelContact from '~/components/AppelContact.astro';
+import Rge from '~/components/Rge.astro';
 import { metiers } from '~/data/site';
 import { realisations } from '~/data/realisations';
 
@@ -102,6 +103,10 @@ const illustrations = new Map(
                   </li>
                 ))}
               </ul>
+
+              {/* Le RGE ne concerne que l'isolation : il n'a rien à faire sous
+                  la charpente ou la zinguerie, où il n'ouvre aucun droit. */}
+              {m.slug === 'renovation-thermique' && <Rge />}
             </div>
           </div>
         </section>

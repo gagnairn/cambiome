@@ -1,7 +1,7 @@
 ---
 import Base from '~/layouts/Base.astro';
 import TitreSection from '~/components/TitreSection.astro';
-import { site, contact, hebergeur } from '~/data/site';
+import { site, contact, hebergeur, rge, rgeEnCours } from '~/data/site';
 
 const aRemplir = (v: string) => v || '⚠ à compléter';
 
@@ -60,8 +60,22 @@ const formeEtCapital = contact.capital
           <li>
             Directeur de la publication : {aRemplir(contact.directeurPublication)}
           </li>
+          <li>Statut : société à mission (art. L210-10 du code de commerce)</li>
         </ul>
       </div>
+
+      {
+        rgeEnCours && (
+          <div>
+            <h2 class="text-xl text-encre">Qualification professionnelle</h2>
+            <p class="mt-4">
+              {rge.certificat}, délivré par {rge.organisme} et valable jusqu'au{' '}
+              {rge.fin.split('-').reverse().join('/')}. Qualification « Reconnu
+              Garant de l'Environnement » portant sur : {rge.domaines.join(', ')}.
+            </p>
+          </div>
+        )
+      }
 
       <div>
         <h2 class="text-xl text-encre">Assurance professionnelle</h2>

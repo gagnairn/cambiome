@@ -61,6 +61,48 @@ export const contact = {
 } as const;
 
 /**
+ * Qualification RGE « Reconnu Garant de l'Environnement ».
+ *
+ * C'est elle qui ouvre à vos clients MaPrimeRénov' et les CEE : sans RGE, pas
+ * d'aide, quelle que soit la qualité du chantier. Les valeurs ci-dessous sont
+ * celles du registre public de l'ADEME (jeu de données « liste des entreprises
+ * RGE » sur data.ademe.fr), pas une déclaration interne.
+ *
+ * ⚠ La qualification expire. Passée `fin`, l'afficher serait trompeur : les
+ * composants la masquent alors d'eux-mêmes (voir `rgeEnCours` ci-dessous).
+ * Comme le site est statique, ce retrait ne prend effet qu'au build suivant —
+ * il faut donc renouveler auprès de Qualibat, pas seulement laisser expirer.
+ */
+export const rge = {
+  organisme: 'Qualibat',
+  certificat: 'QUALIBAT-RGE n° 207847',
+  attestation:
+    'https://www.qualibat.com/Views/GetFichier.aspx?fn=2025%5CD38-Certificat-207847-E207847-1-20251003-RGEAnnexe.pdf',
+  debut: '2024-12-10',
+  fin: '2026-12-09',
+  domaines: [
+    "Isolation par l'intérieur des murs, rampants de toitures ou plafonds",
+    "Isolation des murs par l'extérieur",
+    "Isolation des toitures terrasses ou des toitures par l'extérieur",
+    'Fenêtres de toit',
+  ],
+} as const;
+
+/** Évalué au build : le site est statique, la date est celle de la génération. */
+export const rgeEnCours = new Date().toISOString().slice(0, 10) <= rge.fin;
+
+/**
+ * Société à mission (art. L210-10 du code de commerce) : statut déclaré au
+ * RNE, vérifiable sur annuaire-entreprises.data.gouv.fr. Ce n'est pas un label
+ * marketing — il engage la société sur des objectifs inscrits aux statuts.
+ */
+export const societeAMission = {
+  // TODO renseigner la raison d'être telle qu'elle figure aux statuts. Tant
+  // qu'elle est vide, la page indique le statut sans en inventer le contenu.
+  raisonDetre: '' as string,
+} as const;
+
+/**
  * Hébergeur du site — nom, adresse et téléphone sont exigés par l'art. 6-III
  * de la LCEN, et la mention doit désigner l'hébergeur *réel du moment*.
  *
