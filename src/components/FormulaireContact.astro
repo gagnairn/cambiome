@@ -17,6 +17,14 @@ const ENDPOINT = 'https://api.web3forms.com/submit';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const urlMerci = new URL(`${base}/merci`, Astro.site).href;
 
+// Message d'échec : on n'oriente vers un moyen de contact direct que s'il est
+// effectivement renseigné dans `site.ts`.
+const messageErreur = contact.email
+  ? `L'envoi a échoué. Réessayez dans un instant, ou écrivez-nous directement à ${contact.email}.`
+  : contact.telephone
+    ? `L'envoi a échoué. Réessayez dans un instant, ou appelez-nous au ${contact.telephone}.`
+    : "L'envoi a échoué. Réessayez dans un instant.";
+
 const champ =
   'mt-2 w-full rounded-md border border-sable-300 bg-white px-4 py-3 text-sm placeholder:text-encre/35 focus:border-ardoise-500';
 const label = 'block text-sm text-encre/80';
@@ -40,7 +48,12 @@ const label = 'block text-sm text-encre/80';
         </p>
       </div>
 
-      <form id="contact-formulaire" action={ENDPOINT} method="POST">
+      <form
+        id="contact-formulaire"
+        action={ENDPOINT}
+        method="POST"
+        data-message-erreur={messageErreur}
+      >
         {/* Champs de service Web3Forms */}
         <input type="hidden" name="access_key" value={contact.web3formsCle} />
         <input
@@ -135,7 +148,13 @@ const label = 'block text-sm text-encre/80';
         {/* Piège à robots Web3Forms : masqué aux humains, coché par les bots */}
         <div class="hidden" aria-hidden="true">
           <label for="botcheck">Ne pas remplir</label>
-          <input id="botcheck" name="botcheck" type="checkbox" tabindex="-1" />
+          <input
+            id="botcheck"
+            name="botcheck"
+            type="checkbox"
+            tabindex="-1"
+            autocomplete="off"
+          />
         </div>
 
         <div class="mt-8 flex gap-3">
@@ -245,7 +264,7 @@ const label = 'block text-sm text-encre/80';
       } catch (erreur) {
         console.error("Échec de l'envoi du formulaire de contact", erreur);
         annoncer(
-          "L'envoi a échoué. Réessayez dans un instant — ou écrivez-nous directement, les coordonnées sont ci-contre.",
+          formulaire.dataset.messageErreur ?? "L'envoi a échoué. Réessayez dans un instant.",
           'erreur'
         );
         if (bouton) {
