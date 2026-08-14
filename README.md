@@ -31,6 +31,7 @@ npm run dev        # http://localhost:4321/cambiome
 | `npm run build` | génère le site dans `dist/` |
 | `npm run preview` | sert `dist/` localement |
 | `npm run check` | vérification des types Astro/TypeScript (exécutée aussi en CI) |
+| `npm run verifier` | vérifie les liens internes de `dist/` — après `build` |
 | `npm run images` | régénère les icônes et l'image de partage dans `public/` |
 
 Les fichiers produits par `npm run images` (favicon `.ico`, icônes 192/512,
@@ -83,8 +84,29 @@ concernés plutôt que d'afficher de fausses informations.
 ## Déploiement
 
 Le workflow `.github/workflows/deploy.yml` construit et publie sur GitHub Pages
-à chaque push sur `main`. À activer une fois : **Settings → Pages → Source →
-GitHub Actions**.
+à chaque push sur `main`, en trois jobs :
+
+| Job | Rôle |
+| --- | --- |
+| `build` | `check` (types et props), `build`, puis `verifier` (liens internes) |
+| `deploy` | publie l'artefact sur Pages |
+| `fumee` | interroge le site publié : pages en 200, 404 servie, CSP présente |
+
+Rien à activer à la main : le job `deploy` règle lui-même la source Pages sur
+« GitHub Actions ». Sans ce réglage, GitHub lance en parallèle son constructeur
+Jekyll historique, qui échoue à chaque push sur un site Astro.
+
+Les deux dernières étapes existent parce que le reste ne suffit pas.
+`astro check` ne regarde pas les URL : le favicon a été servi en 404 pendant
+deux commits sans que rien ne devienne rouge. Et un déploiement peut réussir
+sur un artefact vide. `verifier` attrape le premier cas avant publication,
+`fumee` le second après.
+
+Le test de fumée se rejoue en local sur le site en ligne :
+
+```sh
+./scripts/fumee.sh https://gagnairn.github.io/cambiome/
+```
 
 URL par défaut : `https://gagnairn.github.io/cambiome/`
 
