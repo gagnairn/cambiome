@@ -62,9 +62,10 @@ concernés plutôt que d'afficher de fausses informations.
 
 - [ ] `src/data/site.ts` → `contact` : téléphone, email, adresse, Instagram
 - [ ] `src/data/site.ts` → `contact.siret` et `contact.assurance` (décennale)
-- [ ] `src/data/site.ts` → `contact.formulaireEndpoint` : URL d'un service de
-      formulaire (Formspree, Basin, Web3Forms) — sans quoi le formulaire de
-      contact n'est pas affiché
+- [ ] `src/data/site.ts` → `contact.web3formsCle` : clé obtenue sur
+      [web3forms.com](https://web3forms.com) (saisir l'adresse de réception,
+      valider le mail de confirmation, aucun compte à créer) — sans elle le
+      formulaire de contact n'est pas affiché
 - [ ] `src/pages/mentions-legales.astro` : forme juridique, capital, directeur
       de la publication, hébergeur — **obligatoire** (art. 6-III LCEN)
 - [ ] Photos supplémentaires par métier (la rénovation thermique n'a pas encore

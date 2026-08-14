@@ -9,9 +9,16 @@ interface Props {
   description?: string;
   /** Ajoute une classe au <main>, ex. pour un hero pleine largeur */
   mainClass?: string;
+  /** Retire la page des moteurs de recherche (ex. page de confirmation) */
+  noindex?: boolean;
 }
 
-const { titre, description = site.description, mainClass = '' } = Astro.props;
+const {
+  titre,
+  description = site.description,
+  mainClass = '',
+  noindex = false,
+} = Astro.props;
 
 const titreComplet =
   titre === 'accueil'
@@ -33,6 +40,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <title>{titreComplet}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
     <meta name="theme-color" content="#41738D" />
 

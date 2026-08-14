@@ -24,13 +24,18 @@ export const contact = {
   siret: '' as string,
   assurance: '' as string, // décennale : assureur + n° de contrat
   /**
-   * Endpoint du formulaire de contact. Le site étant statique, il faut un
-   * service tiers pour recevoir les messages (Formspree, Basin, Web3Forms…).
+   * Clé d'accès Web3Forms (https://web3forms.com) : le site est statique, il
+   * faut un service tiers pour recevoir les messages et les réexpédier par
+   * email. On obtient la clé en saisissant l'adresse de réception sur
+   * web3forms.com, puis en validant le mail de confirmation — pas de compte à
+   * créer. Cette clé est publique par conception : elle a vocation à figurer
+   * dans le HTML, il n'y a rien à cacher ici.
+   *
    * Tant que ce champ est vide, le formulaire n'est pas affiché — seuls les
    * moyens de contact directs le sont.
-   * ex. 'https://formspree.io/f/xxxxxxxx'
+   * ex. '0a1b2c3d-4e5f-6789-abcd-ef0123456789'
    */
-  formulaireEndpoint: '' as string,
+  web3formsCle: '' as string,
 } as const;
 
 export type Metier = {

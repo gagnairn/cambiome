@@ -9,7 +9,8 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://gagnairn.github.io',
   base: '/cambiome',
-  integrations: [sitemap()],
+  // La page de confirmation d'envoi n'a rien à faire dans l'index.
+  integrations: [sitemap({ filter: (page) => !page.endsWith('/merci/') })],
   vite: {
     plugins: [tailwindcss()],
   },

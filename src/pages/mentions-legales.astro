@@ -65,6 +65,17 @@ const aRemplir = (v: string) => v || '⚠ à compléter';
           d'accès, de rectification et de suppression de vos données, en écrivant
           à {aRemplir(contact.email)}.
         </p>
+        {
+          contact.web3formsCle && (
+            <p class="mt-4">
+              L'envoi du formulaire transite par Web3Forms, prestataire
+              technique qui réexpédie le message par email sans le conserver.
+              Ses serveurs sont situés hors de l'Union européenne. Si vous
+              préférez éviter cet intermédiaire, écrivez-nous directement par
+              email ou par téléphone.
+            </p>
+          )
+        }
       </div>
 
       <div>
@@ -72,8 +83,8 @@ const aRemplir = (v: string) => v || '⚠ à compléter';
         <p class="mt-4">
           Ce site ne dépose aucun cookie et n'utilise aucun outil de mesure
           d'audience. Les polices de caractères sont hébergées sur le site
-          lui-même : aucune requête n'est adressée à un service tiers lors de
-          votre visite.
+          lui-même : aucune requête n'est adressée à un service tiers lors de la
+          consultation des pages.
         </p>
       </div>
     </div>
