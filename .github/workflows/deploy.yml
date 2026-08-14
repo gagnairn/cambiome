@@ -31,7 +31,11 @@ jobs:
 
       - run: npm run build
 
+      # `enablement: true` active GitHub Pages au premier passage, sans avoir
+      # à le faire à la main dans Settings → Pages.
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
