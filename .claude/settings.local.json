@@ -30,7 +30,31 @@
       "Bash(git commit -q -m 'Corriger le chemin du favicon *)",
       "Bash(node live.mjs)",
       "Bash(kill 34962 35183)",
-      "Bash(git commit -q -m 'Contact : brancher le formulaire sur Web3Forms *)"
+      "Bash(git commit -q -m 'Contact : brancher le formulaire sur Web3Forms *)",
+      "Bash(npm audit *)",
+      "Bash(curl -skI https://gagnairn.github.io/cambiome/)",
+      "Bash(node -e ' *)",
+      "Bash(npx --yes http-server dist -p 4321 --silent)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:4321/)",
+      "Bash(kill %1)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:4321/cambiome/contact)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:4321/cambiome/contact/)",
+      "Bash(git config *)",
+      "Bash(git commit -q -m 'Adapter le message d'\\\\''échec du formulaire aux coordonnées disponibles *)",
+      "Bash(git commit -q -m 'Durcir la sécurité et préparer les en-têtes du futur hébergeur *)",
+      "Bash(node -e \"console.log\\(JSON.stringify\\(require\\('./package.json'\\).scripts,null,2\\)\\)\")",
+      "Bash(python3 *)",
+      "Bash(node *)",
+      "Bash(git rm *)",
+      "Bash(sips *)",
+      "Bash(sed -i '' \"s#^const essais = \\\\[#const essais = [['ancien', 0, 0.84, 1],#\" scripts/.essai-tmp.mjs)",
+      "Bash(sed -i '' \"s#  \\\\['f12 r.84 g3.2', 12, 0.84, 3.2\\\\], \\\\['f18 r.88 g3.2', 18, 0.88, 3.2\\\\],#  ['f40 g8', 40, 0.9, 8], ['f55 g10', 55, 0.9, 10],#\" scripts/.essai-tmp.mjs)",
+      "Bash(sed -i '' \"s#  \\\\['f24 r.88 g4', 24, 0.88, 4\\\\], \\\\['f30 r.9 g5', 30, 0.9, 5\\\\],#  ['f70 g12', 70, 0.9, 12], ['f90 g14', 90, 0.9, 14],#\" scripts/.essai-tmp.mjs)",
+      "Bash(sed -i '' \"s#  \\\\['f24 r.9 g6', 24, 0.9, 6\\\\], \\\\['f34 r.9 g6', 34, 0.9, 6\\\\],#  ['f55 g20', 55, 0.9, 20],#\" scripts/.essai-tmp.mjs)",
+      "Bash(git commit *)",
+      "Bash(git log *)",
+      "Bash(git rev-list *)",
+      "Bash(git fetch *)"
     ]
   }
 }
