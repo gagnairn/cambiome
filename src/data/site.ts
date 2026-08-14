@@ -18,11 +18,31 @@ export const site = {
 export const contact = {
   // TODO renseigner
   email: '' as string, // ex. 'contact@cambiome.fr'
-  telephone: '' as string, // ex. '+33 4 76 00 00 00'
+  telephone: '06 27 80 42 38',
   adresse: '' as string, // ex. '12 rue des Charpentiers, 38000 Grenoble'
-  instagram: '' as string, // ex. 'https://instagram.com/cambiome'
-  siret: '' as string,
-  assurance: '' as string, // décennale : assureur + n° de contrat
+  instagram: 'https://instagram.com/cambiome_charpente',
+  siret: '933 226 086 00017',
+  // Forme juridique et capital : obligatoires pour une société (art. 6-III
+  // LCEN). Le capital est celui inscrit aux statuts.
+  formeJuridique: 'SARL',
+  capital: '' as string, // TODO ex. '5 000 €'
+  // Numéro d'immatriculation au RCS : les neuf premiers chiffres du SIRET,
+  // suivis de la ville du greffe. TODO confirmer la ville d'immatriculation.
+  rcs: '' as string, // ex. 'RCS Grenoble 933 226 086'
+  // Le directeur de la publication est le représentant légal — pour une SARL,
+  // le gérant.
+  directeurPublication: '' as string, // TODO nom et prénom du gérant
+  /**
+   * Garantie décennale (obligatoire, art. L241-1 du code des assurances).
+   * `souscrite` est déclaratif ; `assureur` porte les coordonnées à afficher,
+   * que la loi impose de mentionner. Tant qu'il est vide, la page indique la
+   * garantie sans prétendre en donner les références.
+   */
+  assuranceDecennale: {
+    souscrite: true,
+    assureur: '' as string, // TODO assureur + n° de contrat
+    couverture: 'France',
+  },
   /**
    * Clé d'accès Web3Forms (https://web3forms.com) : le site est statique, il
    * faut un service tiers pour recevoir les messages et les réexpédier par
@@ -36,6 +56,23 @@ export const contact = {
    * ex. '0a1b2c3d-4e5f-6789-abcd-ef0123456789'
    */
   web3formsCle: '' as string,
+} as const;
+
+/**
+ * Hébergeur du site — nom, adresse et téléphone sont exigés par l'art. 6-III
+ * de la LCEN, et la mention doit désigner l'hébergeur *réel du moment*.
+ *
+ * Le site est aujourd'hui publié par GitHub Pages. Au basculement vers OVH,
+ * il suffit de remplacer les trois valeurs ci-dessous par le bloc commenté :
+ *
+ *   nom: 'OVH SAS',
+ *   adresse: '2 rue Kellermann, 59100 Roubaix, France',
+ *   telephone: '1007',
+ */
+export const hebergeur = {
+  nom: 'GitHub, Inc.',
+  adresse: '88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis',
+  telephone: '+1 877 448 4820',
 } as const;
 
 export type Metier = {

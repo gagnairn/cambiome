@@ -1,9 +1,26 @@
 ---
 import Base from '~/layouts/Base.astro';
 import TitreSection from '~/components/TitreSection.astro';
-import { site, contact } from '~/data/site';
+import { site, contact, hebergeur } from '~/data/site';
 
 const aRemplir = (v: string) => v || '⚠ à compléter';
+
+// Le bandeau d'avertissement ne s'affiche que s'il reste effectivement quelque
+// chose à renseigner : une alerte qui survit à sa cause finit par être lue
+// comme un élément de décor.
+const manquants = [
+  contact.email,
+  contact.adresse,
+  contact.capital,
+  contact.rcs,
+  contact.directeurPublication,
+  contact.assuranceDecennale.assureur,
+].filter((v) => !v).length;
+
+// « SARL au capital de 5 000 € », ou « SARL » seule tant que le capital manque.
+const formeEtCapital = contact.capital
+  ? `${contact.formeJuridique} au capital de ${contact.capital}`
+  : `${contact.formeJuridique} — capital social : ⚠ à compléter`;
 ---
 
 <Base
@@ -14,37 +31,49 @@ const aRemplir = (v: string) => v || '⚠ à compléter';
     <TitreSection surtitre="Informations" titre="Mentions légales" />
 
     <div class="mt-12 max-w-2xl space-y-10 text-sm leading-relaxed text-encre/75">
-      <div class="rounded-md border border-terre-200 bg-terre-50 p-5 text-terre-800">
-        <strong class="font-medium">Page à compléter avant mise en ligne.</strong>
-        Les mentions légales sont obligatoires (art. 6-III de la LCEN). Les
-        valeurs manquantes sont à renseigner dans
-        <code class="rounded bg-white px-1.5 py-0.5">src/data/site.ts</code>.
-      </div>
+      {
+        manquants > 0 && (
+          <div class="rounded-md border border-terre-200 bg-terre-50 p-5 text-terre-800">
+            <strong class="font-medium">Page à compléter avant mise en ligne.</strong>
+            Les mentions légales sont obligatoires (art. 6-III de la LCEN). Les
+            {' '}{manquants} valeurs manquantes sont à renseigner dans
+            <code class="rounded bg-white px-1.5 py-0.5">src/data/site.ts</code>.
+          </div>
+        )
+      }
 
       <div>
         <h2 class="text-xl text-encre">Éditeur du site</h2>
         <ul class="mt-4 space-y-1.5">
           <li>Dénomination : {site.nom}</li>
-          <li>Forme juridique et capital social : ⚠ à compléter</li>
+          <li>Forme juridique : {formeEtCapital}</li>
           <li>Siège social : {aRemplir(contact.adresse)}</li>
           <li>SIRET : {aRemplir(contact.siret)}</li>
+          <li>Immatriculation : {aRemplir(contact.rcs)}</li>
           <li>Téléphone : {aRemplir(contact.telephone)}</li>
           <li>Email : {aRemplir(contact.email)}</li>
-          <li>Directeur de la publication : ⚠ à compléter</li>
+          <li>
+            Directeur de la publication : {aRemplir(contact.directeurPublication)}
+          </li>
         </ul>
       </div>
 
       <div>
         <h2 class="text-xl text-encre">Assurance professionnelle</h2>
         <p class="mt-4">
-          Garantie décennale : {aRemplir(contact.assurance)}. Couverture
-          géographique : France.
+          {site.nom} a souscrit une assurance de responsabilité civile
+          décennale. Couverture géographique : {contact.assuranceDecennale.couverture}.
+        </p>
+        <p class="mt-2">
+          Assureur et numéro de contrat : {aRemplir(contact.assuranceDecennale.assureur)}.
         </p>
       </div>
 
       <div>
         <h2 class="text-xl text-encre">Hébergement</h2>
-        <p class="mt-4">⚠ à compléter — nom, adresse et téléphone de l'hébergeur.</p>
+        <p class="mt-4">
+          {hebergeur.nom} — {hebergeur.adresse} — {hebergeur.telephone}.
+        </p>
       </div>
 
       <div>
@@ -62,8 +91,8 @@ const aRemplir = (v: string) => v || '⚠ à compléter';
           Les données transmises via le formulaire de contact sont utilisées
           uniquement pour répondre à votre demande et ne font l'objet d'aucune
           cession à des tiers. Conformément au RGPD, vous disposez d'un droit
-          d'accès, de rectification et de suppression de vos données, en écrivant
-          à {aRemplir(contact.email)}.
+          d'accès, de rectification et de suppression de vos données, en nous
+          contactant {contact.email ? `à ${contact.email}` : `au ${aRemplir(contact.telephone)}`}.
         </p>
         {
           contact.web3formsCle && (

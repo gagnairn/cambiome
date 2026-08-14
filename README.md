@@ -76,14 +76,16 @@ Charte relevée sur les logos du brief :
 Ces éléments manquent au brief. Tant qu'ils sont vides, le site masque les blocs
 concernés plutôt que d'afficher de fausses informations.
 
-- [ ] `src/data/site.ts` → `contact` : téléphone, email, adresse, Instagram
-- [ ] `src/data/site.ts` → `contact.siret` et `contact.assurance` (décennale)
+- [ ] `src/data/site.ts` → `contact` : email et adresse du siège
+- [ ] `src/data/site.ts` → `contact.capital`, `contact.rcs` et
+      `contact.directeurPublication` (le gérant) — **obligatoire** pour une
+      société (art. 6-III LCEN)
+- [ ] `src/data/site.ts` → `contact.assuranceDecennale.assureur` : nom de
+      l'assureur et numéro de contrat, dont la mention est obligatoire
 - [ ] `src/data/site.ts` → `contact.web3formsCle` : clé obtenue sur
       [web3forms.com](https://web3forms.com) (saisir l'adresse de réception,
       valider le mail de confirmation, aucun compte à créer) — sans elle le
       formulaire de contact n'est pas affiché
-- [ ] `src/pages/mentions-legales.astro` : forme juridique, capital, directeur
-      de la publication, hébergeur — **obligatoire** (art. 6-III LCEN)
 - [ ] Photos supplémentaires par métier (les quatre ont désormais une
       illustration, mais une seule chacun pour certains)
 - [ ] `astro.config.mjs` → `site` / `base` si un nom de domaine est acheté
@@ -136,8 +138,10 @@ Le site est entièrement statique : déployer, c'est téléverser le contenu de
 1. `astro.config.mjs` : mettre `site` à l'URL réelle et supprimer `base`.
 2. Rien à faire pour `robots.txt` ni le manifeste : ils sont générés depuis
    `site` et `base` (`src/pages/robots.txt.ts`, `src/pages/site.webmanifest.ts`).
-3. `src/pages/mentions-legales.astro` : renseigner l'hébergeur (nom, adresse,
-   téléphone) — c'est une obligation légale, et elle change avec l'hébergeur.
+3. `src/data/site.ts` → `hebergeur` : nom, adresse et téléphone du nouvel
+   hébergeur — c'est une obligation légale, et la mention doit désigner
+   l'hébergeur réel. Les coordonnées d'OVH sont déjà écrites en commentaire
+   au-dessus du bloc.
 4. `npm run build`, puis téléverser `dist/`.
 5. Vérifier que les en-têtes de sécurité sortent bien (voir ci-dessous).
 
