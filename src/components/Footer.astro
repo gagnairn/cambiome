@@ -6,12 +6,6 @@ import { site, contact, metiers, rge, rgeEnCours } from '~/data/site';
 import { lien } from '~/lib/base';
 
 const annee = 2026; // mise à jour manuelle : le site est statique, pas de JS d'horloge
-
-const finRge = new Date(rge.fin).toLocaleDateString('fr-FR', {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-});
 ---
 
 <footer class="mt-24 bg-ardoise-800 text-ardoise-100">
@@ -97,19 +91,6 @@ const finRge = new Date(rge.fin).toLocaleDateString('fr-FR', {
         }
         {contact.adresse && <li class="text-ardoise-200">{contact.adresse}</li>}
         {
-          contact.instagram && (
-            <li>
-              <a
-                class="underline-offset-4 hover:underline"
-                href={contact.instagram}
-                rel="me noopener"
-              >
-                Instagram
-              </a>
-            </li>
-          )
-        }
-        {
           !contact.telephone && !contact.email && (
             <li>
               <a class="underline-offset-4 hover:underline" href={lien('/contact')}>
@@ -148,7 +129,6 @@ const finRge = new Date(rge.fin).toLocaleDateString('fr-FR', {
               <span class="block text-ardoise-300 underline-offset-4 group-hover:text-ardoise-100 group-hover:underline">
                 {rge.certificat}
               </span>
-              <span class="block text-ardoise-400">Valable jusqu'au {finRge}</span>
             </span>
           </a>
         )
@@ -165,9 +145,29 @@ const finRge = new Date(rge.fin).toLocaleDateString('fr-FR', {
           <span class="block text-ardoise-300 underline-offset-4 group-hover:text-ardoise-100 group-hover:underline">
             Mission inscrite aux statuts
           </span>
-          <span class="block text-ardoise-400">Art. L210-10 du code de commerce</span>
         </span>
       </a>
+
+      {
+        contact.instagram && (
+          <a
+            class="group flex items-center sm:border-l sm:border-ardoise-700 sm:pl-10"
+            href={contact.instagram}
+            rel="me noopener"
+          >
+            <span class="text-xs leading-relaxed">
+              <span class="block font-display tracking-[0.16em] text-ardoise-100 uppercase">
+                Portfolio
+              </span>
+              {/* « Instagram » est écrit en toutes lettres : sans cela, on
+                  attendrait la page Réalisations plutôt qu'un site tiers. */}
+              <span class="block text-ardoise-300 underline-offset-4 group-hover:text-ardoise-100 group-hover:underline">
+                Nos chantiers sur Instagram
+              </span>
+            </span>
+          </a>
+        )
+      }
     </div>
   </div>
 
