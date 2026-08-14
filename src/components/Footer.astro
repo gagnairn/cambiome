@@ -9,9 +9,11 @@ const annee = 2026; // mise à jour manuelle : le site est statique, pas de JS d
 
 // Les entrées du bandeau partagent la même classe : colonnes de largeur égale,
 // filet de séparation sauf sur la première — y compris lorsque la qualification
-// RGE a expiré et que la mission passe en tête.
+// RGE a expiré et que la mission passe en tête. Chacune se cale ensuite dans sa
+// colonne (à gauche, au centre, à droite) pour occuper toute la largeur du pied
+// de page plutôt que de se tasser d'un côté.
 const entreeBandeau =
-  'group flex items-center gap-4 sm:border-l sm:border-ardoise-700 sm:pl-8 sm:first:border-l-0 sm:first:pl-0';
+  'group flex items-center gap-4 sm:border-l sm:border-ardoise-700 sm:first:border-l-0';
 const titreBandeau = 'block font-display tracking-[0.16em] text-ardoise-100 uppercase';
 const lienBandeau =
   'block text-ardoise-300 underline-offset-4 group-hover:text-ardoise-100 group-hover:underline';
@@ -167,7 +169,10 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
         )
       }
 
-      <a class={entreeBandeau} href={`${lien('/demarche')}#mission`}>
+      <a
+        class:list={[entreeBandeau, 'sm:justify-center sm:text-center']}
+        href={`${lien('/demarche')}#mission`}
+      >
         <span class="text-xs leading-relaxed">
           <span class={titreBandeau}>Société à mission</span>
           <span class={lienBandeau}>Mission inscrite aux statuts</span>
@@ -176,7 +181,11 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
 
       {
         contact.instagram && (
-          <a class={entreeBandeau} href={contact.instagram} rel="me noopener">
+          <a
+            class:list={[entreeBandeau, 'sm:justify-end sm:text-right']}
+            href={contact.instagram}
+            rel="me noopener"
+          >
             <span class="text-xs leading-relaxed">
               <span class={titreBandeau}>Portfolio</span>
               {/* « Instagram » est écrit en toutes lettres : sans cela, on
