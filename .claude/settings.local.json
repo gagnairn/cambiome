@@ -17,7 +17,17 @@
       "Bash(npx astro *)",
       "Bash(lsof -nP -iTCP -sTCP:LISTEN)",
       "Bash(npm init *)",
-      "Bash(node shot.mjs)"
+      "Bash(node shot.mjs)",
+      "Bash(curl -s -o /dev/null -w \"preview 4400: %{http_code}\\\\n\" http://localhost:4400/cambiome/)",
+      "Bash(curl -s -o /dev/null -w \"dev 4401:     %{http_code}\\\\n\" http://localhost:4401/cambiome/)",
+      "Bash(gh auth *)",
+      "Bash(curl -s -o /dev/null -w \"web: %{http_code}\\\\n\" https://github.com/gagnairn/cambiome)",
+      "Bash(gh api *)",
+      "Bash(git push *)",
+      "Bash(gh run *)",
+      "Bash(git add *)",
+      "Bash(git commit -q -m 'CI : laisser configure-pages activer GitHub Pages *)",
+      "Bash(git commit -q -m 'Corriger le chemin du favicon *)"
     ]
   }
 }
