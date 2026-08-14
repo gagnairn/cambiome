@@ -32,12 +32,13 @@ npm run dev        # http://localhost:4321/cambiome
 | `npm run preview` | sert `dist/` localement |
 | `npm run check` | vérification des types Astro/TypeScript (exécutée aussi en CI) |
 | `npm run verifier` | vérifie les liens internes de `dist/` — après `build` |
-| `npm run images` | régénère les icônes et l'image de partage dans `public/` |
+| `npm run images` | régénère les icônes, la marque seule et l'image de partage |
 
 Les fichiers produits par `npm run images` (favicon `.ico`, icônes 192/512,
-`apple-touch-icon`, `og-image.jpg`) sont versionnés, mais ne se retouchent pas à
-la main : on modifie le logo source ou la photo, puis on relance la commande. Le
-détail des sources est en tête de `scripts/generer-images.mjs`.
+`apple-touch-icon`, `og-image.jpg`, et les `marque-*.png` de `src/assets/logos/`)
+sont versionnés, mais ne se retouchent pas à la main : on modifie le logo source
+ou la photo, puis on relance la commande. Le détail des sources est en tête de
+`scripts/generer-images.mjs`.
 
 Toutes les icônes sont dérivées du logo (`src/assets/logos/bloc-bleu.png`), dont
 la marque est détourée automatiquement. En dessous de 96 px, ses cernes
@@ -45,6 +46,11 @@ concentriques ne tiennent plus dans les pixels disponibles : le script les fond
 en une silhouette pleine, seule forme lisible dans un onglet. Il n'y a pas de
 favicon SVG — le logo n'existe qu'en raster, et un SVG serait un redessin qui
 divergerait de la marque.
+
+L'en-tête et le pied de page n'affichent pas le logotype complet mais la marque
+seule, découpée dans `logo-noir.png` et `logo-blanc.png` : « CAMBIOME » et la
+baseline sont déjà juste à côté, en texte. Les embarquer une seconde fois dans
+une image de 44 px les rendait illisibles et rognait la marque de moitié.
 
 ## Où modifier quoi
 
@@ -54,7 +60,7 @@ src/
 │   ├── site.ts           ← coordonnées, métiers, démarche  ⟵ 90 % des modifs
 │   └── realisations.ts   ← photos de chantiers + légendes
 ├── assets/
-│   ├── logos/            ← logos fournis par CAMBIOME
+│   ├── logos/            ← logos fournis ; les `marque-*` sont générés
 │   └── realisations/     ← photos optimisées (2400 px, JPEG q82)
 ├── components/           ← Header, Footer, cartes, galerie…
 ├── layouts/Base.astro    ← <head>, métadonnées, structure de page
