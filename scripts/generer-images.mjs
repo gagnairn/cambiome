@@ -1,6 +1,6 @@
 /**
- * Génère les dérivés binaires du site : jeu d'icônes complet et image de
- * partage social.
+ * Génère les dérivés binaires du site : jeu d'icônes complet, marque seule
+ * pour l'en-tête et le pied de page, image de partage social.
  *
  *   npm run images
  *
@@ -10,8 +10,13 @@
  *
  * Sources :
  *   src/assets/logos/bloc-bleu.png                -> icônes (marque détourée)
+ *   src/assets/logos/logo-noir.png                -> marque seule, sombre
+ *   src/assets/logos/logo-blanc.png               -> marque seule, claire
  *   src/assets/logos/titre-horizontal.png         -> logotype de l'image OG
  *   src/assets/realisations/charpente-aretier.jpg -> fond de l'image OG
+ *
+ * Tout ce qui porte le préfixe `marque-` dans src/assets/logos/ sort d'ici ;
+ * le reste du dossier, ce sont les fichiers fournis par CAMBIOME.
  */
 import { writeFile } from 'node:fs/promises';
 import sharp from 'sharp';
@@ -185,6 +190,32 @@ const icones = [
 for (const [nom, donnees] of icones) {
   await writeFile(chemin(nom), donnees);
   console.log(`  public/${nom} — ${(donnees.length / 1024).toFixed(1)} ko`);
+}
+
+// --- Marque seule, pour l'en-tête et le pied de page -----------------------
+
+// `logo-noir.png` et `logo-blanc.png` sont des logotypes complets : la marque,
+// puis « CAMBIOME » et la baseline. L'en-tête et le pied de page affichent
+// déjà ces deux lignes en texte à côté de l'image — les réduire à 44 px les
+// rendait illisibles sans rien apprendre à personne, et volait à la marque la
+// moitié de la hauteur disponible.
+//
+// On ne garde donc que la marque. La zone est mesurée sur l'alpha des fichiers
+// fournis, identique dans les deux : bande de la marque en 97..377, texte en
+// dessous à partir de 420. Le carré est centré sur la marque (139..411) pour
+// qu'elle vienne remplir la boîte sans décentrement optique.
+const SEULE = { left: 135, top: 97, width: 281, height: 281 };
+
+for (const [entree, sortie] of [
+  ['logos/logo-noir.png', 'marque-noire.png'],
+  ['logos/logo-blanc.png', 'marque-blanche.png'],
+]) {
+  const donnees = await sharp(source(entree))
+    .extract(SEULE)
+    .png({ compressionLevel: 9 })
+    .toBuffer();
+  await writeFile(source(`logos/${sortie}`), donnees);
+  console.log(`  src/assets/logos/${sortie} — ${(donnees.length / 1024).toFixed(1)} ko`);
 }
 
 // --- Image de partage (Open Graph) -----------------------------------------
