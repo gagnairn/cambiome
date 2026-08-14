@@ -166,18 +166,37 @@ URL par défaut : `https://gagnairn.github.io/cambiome/`
 
 ### Passer à un domaine propre
 
-1. `astro.config.mjs` : `site: 'https://cambiome.fr'`, supprimer `base`.
+Domaine prévu : **`https://www.cambiome.fr`**.
+
+1. `astro.config.mjs` : `site: 'https://www.cambiome.fr'`, supprimer `base`.
 2. Rien à faire pour `robots.txt` ni le manifeste : ils sont générés depuis
    `site` et `base` (`src/pages/robots.txt.ts`, `src/pages/site.webmanifest.ts`).
-3. Ajouter `public/CNAME` contenant `cambiome.fr`.
+3. Ajouter `public/CNAME` contenant `www.cambiome.fr` — utile seulement tant
+   que l'hébergement reste GitHub Pages.
 4. Renseigner le domaine dans **Settings → Pages → Custom domain**.
+
+Ces deux modifications sont **solidaires** : dès que `base` disparaît, tous les
+liens du site pointent sur la racine du domaine. Tant que les pages sont
+servies depuis `gagnairn.github.io/cambiome/`, elles répondraient toutes en
+404. Il faut donc les pousser au moment de la bascule, pas avant.
+
+#### www ou domaine nu ?
+
+Un seul des deux doit être l'adresse officielle, l'autre s'y redirige en 301.
+S'ils répondent tous les deux, la même page existe à deux URL : les moteurs
+partagent le référencement entre elles, et le `<link rel="canonical">` que
+génère Astro depuis `site` en désigne une seule, ce qui contredit l'autre.
+
+`www` étant l'adresse retenue, la redirection du domaine nu vers `www` est
+préparée — commentée — dans `public/.htaccess`, à activer une fois le DNS en
+place.
 
 ### Migrer vers un hébergeur
 
 Le site est entièrement statique : déployer, c'est téléverser le contenu de
 `dist/`. Rien à installer côté serveur, ni Node ni base de données.
 
-1. `astro.config.mjs` : mettre `site` à l'URL réelle et supprimer `base`.
+1. `astro.config.mjs` : `site: 'https://www.cambiome.fr'`, supprimer `base`.
 2. Rien à faire pour `robots.txt` ni le manifeste : ils sont générés depuis
    `site` et `base` (`src/pages/robots.txt.ts`, `src/pages/site.webmanifest.ts`).
 3. `src/data/site.ts` → `hebergeur` : rien à faire si la cible est bien OVH,
@@ -251,7 +270,7 @@ ajoute déjà un en-tête, il faut y recopier cette liste.
 ### Vérifier après mise en ligne
 
 ```sh
-curl -sI https://cambiome.fr | grep -i '^\(content-security\|x-frame\|x-content\|referrer\|permissions\|cross-origin\|strict-transport\)'
+curl -sI https://www.cambiome.fr | grep -i '^\(content-security\|x-frame\|x-content\|referrer\|permissions\|cross-origin\|strict-transport\)'
 ```
 
 Un rapport complet est disponible sur

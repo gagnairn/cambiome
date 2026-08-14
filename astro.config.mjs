@@ -4,8 +4,12 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 // Adapter `site` et `base` au moment de la mise en ligne :
-//  - domaine propre (ex. https://cambiome.fr)      -> site: 'https://cambiome.fr', pas de base
-//  - GitHub Pages projet                            -> site: 'https://gagnairn.github.io', base: '/cambiome'
+//  - GitHub Pages projet  -> site: 'https://gagnairn.github.io', base: '/cambiome'  (état actuel)
+//  - domaine propre       -> site: 'https://www.cambiome.fr', supprimer `base`
+//
+// Les deux lignes changent ensemble : sans `base`, tous les liens visent la
+// racine du domaine et retournent 404 sur gagnairn.github.io/cambiome/. À ne
+// modifier qu'au moment de la bascule DNS, pas en préparation.
 export default defineConfig({
   site: 'https://gagnairn.github.io',
   base: '/cambiome',

@@ -44,6 +44,20 @@
 #   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 # </IfModule>
 
+# Domaine nu -> www. L'adresse officielle du site est www.cambiome.fr : sans
+# cette redirection, les mêmes pages répondent à deux adresses, le
+# référencement se partage entre elles et le <link rel="canonical"> généré par
+# Astro n'en désigne qu'une.
+# À DÉCOMMENTER une fois le DNS en place et le certificat valable pour les deux
+# noms — avant cela, la redirection enverrait les visiteurs sur une adresse qui
+# ne répond pas encore.
+#
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTP_HOST} ^cambiome\.fr$ [NC]
+#   RewriteRule ^ https://www.cambiome.fr%{REQUEST_URI} [L,R=301]
+# </IfModule>
+
 # Le site est statique : aucun listing de répertoire.
 <IfModule mod_autoindex.c>
   Options -Indexes
