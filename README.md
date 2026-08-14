@@ -4,7 +4,9 @@ Site vitrine de **CAMBIOME**, entreprise d'éco-construction (charpente et
 ossature bois, couverture et zinguerie, rénovation thermique, structure bois et
 menuiserie).
 
-Statique, sans JavaScript côté client, sans cookie ni appel à un service tiers.
+Statique, sans cookie ni traceur. Le seul JavaScript côté client est l'envoi du
+formulaire de contact, et il n'est pas nécessaire : sans lui, le formulaire est
+posté nativement par le navigateur.
 
 ## Stack
 
@@ -13,7 +15,7 @@ Statique, sans JavaScript côté client, sans cookie ni appel à un service tier
 | Framework | [Astro](https://astro.build) 7 — génération statique |
 | Styles | [Tailwind CSS](https://tailwindcss.com) 4 (plugin Vite) |
 | Polices | Jost + Inter, auto-hébergées via Fontsource |
-| Images | `astro:assets` — redimensionnement et conversion AVIF/WebP au build |
+| Images | `astro:assets` — redimensionnement et conversion WebP au build |
 | Déploiement | GitHub Pages via GitHub Actions |
 
 ## Démarrer
@@ -28,7 +30,13 @@ npm run dev        # http://localhost:4321/cambiome
 | `npm run dev` | serveur de développement |
 | `npm run build` | génère le site dans `dist/` |
 | `npm run preview` | sert `dist/` localement |
-| `npm run check` | vérification des types Astro/TypeScript |
+| `npm run check` | vérification des types Astro/TypeScript (exécutée aussi en CI) |
+| `npm run images` | régénère les icônes et l'image de partage dans `public/` |
+
+Les fichiers produits par `npm run images` (favicon `.ico`, icônes 192/512,
+`apple-touch-icon`, `og-image.jpg`) sont versionnés, mais ne se retouchent pas à
+la main : on modifie `public/favicon.svg` ou la photo source, puis on relance la
+commande. Le détail des sources est en tête de `scripts/generer-images.mjs`.
 
 ## Où modifier quoi
 
@@ -68,8 +76,8 @@ concernés plutôt que d'afficher de fausses informations.
       formulaire de contact n'est pas affiché
 - [ ] `src/pages/mentions-legales.astro` : forme juridique, capital, directeur
       de la publication, hébergeur — **obligatoire** (art. 6-III LCEN)
-- [ ] Photos supplémentaires par métier (la rénovation thermique n'a pas encore
-      d'illustration propre)
+- [ ] Photos supplémentaires par métier (les quatre ont désormais une
+      illustration, mais une seule chacun pour certains)
 - [ ] `astro.config.mjs` → `site` / `base` si un nom de domaine est acheté
 
 ## Déploiement
@@ -83,7 +91,8 @@ URL par défaut : `https://gagnairn.github.io/cambiome/`
 ### Passer à un domaine propre
 
 1. `astro.config.mjs` : `site: 'https://cambiome.fr'`, supprimer `base`.
-2. `public/robots.txt` : mettre à jour l'URL du sitemap.
+2. Rien à faire pour `robots.txt` ni le manifeste : ils sont générés depuis
+   `site` et `base` (`src/pages/robots.txt.ts`, `src/pages/site.webmanifest.ts`).
 3. Ajouter `public/CNAME` contenant `cambiome.fr`.
 4. Renseigner le domaine dans **Settings → Pages → Custom domain**.
 
@@ -93,7 +102,8 @@ Le site est entièrement statique : déployer, c'est téléverser le contenu de
 `dist/`. Rien à installer côté serveur, ni Node ni base de données.
 
 1. `astro.config.mjs` : mettre `site` à l'URL réelle et supprimer `base`.
-2. `public/robots.txt` : mettre à jour l'URL du sitemap.
+2. Rien à faire pour `robots.txt` ni le manifeste : ils sont générés depuis
+   `site` et `base` (`src/pages/robots.txt.ts`, `src/pages/site.webmanifest.ts`).
 3. `src/pages/mentions-legales.astro` : renseigner l'hébergeur (nom, adresse,
    téléphone) — c'est une obligation légale, et elle change avec l'hébergeur.
 4. `npm run build`, puis téléverser `dist/`.

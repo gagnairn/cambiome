@@ -2,6 +2,7 @@ import type { ImageMetadata } from 'astro';
 
 import aretier from '~/assets/realisations/charpente-aretier.jpg';
 import poutreI from '~/assets/realisations/charpente-poutre-en-i.jpg';
+import fibreDeBois from '~/assets/realisations/isolation-fibre-de-bois.jpg';
 import balcon from '~/assets/realisations/balcon-suspendu.jpg';
 import acroteres from '~/assets/realisations/habillage-acroteres.jpg';
 import solivage from '~/assets/realisations/solivage-queue-daronde.jpg';
@@ -39,6 +40,16 @@ export const realisations: Realisation[] = [
       "Extension en ossature bois : solivage en poutres en I et contreventement, avant fermeture de l'enveloppe.",
     alt: "Intérieur d'une extension en cours de construction, plafond composé de poutres en I régulières et murs en ossature bois avec panneaux de contreventement.",
     image: poutreI,
+  },
+  {
+    slug: 'isolation-fibre-de-bois',
+    titre: 'Isolation en fibre de bois',
+    metier: 'Rénovation thermique',
+    metierSlug: 'renovation-thermique',
+    legende:
+      "Doublage intérieur en panneaux de fibre de bois entre montants, freine-vapeur continu au plafond et lés adhésivés : l'étanchéité à l'air se joue à ce stade.",
+    alt: "Pièce en travaux dont les murs sont doublés de panneaux de fibre de bois entre montants de bois ; au plafond, un freine-vapeur clair aux lés adhésivés, au sol un plancher d'OSB et un panneau isolant posé à plat.",
+    image: fibreDeBois,
   },
   {
     slug: 'balcon-suspendu',

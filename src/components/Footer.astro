@@ -2,9 +2,8 @@
 import { Image } from 'astro:assets';
 import logoBlanc from '~/assets/logos/logo-blanc.png';
 import { site, contact, metiers } from '~/data/site';
+import { lien } from '~/lib/base';
 
-const base = import.meta.env.BASE_URL;
-const lien = (p: string) => `${base.replace(/\/$/, '')}${p}`;
 const annee = 2026; // mise à jour manuelle : le site est statique, pas de JS d'horloge
 ---
 

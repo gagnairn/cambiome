@@ -28,7 +28,9 @@ export default defineConfig({
         // comme en POST natif sans JavaScript (form-action).
         "connect-src 'self' https://api.web3forms.com",
         "form-action 'self' https://api.web3forms.com",
-        "img-src 'self' data:",
+        // Pas de `data:` : toutes les images sont des fichiers servis par le
+        // site. Le jour où un SVG est inliné en URI, il faudra le rajouter.
+        "img-src 'self'",
         "font-src 'self'",
         "base-uri 'none'",
         "object-src 'none'",

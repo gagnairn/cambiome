@@ -1,5 +1,6 @@
 ---
 import { contact, site } from '~/data/site';
+import { base } from '~/lib/base';
 
 /**
  * Formulaire de contact.
@@ -14,7 +15,6 @@ import { contact, site } from '~/data/site';
  */
 const ENDPOINT = 'https://api.web3forms.com/submit';
 
-const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const urlMerci = new URL(`${base}/merci`, Astro.site).href;
 
 // Message d'échec : on n'oriente vers un moyen de contact direct que s'il est
