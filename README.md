@@ -99,9 +99,12 @@ Le workflow `.github/workflows/deploy.yml` construit et publie sur GitHub Pages
 | `deploy` | publie l'artefact sur Pages |
 | `fumee` | interroge le site publié : pages en 200, 404 servie, CSP présente |
 
-Rien à activer à la main : le job `deploy` règle lui-même la source Pages sur
-« GitHub Actions ». Sans ce réglage, GitHub lance en parallèle son constructeur
-Jekyll historique, qui échoue à chaque push sur un site Astro.
+Un réglage est à faire une fois pour toutes dans **Settings → Pages → Build and
+deployment → Source**, à mettre sur **GitHub Actions**. Tant qu'il pointe sur
+une branche, GitHub lance en parallèle son constructeur Jekyll historique, qui
+échoue à chaque push sur un site Astro : un second run rouge, sans rapport avec
+le déploiement réel. Ce réglage n'est pas automatisable depuis le workflow —
+l'API demande des droits d'administration que `GITHUB_TOKEN` n'a pas.
 
 Les deux dernières étapes existent parce que le reste ne suffit pas.
 `astro check` ne regarde pas les URL : le favicon a été servi en 404 pendant

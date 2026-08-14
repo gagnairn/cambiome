@@ -49,9 +49,9 @@ echo "Pages et ressources :"
 # Liste explicite plutôt que déduite du sitemap : /merci en est volontairement
 # absent, et une page qu'on oublierait d'ajouter ici serait de toute façon
 # rattrapée par le vérificateur de liens au build.
-# À compléter avec site.webmanifest quand la route sera en ligne.
 for chemin in "" contact metiers realisations demarche mentions-legales merci \
-              robots.txt sitemap-index.xml favicon.ico apple-touch-icon.png; do
+              robots.txt sitemap-index.xml site.webmanifest \
+              favicon.ico apple-touch-icon.png; do
   code=$("${CURL[@]}" -o /dev/null -w '%{http_code}' "$BASE/$chemin")
   if [ "$code" = 200 ]; then
     echo "  ✓ /$chemin"
