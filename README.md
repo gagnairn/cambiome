@@ -84,9 +84,6 @@ concernés plutôt que d'afficher de fausses informations.
 
 - [ ] `src/data/site.ts` → `contact.assuranceDecennale.assureur` : nom de
       l'assureur et numéro de contrat, dont la mention est obligatoire
-- [ ] `src/data/site.ts` → `societeAMission.raisonDetre` : la raison d'être
-      telle qu'elle figure aux statuts — le statut est affiché sur la page
-      Démarche, la formule elle-même manque
 - [ ] `src/data/site.ts` → `contact.web3formsCle` : clé obtenue sur
       [web3forms.com](https://web3forms.com) (saisir l'adresse de réception,
       valider le mail de confirmation, aucun compte à créer) — sans elle le

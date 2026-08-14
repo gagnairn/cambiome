@@ -24,8 +24,12 @@ export const contact = {
   siret: '933 226 086 00017',
   // Forme juridique et capital : obligatoires pour une société (art. 6-III
   // LCEN). Le capital est celui inscrit aux statuts.
-  formeJuridique: 'SASU',
-  formeJuridiqueLongue: 'société par actions simplifiée unipersonnelle',
+  // Les statuts (art. 1er) retiennent « société par actions simplifiée », et
+  // l'art. 2 impose de faire figurer cette mention et le capital sur les
+  // documents destinés aux tiers — ce site en est un. « SASU » qu'affiche le
+  // RNE décrit le même objet : une SAS à associé unique. On suit les statuts.
+  formeJuridique: 'SAS',
+  formeJuridiqueLongue: 'société par actions simplifiée à associé unique',
   capital: '6 000 €',
   // Immatriculée au greffe de Grenoble le 20/09/2024.
   rcs: '933 226 086 R.C.S. Grenoble',
@@ -97,9 +101,47 @@ export const rgeEnCours = new Date().toISOString().slice(0, 10) <= rge.fin;
  * marketing — il engage la société sur des objectifs inscrits aux statuts.
  */
 export const societeAMission = {
-  // TODO renseigner la raison d'être telle qu'elle figure aux statuts. Tant
-  // qu'elle est vide, la page indique le statut sans en inventer le contenu.
-  raisonDetre: '' as string,
+  // Tout ce qui suit est repris mot pour mot de l'article 3 des statuts
+  // constitutifs du 11 septembre 2024. Ne pas reformuler : la mission d'une
+  // société à mission est opposable, le site doit dire ce que disent les
+  // statuts, pas une version arrangée.
+  promeut: [
+    "le respect de la planète et de ses territoires en privilégiant les circuits courts ainsi que les matériaux et services locaux et respectueux de l'environnement",
+    "le respect des objectifs de développement durable de l'ONU, et le cas échéant, d'objectifs plus ambitieux lorsque cela est pertinent et réaliste",
+    "les solutions techniques, scientifiques et d'ingénierie aux personnes morales, dans le respect du climat, de la biodiversité et de la société",
+  ],
+  objectifs: [
+    {
+      titre: 'Objectifs environnementaux',
+      items: [
+        "minimiser l'impact environnemental direct et indirect de l'entreprise",
+        "proposer des solutions de constructions engagées pour remplacer les matériaux issus de l'industrie pétrolière",
+        "proposer des solutions pour le neuf et la rénovation qui soient écologiquement viables et engagées pour faire face au dérèglement climatique, au respect de la biodiversité, et permettre de lutter contre les futures hausses tarifaires du prix de l'énergie",
+        'mettre en œuvre des matériaux locaux et simples qui favorisent leur recyclage',
+      ],
+    },
+    {
+      titre: 'Objectifs sociaux',
+      items: [
+        "respecter l'équilibre temps professionnel/temps personnel",
+        'favoriser la semaine de 4 jours pour les salariés',
+        'favoriser la production locale',
+        'favoriser la qualité de vie au travail',
+      ],
+    },
+    {
+      titre: 'Objectifs globaux',
+      items: [
+        "favoriser les fournisseurs et plus généralement les autres parties prenantes en accord avec les objectifs de l'entreprise",
+        "prendre en considération l'ensemble des objectifs du développement durable de l'ONU",
+        'engagement collectif autour de la mission',
+        'engagement sur un temps long de rendement',
+        'travailler avec des employés engagés',
+        'travailler avec bienveillance en interne comme en externe',
+        'apporter la meilleure prestation aux clients dans le respect des DTU, Eurocodes et avis techniques',
+      ],
+    },
+  ],
 } as const;
 
 /**
