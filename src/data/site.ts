@@ -17,7 +17,7 @@ export const site = {
 
 export const contact = {
   // TODO renseigner
-  email: '' as string, // ex. 'contact@cambiome.fr'
+  email: 'contact@cambiome.fr',
   telephone: '06 27 80 42 38',
   adresse: '' as string, // ex. '12 rue des Charpentiers, 38000 Grenoble'
   instagram: 'https://instagram.com/cambiome_charpente',
@@ -31,7 +31,7 @@ export const contact = {
   rcs: '' as string, // ex. 'RCS Grenoble 933 226 086'
   // Le directeur de la publication est le représentant légal — pour une SARL,
   // le gérant.
-  directeurPublication: '' as string, // TODO nom et prénom du gérant
+  directeurPublication: 'Nicolas Hans',
   /**
    * Garantie décennale (obligatoire, art. L241-1 du code des assurances).
    * `souscrite` est déclaratif ; `assureur` porte les coordonnées à afficher,
