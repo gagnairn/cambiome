@@ -6,6 +6,20 @@ import { site, contact, metiers, rge, rgeEnCours } from '~/data/site';
 import { lien } from '~/lib/base';
 
 const annee = 2026; // mise à jour manuelle : le site est statique, pas de JS d'horloge
+
+// Les entrées du bandeau partagent la même classe : colonnes de largeur égale,
+// filet de séparation sauf sur la première — y compris lorsque la qualification
+// RGE a expiré et que la mission passe en tête.
+const entreeBandeau =
+  'group flex items-center gap-4 sm:border-l sm:border-ardoise-700 sm:pl-8 sm:first:border-l-0 sm:first:pl-0';
+const titreBandeau = 'block font-display tracking-[0.16em] text-ardoise-100 uppercase';
+const lienBandeau =
+  'block text-ardoise-300 underline-offset-4 group-hover:text-ardoise-100 group-hover:underline';
+
+// Le nombre de colonnes suit le nombre d'entrées réellement rendues, sans quoi
+// une entrée masquée laisserait une colonne vide à droite.
+const nbEntrees = (rgeEnCours ? 1 : 0) + 1 + (contact.instagram ? 1 : 0);
+const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
 ---
 
 <footer class="mt-24 bg-ardoise-800 text-ardoise-100">
@@ -122,57 +136,52 @@ const annee = 2026; // mise à jour manuelle : le site est statique, pas de JS d
       (art. L210-10 du code de commerce), pas un label, et l'État ne délivre
       aucun emblème. La mention reste donc typographique plutôt que d'imiter
       une marque officielle qui n'existe pas. Le filet vertical apparie les
-      deux entrées à défaut d'un second logo. */}
+      deux entrées à défaut d'un second logo.
+
+      Grille plutôt que rangée flex : à trois entrées de largeurs très
+      inégales, le flex les tassait à gauche en laissant un vide à droite, et
+      la bande ne se calait plus sur les colonnes du dessus. Des colonnes
+      égales suffisent à la remettre d'aplomb. */}
   <div class="border-t border-ardoise-700">
-    <div class="container-page flex flex-wrap items-center gap-x-10 gap-y-6 py-8">
+    <div
+      class:list={[
+        'container-page grid gap-y-7 py-8 sm:gap-x-8',
+        colonnesBandeau,
+      ]}
+    >
       {
         rgeEnCours && (
-          <a class="group flex items-center gap-4" href={rge.attestation}>
+          <a class={entreeBandeau} href={rge.attestation}>
             <span class="shrink-0 rounded-md bg-white p-1.5">
               <Image src={logoRge} alt="" width={44} densities={[1, 2]} class="w-11" />
             </span>
+            {/* Titre court : sur une colonne au tiers de la largeur,
+                « Reconnu Garant de l'Environnement » passait à la ligne et
+                déséquilibrait la rangée. L'intitulé complet est sur la page
+                Métiers et aux mentions légales. */}
             <span class="text-xs leading-relaxed">
-              <span class="block font-display tracking-[0.16em] text-ardoise-100 uppercase">
-                Reconnu Garant de l'Environnement
-              </span>
-              <span class="block text-ardoise-300 underline-offset-4 group-hover:text-ardoise-100 group-hover:underline">
-                {rge.certificat}
-              </span>
+              <span class={titreBandeau}>Qualification RGE</span>
+              <span class={lienBandeau}>{rge.certificat}</span>
             </span>
           </a>
         )
       }
 
-      <a
-        class="group flex items-center sm:border-l sm:border-ardoise-700 sm:pl-10"
-        href={`${lien('/demarche')}#mission`}
-      >
+      <a class={entreeBandeau} href={`${lien('/demarche')}#mission`}>
         <span class="text-xs leading-relaxed">
-          <span class="block font-display tracking-[0.16em] text-ardoise-100 uppercase">
-            Société à mission
-          </span>
-          <span class="block text-ardoise-300 underline-offset-4 group-hover:text-ardoise-100 group-hover:underline">
-            Mission inscrite aux statuts
-          </span>
+          <span class={titreBandeau}>Société à mission</span>
+          <span class={lienBandeau}>Mission inscrite aux statuts</span>
         </span>
       </a>
 
       {
         contact.instagram && (
-          <a
-            class="group flex items-center sm:border-l sm:border-ardoise-700 sm:pl-10"
-            href={contact.instagram}
-            rel="me noopener"
-          >
+          <a class={entreeBandeau} href={contact.instagram} rel="me noopener">
             <span class="text-xs leading-relaxed">
-              <span class="block font-display tracking-[0.16em] text-ardoise-100 uppercase">
-                Portfolio
-              </span>
+              <span class={titreBandeau}>Portfolio</span>
               {/* « Instagram » est écrit en toutes lettres : sans cela, on
                   attendrait la page Réalisations plutôt qu'un site tiers. */}
-              <span class="block text-ardoise-300 underline-offset-4 group-hover:text-ardoise-100 group-hover:underline">
-                Nos chantiers sur Instagram
-              </span>
+              <span class={lienBandeau}>Nos chantiers sur Instagram</span>
             </span>
           </a>
         )
