@@ -21,21 +21,6 @@ const annee = 2026; // mise à jour manuelle : le site est statique, pas de JS d
       <p class="mt-5 max-w-xs text-sm leading-relaxed text-ardoise-200">
         Éco-construction, charpente et rénovation thermique — {site.zone}.
       </p>
-
-      {/* Deux mentions vérifiables, pas des slogans : la première conditionne
-          les aides du client, la seconde est un statut inscrit aux statuts. */}
-      <ul class="mt-5 flex flex-wrap gap-2 text-[0.7rem] tracking-[0.14em] uppercase">
-        {
-          rgeEnCours && (
-            <li class="rounded-full border border-ardoise-600 px-3 py-1 text-ardoise-200">
-              RGE {rge.organisme}
-            </li>
-          )
-        }
-        <li class="rounded-full border border-ardoise-600 px-3 py-1 text-ardoise-200">
-          Société à mission
-        </li>
-      </ul>
     </div>
 
     <div>
@@ -138,7 +123,35 @@ const annee = 2026; // mise à jour manuelle : le site est statique, pas de JS d
       class="container-page flex flex-col gap-2 py-6 text-xs text-ardoise-300 sm:flex-row sm:items-center sm:justify-between"
     >
       <p>© {annee} {site.nom}. Tous droits réservés.</p>
-      <p>Charpente · Couverture · Zinguerie · Rénovation thermique</p>
+
+      {/* Deux mentions vérifiables, à la place de la liste des métiers qui
+          recopiait la colonne juste au-dessus. Chacune renvoie à sa preuve :
+          l'attestation Qualibat, et la mission inscrite aux statuts. Ce sont
+          des faits opposables, pas des slogans — leur place est dans le
+          bandeau légal, avec le copyright. */}
+      <p class="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+        {
+          rgeEnCours && (
+            <>
+              <a
+                class="underline-offset-4 hover:text-ardoise-100 hover:underline"
+                href={rge.attestation}
+              >
+                {rge.certificat}
+              </a>
+              <span class="text-ardoise-500" aria-hidden="true">
+                ·
+              </span>
+            </>
+          )
+        }
+        <a
+          class="underline-offset-4 hover:text-ardoise-100 hover:underline"
+          href={`${lien('/demarche')}#mission`}
+        >
+          Société à mission
+        </a>
+      </p>
     </div>
   </div>
 </footer>

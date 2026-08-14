@@ -55,7 +55,14 @@
       "Bash(git log *)",
       "Bash(git rev-list *)",
       "Bash(git fetch *)",
-      "Bash(git ls-remote *)"
+      "Bash(git ls-remote *)",
+      "Bash(./scripts/fumee.sh https://gagnairn.github.io/cambiome/)",
+      "WebFetch(domain:www.instagram.com)",
+      "Bash(FUMEE_CURL_OPTS=-k ./scripts/fumee.sh https://gagnairn.github.io/cambiome/)",
+      "Bash(curl -sL -A 'Mozilla/5.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/131.0 Safari/537.36' -o /tmp/cbm/ig.html -w 'http=%{http_code} taille=%{size_download}\\\\n' 'https://www.instagram.com/cambiome_charpente/')",
+      "Bash(grep -o 'og:[a-z]*\" content=\"[^\"]\\\\{0,180\\\\}' /tmp/cbm/ig.html)",
+      "Bash(grep -o 'scontent[^\"]\\\\{0,80\\\\}' /tmp/cbm/ig.html)",
+      "Bash(timeout 90 \"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless --disable-gpu --virtual-time-budget=20000 --dump-dom 'https://www.instagram.com/cambiome_charpente/')"
     ]
   }
 }
