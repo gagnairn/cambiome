@@ -9,23 +9,121 @@
  * main, on modifie la source puis on relance.
  *
  * Sources :
- *   public/favicon.svg                            -> icônes
+ *   src/assets/logos/bloc-bleu.png                -> icônes (marque détourée)
  *   src/assets/logos/titre-horizontal.png         -> logotype de l'image OG
  *   src/assets/realisations/charpente-aretier.jpg -> fond de l'image OG
  */
-import { readFile, writeFile } from 'node:fs/promises';
+import { writeFile } from 'node:fs/promises';
 import sharp from 'sharp';
 
 const ARDOISE = '#41738d'; // --color-ardoise-500, identique au theme-color
 const PUBLIC = new URL('../public/', import.meta.url);
 const chemin = (nom) => new URL(nom, PUBLIC);
+const source = (nom) => new URL(`../src/assets/${nom}`, import.meta.url).pathname;
 
-const svg = await readFile(chemin('favicon.svg'));
+// --- Détourage de la marque ------------------------------------------------
 
-/** Rend le favicon SVG à la taille voulue. `aplati` supprime la transparence. */
-const rendre = (taille, aplati = false) => {
-  const image = sharp(svg, { density: 384 }).resize(taille, taille);
-  return (aplati ? image.flatten({ background: ARDOISE }) : image)
+// `bloc-bleu.png` est la plus haute définition disponible du logo. Le dépôt
+// n'a aucune source vectorielle : la marque est donc extraite du raster, dans
+// la zone mesurée ci-dessous (le bloc contient aussi le nom et la baseline,
+// qu'un favicon ne doit pas embarquer).
+const MARQUE = { left: 469, top: 329, width: 957, height: 987 };
+
+// Le bleu du bloc est opaque : l'alpha du PNG ne distingue pas la marque du
+// fond. On reconstruit donc l'opacité à partir de la clarté du pixel, ce qui
+// donne la marque en blanc sur transparent, réutilisable sur n'importe quel
+// fond.
+const { data: bloc, info: infoBloc } = await sharp(source('logos/bloc-bleu.png'))
+  .extract(MARQUE)
+  .raw()
+  .toBuffer({ resolveWithObject: true });
+
+const { width: LARG, height: HAUT } = infoBloc;
+const opacite = Buffer.alloc(LARG * HAUT);
+for (let p = 0; p < LARG * HAUT; p++) {
+  const i = p * infoBloc.channels;
+  const clarte = (bloc[i] * 0.2126 + bloc[i + 1] * 0.7152 + bloc[i + 2] * 0.0722 - 105) / 130;
+  opacite[p] = Math.max(0, Math.min(255, Math.round(clarte * 255)));
+}
+
+/**
+ * Dilatation morphologique : chaque pixel prend le maximum de son voisinage.
+ * Séparable, donc appliquée en deux passes (horizontale puis verticale), ce
+ * qui revient à un élément structurant carré de côté 2r+1.
+ *
+ * Un flou ne conviendrait pas : il moyenne, donc il grise les traits fins au
+ * lieu de les élargir. Le maximum, lui, préserve le blanc plein.
+ */
+const dilater = (src, r) => {
+  if (r <= 0) return src;
+  const passe = Buffer.alloc(LARG * HAUT);
+  const sortie = Buffer.alloc(LARG * HAUT);
+
+  for (let y = 0; y < HAUT; y++) {
+    const ligne = y * LARG;
+    for (let x = 0; x < LARG; x++) {
+      let max = 0;
+      const fin = Math.min(LARG - 1, x + r);
+      for (let k = Math.max(0, x - r); k <= fin; k++) if (src[ligne + k] > max) max = src[ligne + k];
+      passe[ligne + x] = max;
+    }
+  }
+  for (let x = 0; x < LARG; x++) {
+    for (let y = 0; y < HAUT; y++) {
+      let max = 0;
+      const fin = Math.min(HAUT - 1, y + r);
+      for (let k = Math.max(0, y - r); k <= fin; k++) {
+        const v = passe[k * LARG + x];
+        if (v > max) max = v;
+      }
+      sortie[y * LARG + x] = max;
+    }
+  }
+  return sortie;
+};
+
+/**
+ * Deux régimes, pas de dégradé entre les deux.
+ *
+ * Le logo compte une douzaine de cernes concentriques. À 16 px la rondelle ne
+ * mesure qu'une dizaine de pixels : aucun filtre ne peut y faire tenir douze
+ * anneaux. On dilate donc jusqu'à ce qu'ils fusionnent, et il reste la
+ * silhouette — demi-rondelle et pan de toiture — qui, elle, est lisible.
+ *
+ * Les valeurs intermédiaires sont les pires : assez dilatées pour empâter les
+ * cernes, pas assez pour les fondre, elles donnent un intérieur moucheté. D'où
+ * le seuil net : silhouette pleine en dessous de 96 px, dessin d'origine intact
+ * au-dessus, taille à laquelle les cernes se distinguent enfin.
+ */
+const SEUIL_SILHOUETTE = 96;
+const RAYON = 26;
+
+/**
+ * Rend une icône carrée : la marque blanche centrée sur le bleu de la charte.
+ * `ratio` est la part de la largeur qu'occupe la marque.
+ */
+const rendre = async (taille, ratio = 0.86) => {
+  const alpha = dilater(opacite, taille < SEUIL_SILHOUETTE ? RAYON : 0);
+  const rgba = Buffer.alloc(LARG * HAUT * 4, 255);
+  for (let p = 0; p < LARG * HAUT; p++) rgba[p * 4 + 3] = alpha[p];
+
+  const cible = Math.round(taille * ratio);
+  const dessin = await sharp(rgba, { raw: { width: LARG, height: HAUT, channels: 4 } })
+    .resize(cible, cible, { fit: 'inside' })
+    .png()
+    .toBuffer();
+  const { width, height } = await sharp(dessin).metadata();
+
+  return sharp({
+    create: { width: taille, height: taille, channels: 4, background: ARDOISE },
+  })
+    .composite([
+      {
+        input: dessin,
+        left: Math.round((taille - width) / 2),
+        top: Math.round((taille - height) / 2),
+      },
+    ])
     .png({ compressionLevel: 9 })
     .toBuffer();
 };
@@ -64,20 +162,16 @@ const construireIco = (images) => {
 
 // --- Icônes ----------------------------------------------------------------
 
-// Android « maskable » : le système rogne les bords, le motif doit tenir dans
-// les 80 % centraux. On rend plus petit, puis on complète en bleu plein.
-const marge = 51;
-const maskable = await sharp(await rendre(512 - marge * 2, true))
-  .extend({ top: marge, bottom: marge, left: marge, right: marge, background: ARDOISE })
-  .png({ compressionLevel: 9 })
-  .toBuffer();
-
+// Toutes les icônes sont à fond perdu : le bleu va bord à bord et ce sont les
+// systèmes qui arrondissent (iOS, Android). Économiser l'arrondi ici, c'est
+// autant de pixels rendus à la marque dans les petites tailles.
 const icones = [
-  // iOS ne gère pas la transparence : fond aplati, coins arrondis par le système.
-  ['apple-touch-icon.png', await rendre(180, true)],
+  ['apple-touch-icon.png', await rendre(180, 0.78)],
   ['icon-192.png', await rendre(192)],
   ['icon-512.png', await rendre(512)],
-  ['icon-maskable-512.png', maskable],
+  // Android « maskable » : le système rogne les bords, la marque doit tenir
+  // dans les 80 % centraux — d'où un ratio réduit d'autant.
+  ['icon-maskable-512.png', await rendre(512, 0.86 * 0.8)],
   [
     'favicon.ico',
     construireIco(
@@ -98,9 +192,7 @@ for (const [nom, donnees] of icones) {
 const LARGEUR = 1200;
 const HAUTEUR = 630;
 
-const fond = await sharp(
-  new URL('../src/assets/realisations/charpente-aretier.jpg', import.meta.url).pathname
-)
+const fond = await sharp(source('realisations/charpente-aretier.jpg'))
   .resize(LARGEUR, HAUTEUR, { fit: 'cover', position: 'attention' })
   .composite([
     {
@@ -122,9 +214,7 @@ const fond = await sharp(
 // alpha, recolorié en blanc.
 // `metadata()` décrirait l'image d'origine, pas la version redimensionnée : on
 // prend les dimensions sur le tampon brut effectivement produit.
-const { data: alpha, info } = await sharp(
-  new URL('../src/assets/logos/titre-horizontal.png', import.meta.url).pathname
-)
+const { data: alpha, info } = await sharp(source('logos/titre-horizontal.png'))
   .resize({ width: 620 })
   .ensureAlpha()
   .extractChannel('alpha')
