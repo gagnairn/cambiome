@@ -87,6 +87,89 @@ URL par défaut : `https://gagnairn.github.io/cambiome/`
 3. Ajouter `public/CNAME` contenant `cambiome.fr`.
 4. Renseigner le domaine dans **Settings → Pages → Custom domain**.
 
+### Migrer vers un hébergeur
+
+Le site est entièrement statique : déployer, c'est téléverser le contenu de
+`dist/`. Rien à installer côté serveur, ni Node ni base de données.
+
+1. `astro.config.mjs` : mettre `site` à l'URL réelle et supprimer `base`.
+2. `public/robots.txt` : mettre à jour l'URL du sitemap.
+3. `src/pages/mentions-legales.astro` : renseigner l'hébergeur (nom, adresse,
+   téléphone) — c'est une obligation légale, et elle change avec l'hébergeur.
+4. `npm run build`, puis téléverser `dist/`.
+5. Vérifier que les en-têtes de sécurité sortent bien (voir ci-dessous).
+
+Les en-têtes sont déjà écrits, dans deux formats livrés à la racine du site :
+
+| Hébergeur | Fichier |
+| --- | --- |
+| Netlify, Cloudflare Pages | `public/_headers` |
+| Apache — OVH, o2switch, Infomaniak… | `public/.htaccess` |
+| nginx / VPS | à recopier dans le bloc `server` (voir plus bas) |
+
+GitHub Pages les ignore tous les deux, ce qui est sans conséquence : ils
+attendent la migration.
+
+## Sécurité
+
+Ce qui est en place :
+
+- **CSP** générée par Astro (`security.csp` dans `astro.config.mjs`) et injectée
+  en `<meta>` avec le hachage de chaque script inline. Aucun `unsafe-inline`.
+  Les seules destinations externes autorisées sont celles du formulaire de
+  contact (`api.web3forms.com`).
+- **Actions GitHub épinglées sur un SHA de commit** plutôt que sur un tag
+  mutable, pour qu'un tag repointé ne puisse pas exécuter de code arbitraire
+  dans le workflow.
+- **Aucune ressource tierce au chargement** : polices auto-hébergées, pas de
+  cookie, pas de mesure d'audience.
+- **En-têtes HTTP** prêts pour la migration (`_headers`, `.htaccess`) :
+  `frame-ancestors` / `X-Frame-Options`, `nosniff`, `Referrer-Policy`,
+  `Permissions-Policy`, `Cross-Origin-Opener-Policy`, HSTS.
+
+La CSP complète n'est **pas** répétée dans les fichiers d'en-têtes. Quand une
+CSP arrive par en-tête *et* par meta, le navigateur applique l'intersection des
+deux : un en-tête `script-src 'self'` sans les hachages bloquerait les scripts
+que la meta autorise. Ces fichiers ne portent donc que `frame-ancestors`, seule
+directive que le navigateur ignore lorsqu'elle vient d'une meta. Les deux
+sources ne peuvent pas diverger.
+
+### nginx
+
+```nginx
+add_header Content-Security-Policy "frame-ancestors 'none'" always;
+add_header X-Frame-Options "DENY" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+add_header Permissions-Policy "accelerometer=(), autoplay=(), camera=(), display-capture=(), encrypted-media=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), usb=(), xr-spatial-tracking=()" always;
+add_header Cross-Origin-Opener-Policy "same-origin" always;
+# À n'activer qu'une fois le HTTPS en place sur tout le domaine.
+add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+```
+
+Attention : dans nginx, un `add_header` déclaré dans un bloc imbriqué
+(`location`) annule **tous** ceux du bloc parent. Si un `location` du fichier
+ajoute déjà un en-tête, il faut y recopier cette liste.
+
+### Restant à faire, côté comptes
+
+- [ ] **Web3Forms** : dans le tableau de bord, restreindre la clé au domaine du
+      site et activer le captcha. La clé d'accès est publique par conception —
+      elle est dans le HTML — donc c'est cette restriction, et elle seule, qui
+      empêche un tiers de s'en servir pour inonder la boîte de réception.
+- [ ] **Compte GitHub `gagnairn`** : activer l'authentification à deux facteurs.
+      Qui prend le compte prend le site.
+
+### Vérifier après mise en ligne
+
+```sh
+curl -sI https://cambiome.fr | grep -i '^\(content-security\|x-frame\|x-content\|referrer\|permissions\|cross-origin\|strict-transport\)'
+```
+
+Un rapport complet est disponible sur
+[securityheaders.com](https://securityheaders.com) et
+[observatory.mozilla.org](https://observatory.mozilla.org).
+
 ## Sources
 
 `docs/brief/` contient le mémo d'origine et les fichiers image livrés par

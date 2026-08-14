@@ -1,0 +1,40 @@
+# En-têtes de sécurité — Netlify, Cloudflare Pages, Vercel (via config), Deno Deploy.
+#
+# Ce fichier est ignoré par GitHub Pages, qui ne permet pas de configurer les
+# en-têtes HTTP. Il est déjà là pour que la migration vers un vrai hébergeur
+# n'ait rien à inventer : il suffit de déployer `dist/`.
+#
+# La politique de sécurité du contenu (CSP) N'EST PAS répétée ici. Astro la
+# génère dans une balise <meta> avec le hachage de chaque script inline (voir
+# `security.csp` dans astro.config.mjs). Quand une CSP arrive à la fois par
+# en-tête et par meta, le navigateur applique l'intersection des deux : un
+# en-tête `script-src 'self'` sans les hachages bloquerait donc les scripts que
+# la meta autorise. On ne met en en-tête que `frame-ancestors`, ignoré par le
+# navigateur lorsqu'il vient d'une meta — et donc absent de celle générée par
+# Astro. Aucune duplication, aucune dérive possible.
+
+/*
+  # Interdit l'inclusion du site dans une iframe tierce (clickjacking).
+  # `frame-ancestors` est la forme moderne, X-Frame-Options le repli pour les
+  # navigateurs anciens.
+  Content-Security-Policy: frame-ancestors 'none'
+  X-Frame-Options: DENY
+
+  # Empêche le navigateur de deviner un type MIME différent de celui annoncé.
+  X-Content-Type-Options: nosniff
+
+  # Ne transmet l'URL complète qu'aux pages du même site ; vers l'extérieur,
+  # seul le domaine part.
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Le site n'utilise aucune de ces API : on les coupe.
+  Permissions-Policy: accelerometer=(), autoplay=(), camera=(), display-capture=(), encrypted-media=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), usb=(), xr-spatial-tracking=()
+
+  # Isole le contexte de navigation des pages ouvertes depuis le site.
+  Cross-Origin-Opener-Policy: same-origin
+
+  # HTTPS obligatoire pendant deux ans, sous-domaines compris.
+  # `preload` n'est PAS activé : l'inscription sur la liste de préchargement des
+  # navigateurs est très lente à défaire. À n'ajouter qu'une fois le domaine
+  # définitivement en HTTPS partout (voir https://hstspreload.org).
+  Strict-Transport-Security: max-age=63072000; includeSubDomains
