@@ -32,5 +32,14 @@ updates:
         update-types:
           - minor
           - patch
+    # TypeScript 7 est le compilateur réécrit en Go. Il n'expose pas l'API
+    # programmatique dont `astro check` se sert, et `astro check` refuse de
+    # démarrer avec — testé, pas supposé. `@astrojs/check` déclare d'ailleurs
+    # `typescript: ^5 || ^6`. Sans cette exception, Dependabot rouvrirait tous
+    # les mois une PR qui ne peut que rougir. À retirer quand la discussion
+    # withastro/roadmap#1321 aboutit.
+    ignore:
+      - dependency-name: typescript
+        versions: ['7.x']
     commit-message:
       prefix: 'Dépendances'
