@@ -76,7 +76,10 @@
       "WebFetch(domain:web3forms.com)",
       "Bash(npx tsc *)",
       "WebFetch(domain:developers.google.com)",
-      "WebFetch(domain:gagnairn.github.io)"
+      "WebFetch(domain:gagnairn.github.io)",
+      "Bash(git branch *)",
+      "Bash(git checkout *)",
+      "Bash(git merge *)"
     ]
   }
 }
