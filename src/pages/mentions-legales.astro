@@ -15,7 +15,7 @@ const manquants = [
   contact.rcs,
   contact.tva,
   contact.directeurPublication,
-  contact.assuranceDecennale.assureur,
+  contact.assurance.assureur,
 ].filter((v) => !v).length;
 
 // « SASU au capital de 5 000 € », ou la forme seule tant que le capital manque.
@@ -79,12 +79,17 @@ const formeEtCapital = contact.capital
 
       <div>
         <h2 class="text-xl text-encre">Assurance professionnelle</h2>
+        {/* Un seul contrat porte les deux garanties, la loi n'impose de
+            mentionner que la décennale : les nommer toutes les deux évite de
+            laisser croire que la responsabilité civile n'est pas couverte. */}
         <p class="mt-4">
-          {site.nom} a souscrit une assurance de responsabilité civile
-          décennale. Couverture géographique : {contact.assuranceDecennale.couverture}.
+          {site.nom} a souscrit auprès de {aRemplir(contact.assurance.assureur)}
+          {contact.assurance.adresse && ` (${contact.assurance.adresse})`} une
+          assurance de responsabilité civile professionnelle et de garantie
+          décennale, contrat n° {aRemplir(contact.assurance.contrat)}.
         </p>
         <p class="mt-2">
-          Assureur et numéro de contrat : {aRemplir(contact.assuranceDecennale.assureur)}.
+          Couverture géographique : {contact.assurance.couverture}.
         </p>
       </div>
 

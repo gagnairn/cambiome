@@ -40,14 +40,22 @@ export const contact = {
   // le président.
   directeurPublication: 'Nicolas Hans',
   /**
-   * Garantie décennale (obligatoire, art. L241-1 du code des assurances).
-   * `souscrite` est déclaratif ; `assureur` porte les coordonnées à afficher,
-   * que la loi impose de mentionner. Tant qu'il est vide, la page indique la
-   * garantie sans prétendre en donner les références.
+   * Assurance professionnelle. Un seul contrat couvre les deux garanties : la
+   * responsabilité civile d'exploitation et la garantie décennale, cette
+   * dernière obligatoire au titre de l'art. L241-1 du code des assurances.
+   *
+   * L'art. L243-2 impose d'en mentionner les coordonnées — assureur, contrat,
+   * couverture géographique. `adresse` complète ces coordonnées ; tant qu'elle
+   * est vide la page n'affiche que le nom, ce qui reste exact.
    */
-  assuranceDecennale: {
+  assurance: {
     souscrite: true,
-    assureur: '' as string, // TODO assureur + n° de contrat
+    assureur: 'BPCE IARD',
+    contrat: '138297629 Q - MCE - 001',
+    // Siège social. À ne pas confondre avec l'adresse de résiliation du
+    // contrat (BP 8410, 79024 Niort Cedex 9) : celle-ci sert à écrire à
+    // l'assureur, elle n'a rien à faire dans des mentions légales.
+    adresse: 'Route de Chaban, 79180 Chauray' as string,
     couverture: 'France',
   },
   /**
