@@ -20,7 +20,7 @@ préférence locale, jamais transmise. Il disparaît avec le sélecteur (voir
 | Framework | [Astro](https://astro.build) 7 — génération statique |
 | Styles | [Tailwind CSS](https://tailwindcss.com) 4 (plugin Vite) |
 | Types | TypeScript en mode `strict` — **tenu en 6.x**, voir ci-dessous |
-| Polices | Jost + Inter, auto-hébergées via Fontsource |
+| Polices | Jost + Inter, auto-hébergées, sous-ensemblées (43,3 Ko) |
 | Images | `astro:assets` — redimensionnement et conversion WebP au build |
 | Node | 24 en CI (LTS active) ; la 26 ne passe LTS qu'en octobre 2026 |
 | Déploiement | GitHub Pages via GitHub Actions |
@@ -262,10 +262,72 @@ supprimer — utile pour voir le site tel qu'il sera livré.
 
 ## Polices
 
-Jost pour les titres, Inter pour le texte, toutes deux auto-hébergées via
-`@fontsource-variable` — aucun appel au CDN de Google, ce que la CNIL demande.
-Les deux fichiers `.woff2` sont préchargés depuis `src/layouts/Base.astro`,
-importés en `?url` pour que le nom haché par Vite ne puisse pas se périmer.
+Jost pour les titres, Inter pour le texte, toutes deux auto-hébergées —
+aucun appel au CDN de Google, ce que la CNIL demande. Les deux fichiers
+`.woff2` vivent dans `src/assets/polices/`, sont déclarés en `@font-face` en
+tête de `src/styles/global.css`, et préchargés depuis `src/layouts/Base.astro`
+en `?url` pour que le nom haché par Vite ne puisse pas se périmer.
+
+### Pourquoi des fichiers versionnés plutôt que `@fontsource-variable`
+
+Parce qu'un paquet générique ne peut pas savoir ce que ce site utilise.
+Fontsource livre le latin complet sur l'axe de graisse entier — **73,1 Ko** —
+là où le site n'écrit que du français et n'emploie que trois graisses : Jost à
+300 (titres, nom dans l'en-tête) et 400 (surtitres, baseline, numéros
+d'étape), Inter à 400 et 500.
+
+Deux réductions cumulées, donc : le répertoire de caractères, et surtout l'axe
+de graisse — une police variable transporte les déformations de tout son axe,
+et c'est là qu'est le gros du poids. **43,3 Ko au total, soit 41 % de moins.**
+
+Inter conserve pourtant 400–700, pour 1,7 Ko de plus. Hors intervalle déclaré,
+le navigateur ne perd pas le gras, il le synthétise — vérifié dans les deux
+moteurs — mais inégalement : une même phrase gagne 2,6 px sous Chrome et
+12,6 px sous WebKit. Le texte courant est l'endroit où un `<strong>` peut
+apparaître un jour ; un titre, non. Jost s'arrête donc à 400, et c'est
+justement là qu'est l'économie (15,6 Ko contre 23,3).
+
+Ce que cela n'apporte pas, pour éviter le malentendu : **aucun gain de
+vitesse perçue.** Les polices ne sont pas sur le chemin critique — retirer les
+deux préchargements avait laissé le LCP inchangé et dégradé le décalage. Ces
+30 Ko sont du poids de page, pas du temps d'affichage.
+
+Une contrepartie à connaître : le répertoire est désormais un jeu figé, choisi
+comme sur-ensemble délibéré des 94 caractères que les neuf pages rendent
+aujourd'hui. Le contenu étant modifiable depuis le CMS, un caractère exotique
+saisi un jour sortirait du fichier. Il ne disparaîtrait pas — faute
+d'`unicode-range`, il retombe simplement sur la famille suivante de la pile,
+donc sur Arial — mais il détonnerait. Le cas échéant, ajouter son point de
+code au répertoire ci-dessous et régénérer.
+
+### Régénérer les fichiers
+
+À faire **si une police change ou si le répertoire doit s'élargir**. Deux
+étapes par police : `fonttools` restreint l'axe, `pyftsubset` découpe le
+répertoire — l'instanciation d'axe n'existe pas comme option de `pyftsubset`.
+Depuis un environnement où `fonttools` est installé (`pip install fonttools
+brotli`), avec les originaux Fontsource pour sources :
+
+```sh
+REP='U+0020-007E,U+00A0-00FF,U+0152-0153,U+0178,U+0192,U+02C6,U+02DC,U+2010-2015,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+2044,U+202F,U+2070,U+2074-2079,U+20AC,U+2116,U+2122,U+2190-2193,U+2212,U+25CF,U+FB01-FB02'
+
+fonttools varLib.instancer -q inter-latin-wght-normal.woff2 wght=400:700 -o inter.ttf
+pyftsubset inter.ttf --unicodes="$REP" --flavor=woff2 --layout-features='*' \
+  --output-file=src/assets/polices/inter-400-700.woff2
+
+fonttools varLib.instancer -q jost-latin-wght-normal.woff2 wght=300:400 -o jost.ttf
+pyftsubset jost.ttf --unicodes="$REP" --flavor=woff2 --layout-features='*' \
+  --output-file=src/assets/polices/jost-300-400.woff2
+```
+
+Si l'intervalle de graisse change, corriger aussi le `font-weight` du
+`@font-face` correspondant dans `global.css` : il doit déclarer l'intervalle
+réel du fichier, sans quoi le navigateur croit disposer de graisses absentes.
+
+Le découpage ne touche aucune largeur d'avance — 209 glyphes communs pour
+Inter, 212 pour Jost, zéro écart mesuré — donc les `size-adjust` des replis
+ci-dessous n'ont pas à être recalculés après un simple changement de
+répertoire. Après un changement de police, si.
 
 ### Les replis « Jost repli » et « Inter repli »
 

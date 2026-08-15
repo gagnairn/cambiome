@@ -13,8 +13,8 @@ import { SCRIPT_THEME } from '~/lib/theme-script';
 // `unicode-range` et ne partent jamais. Importés en `?url` pour obtenir le nom
 // haché que Vite leur donne au build : l'écrire à la main le figerait, et le
 // préchargement pointerait dans le vide au prochain build.
-import policeTexte from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
-import policeTitres from '@fontsource-variable/jost/files/jost-latin-wght-normal.woff2?url';
+import policeTexte from '~/assets/polices/inter-400-700.woff2?url';
+import policeTitres from '~/assets/polices/jost-300-400.woff2?url';
 
 interface Props {
   titre: string;
