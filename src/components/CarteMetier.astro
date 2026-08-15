@@ -2,16 +2,28 @@
 import { Image } from 'astro:assets';
 import MotifCernes from '~/components/MotifCernes.astro';
 import type { Metier } from '~/data/site';
-import { realisations } from '~/data/realisations';
+import { realisations, type Realisation } from '~/data/realisations';
 import { lien } from '~/lib/base';
 
 interface Props {
   metier: Metier;
+  /**
+   * Chantiers déjà montrés ailleurs sur la même page. La carte prend le premier
+   * de son métier qui n'y figure pas : sinon, la galerie de l'accueil et les
+   * vignettes au-dessus d'elle affichent deux fois les mêmes photos, la
+   * première entrée de la liste étant à la fois en tête de galerie et, par
+   * construction, la première de son métier.
+   */
+  evite?: Realisation[];
 }
 
-const { metier } = Astro.props;
+const { metier, evite = [] } = Astro.props;
 
-const illustration = realisations.find((r) => r.metierSlug === metier.slug);
+// Le repli sur `siens[0]` vaut pour un métier dont tous les chantiers sont déjà
+// en galerie — aujourd'hui la rénovation thermique, qui n'a qu'une photo. Mieux
+// vaut la répéter que laisser un motif abstrait à la place d'un ouvrage.
+const siens = realisations.filter((r) => r.metierSlug === metier.slug);
+const illustration = siens.find((r) => !evite.includes(r)) ?? siens[0];
 ---
 
 <a
@@ -21,9 +33,10 @@ const illustration = realisations.find((r) => r.metierSlug === metier.slug);
   {
     illustration ? (
       <div class="aspect-4/3 overflow-hidden bg-sable-100">
-        {/* `widths` : les mêmes que GalerieRealisations. Sur l'accueil, la
-            carte « Charpente » et la galerie illustrent la même photo ; avec
-            deux jeux de largeurs, le navigateur la téléchargeait deux fois.
+        {/* `widths` : les mêmes que GalerieRealisations. `evite` écarte le plus
+            souvent la photo déjà en galerie, mais pas dans le cas de repli
+            ci-dessus ; avec deux jeux de largeurs, le navigateur la
+            téléchargerait alors deux fois.
 
             `loading` : toutes en `lazy`, les cartes étant sous la ligne de
             flottaison y compris sur grand écran. Les deux premières étaient

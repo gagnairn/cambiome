@@ -13,19 +13,19 @@ chantiers:
     alt: "Intérieur d'une extension en cours de construction, plafond composé de poutres en I régulières et murs en ossature bois avec panneaux de contreventement."
     image: charpente-poutre-en-i.jpg
 
-  - titre: Isolation en fibre de bois
-    metier: Rénovation thermique
-    metierSlug: renovation-thermique
-    legende: "Doublage intérieur en panneaux de fibre de bois entre montants, freine-vapeur continu au plafond et lés adhésivés : l'étanchéité à l'air se joue à ce stade."
-    alt: "Pièce en travaux dont les murs sont doublés de panneaux de fibre de bois entre montants de bois ; au plafond, un freine-vapeur clair aux lés adhésivés, au sol un plancher d'OSB et un panneau isolant posé à plat."
-    image: isolation-fibre-de-bois.jpg
-
   - titre: Couverture à tasseaux
     metier: Couverture
     metierSlug: couverture-zinguerie
     legende: "Lucarne reprise en couverture à tasseaux lors d'une réfection de toiture, à Échirolles."
     alt: Pan de toiture neuf en zinc à tasseaux, ses baguettes régulières brillant au soleil, au milieu de toits de tuiles anciens.
     image: couverture-a-tasseaux.jpg
+
+  - titre: Isolation en fibre de bois
+    metier: Rénovation thermique
+    metierSlug: renovation-thermique
+    legende: "Doublage intérieur en panneaux de fibre de bois entre montants, freine-vapeur continu au plafond et lés adhésivés : l'étanchéité à l'air se joue à ce stade."
+    alt: "Pièce en travaux dont les murs sont doublés de panneaux de fibre de bois entre montants de bois ; au plafond, un freine-vapeur clair aux lés adhésivés, au sol un plancher d'OSB et un panneau isolant posé à plat."
+    image: isolation-fibre-de-bois.jpg
 
   - titre: Pignon de grange en mélèze
     metier: Menuiserie

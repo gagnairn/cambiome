@@ -5,10 +5,12 @@
  * CMS. Ce module le lit, le valide, et rattache chaque entrée à son fichier
  * image.
  *
- * L'ordre du fichier compte à deux endroits : la page d'accueil affiche les
- * trois premières entrées, et la page Métiers illustre chaque métier avec la
- * première réalisation qui porte son `metierSlug`. Déplacer une entrée vers le
- * haut, c'est la promouvoir.
+ * L'ordre du fichier compte à trois endroits : la page d'accueil affiche les
+ * trois premières entrées en galerie, la page Métiers illustre chaque métier
+ * avec la première réalisation qui porte son `metierSlug`, et les vignettes de
+ * l'accueil font de même en sautant celles déjà passées en galerie — sans quoi
+ * la page montrerait deux fois la même photo (voir `CarteMetier.astro`).
+ * Déplacer une entrée vers le haut, c'est la promouvoir.
  *
  * Les huit chantiers ajoutés depuis le compte Instagram de CAMBIOME
  * (couverture à tasseaux, lucarne, chéneau, pergola, chevrons porteurs,
