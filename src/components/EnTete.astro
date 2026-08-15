@@ -178,8 +178,18 @@ const actif = (href: string) => ici === href.replace(/\/$/, '');
     // première tabulation — y compris quand le focus allait vers un lien du
     // menu lui-même, qui devenait inatteignable au clavier. `relatedTarget`
     // désigne l'élément qui reçoit le focus, il est exact tout de suite.
+    //
+    // `relatedTarget` nul veut dire « le focus ne va nulle part », et il ne
+    // faut surtout PAS refermer dans ce cas. C'est ce qui arrive sur iOS à
+    // chaque fois qu'on touche un lien du menu : WebKit ne donne pas le focus
+    // aux liens au doigt, il part donc du résumé vers rien. Le menu se
+    // refermait entre le `touchend` et le `click`, le panneau disparaissait,
+    // et le clic retombait sur le `<body>` — aucun lien du menu ne
+    // fonctionnait sur iPhone ni sur iPad. Le clic à côté est déjà couvert
+    // plus haut ; ne reste ici que le vrai déplacement de focus.
     menu.addEventListener('focusout', (e) => {
       const arrivee = e.relatedTarget;
+      if (arrivee === null) return;
       if (!(arrivee instanceof Node) || !menu.contains(arrivee)) fermer();
     });
   }
