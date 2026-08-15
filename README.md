@@ -19,9 +19,19 @@ préférence locale, jamais transmise. Il disparaît avec le sélecteur (voir
 |---|---|
 | Framework | [Astro](https://astro.build) 7 — génération statique |
 | Styles | [Tailwind CSS](https://tailwindcss.com) 4 (plugin Vite) |
+| Types | TypeScript en mode `strict` — **tenu en 6.x**, voir ci-dessous |
 | Polices | Jost + Inter, auto-hébergées via Fontsource |
 | Images | `astro:assets` — redimensionnement et conversion WebP au build |
+| Node | 24 en CI (LTS active) ; la 26 ne passe LTS qu'en octobre 2026 |
 | Déploiement | GitHub Pages via GitHub Actions |
+
+**TypeScript ne doit pas passer en 7.** La 7 est le compilateur réécrit en Go ;
+il n'expose pas l'API programmatique dont `astro check` se sert, et `astro
+check` refuse alors de démarrer — constaté, pas supposé. `@astrojs/check`
+déclare d'ailleurs `typescript: ^5 || ^6`. Dependabot a l'exception en dur
+(`.github/dependabot.yml`), à retirer quand
+[withastro/roadmap#1321](https://github.com/withastro/roadmap/discussions/1321)
+aboutira.
 
 ## Démarrer
 
@@ -75,12 +85,29 @@ src/
 │   └── realisations/     ← photos optimisées (2400 px, JPEG q82)
 ├── components/           ← en-tête, pied de page, cartes, galerie…
 ├── layouts/Base.astro    ← <head>, métadonnées, structure de page
-├── lib/                  ← helpers : chemins (base.ts), typographie (texte.ts)
+├── lib/                  ← helpers : liens internes (base.ts), typographie (texte.ts)
 ├── pages/                ← une page = un fichier
 └── styles/
     ├── global.css        ← charte : couleurs, polices, utilitaires
     └── themes.css        ← pistes chromatiques alternatives (temporaire)
 ```
+
+Deux conventions, pour qu'un fichier se devine sans le chercher.
+
+**Les composants portent des noms français** — `EnTete`, `PiedDePage`,
+`CarteMetier`, `AppelContact`. Le reste du dépôt l'est déjà (données, commits,
+commentaires, guide client) ; deux composants en anglais y faisaient une
+exception sans raison.
+
+**Un lien interne s'écrit `lien('/contact')`**, jamais autrement.
+`import.meta.env.BASE_URL` vaut `/cambiome` sous GitHub Pages et `/` avec un
+domaine propre : concaténer sans normaliser le slash final donne
+`/cambiomecontact` dans un cas et `//contact` dans l'autre. Cette normalisation
+a été recopiée dans onze fichiers, sous deux formes divergentes. Elle vit
+maintenant dans `src/lib/base.ts` — et le préfixe n'y est **délibérément pas
+exporté**, pour que la règle soit tenue par le compilateur et pas par la
+mémoire de qui relit. `lien()` couvre tout : les pages, la racine (`lien('/')`)
+et les fichiers de `public/` (`lien('/favicon.ico')`).
 
 Charte relevée sur les logos du brief :
 
@@ -303,11 +330,20 @@ deux commits sans que rien ne devienne rouge. Et un déploiement peut réussir
 sur un artefact vide. `verifier` attrape le premier cas avant publication,
 `fumee` le second après.
 
+L'étape de publication porte `include-hidden-files: true`, et il ne faut pas
+l'enlever. Depuis sa v4, `upload-pages-artifact` exclut les fichiers cachés de
+l'archive. `dist/` en contient deux, tous deux venus de `public/` :
+`.nojekyll`, et `.htaccess` qui attend la migration chez un hébergeur Apache.
+Sans cette ligne ils disparaîtraient de la publication **sans qu'aucun log ne
+le signale** — le run reste vert. (`.git` et `.github` restent exclus d'office.)
+
 Les actions du workflow sont épinglées sur un SHA de commit, pas sur un tag.
 `.github/dependabot.yml` les tient à jour : Dependabot connaît la convention
 `@<sha> # <version>` et propose chaque semaine le SHA **et** le commentaire
 correspondants. Les dépendances npm suivent au mois, mineures et correctives
-groupées en une seule demande pour éviter le bruit.
+groupées en une seule demande pour éviter le bruit. Une seule exception y est
+inscrite, `typescript` en `7.x` (motif plus haut) : sans elle, Dependabot
+rouvrirait tous les mois une demande qui ne peut que rougir.
 
 Le test de fumée se rejoue en local sur le site en ligne :
 
@@ -475,3 +511,10 @@ décrivent le cadrage actuel, pas la photo publiée.
 
 `bloc-terracotta` est la variante secondaire du bloc : conservée parce qu'elle
 fait partie de la charte, mais référencée nulle part dans le site.
+
+Aucun de ces cinq logos n'est importé par un composant : ils n'apparaissent
+donc jamais dans `dist/`, et ne coûtent rien au poids du site. Quatre sont les
+sources de `npm run images` — les supprimer rendrait la commande injouable.
+`bloc-terracotta` est le seul à ne rien alimenter ; il attend la décision sur
+la couleur (voir « Thèmes »), et se supprimera avec `themes.css` si la piste
+terracotta n'est pas retenue.

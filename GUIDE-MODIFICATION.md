@@ -99,7 +99,6 @@ Chaque chantier est un bloc entre accolades :
 
 ```
   {
-    slug: 'couverture-a-tasseaux',
     titre: 'Couverture à tasseaux',
     metier: 'Couverture',
     metierSlug: 'couverture-zinguerie',
@@ -112,7 +111,7 @@ Chaque chantier est un bloc entre accolades :
 
 `titre` et `legende` sont ce que lisent vos visiteurs. `alt` décrit la photo
 pour les personnes aveugles et pour Google : il doit dire ce qu'on **voit**,
-pas répéter le titre. Les trois autres lignes (`slug`, `metierSlug`, `image`)
+pas répéter le titre. Les trois autres lignes (`metier`, `metierSlug`, `image`)
 sont de la mécanique interne, laissez-les.
 
 **L'ordre des blocs compte** : la page d'accueil affiche les trois premiers, et
