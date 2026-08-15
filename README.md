@@ -77,7 +77,7 @@ suit s'adresse à qui reprend le code.
 ```
 src/
 ├── content/              ← TOUT le contenu, en YAML  ⟵ ce qu'écrit le CMS
-│   ├── entreprise.yaml   ← coordonnées, identité légale, assurance, hébergeur
+│   ├── entreprise.yaml   ← coordonnées, atelier, identité légale, assurance, hébergeur
 │   ├── metiers.yaml      ← les quatre métiers (clé `metiers`)
 │   ├── demarche.yaml     ← les quatre piliers (clé `piliers`)
 │   ├── realisations.yaml ← les chantiers (clé `chantiers`)
@@ -517,11 +517,10 @@ n'apparaissent qu'après une soumission réelle.
 - **`robots.txt`** généré depuis `site` (`src/pages/robots.txt.ts`) : il
   autorise l'exploration et renvoie au sitemap. Le refus d'indexation se pose
   par balise et non ici — voir « L'indexation suit le même interrupteur ».
-- **JSON-LD `Organization`** dans `DonneesStructurees.astro`, alimenté par
-  `entreprise.yaml` : les coordonnées y sont les mêmes que celles du pied de
-  page, il n'y a qu'une source à corriger. Le type n'est délibérément **pas**
-  `LocalBusiness` — le fichier en donne la raison en tête, et « Les deux
-  adresses » ci-dessous dit à quelle condition en changer.
+- **JSON-LD** dans `DonneesStructurees.astro`, alimenté par `entreprise.yaml` :
+  les coordonnées y sont les mêmes que celles du pied de page, il n'y a qu'une
+  source à corriger. Le type n'est pas fixe — voir « Les deux adresses » et
+  « Le type suit les horaires » ci-dessous.
 - **Partage social** : `og:*` et `twitter:card`, image 1200×630 produite par
   `npm run images`.
 
@@ -532,8 +531,8 @@ juridique d'un côté, elle décide du référencement local de l'autre.
 
 | champ CMS | valeur | où elle paraît |
 |---|---|---|
-| **Siège social** (`adresse`) | 36 avenue Jean Jaurès, 38600 Fontaine | mentions légales, et rien d'autre |
-| **Atelier** (`atelier`) | 19 bis rue de la Liberté, 38600 Fontaine | pied de page, page Contact, JSON-LD |
+| **Coordonnées → Siège social** | 36 avenue Jean Jaurès, 38600 Fontaine | mentions légales, et rien d'autre |
+| **Atelier → Adresse** | 19 bis rue de la Liberté, 38600 Fontaine | pied de page, page Contact, JSON-LD |
 
 Le siège est immatriculé au RCS : c'est une donnée d'état civil de la société,
 que les mentions légales doivent publier et que le site ne peut pas choisir.
@@ -550,16 +549,43 @@ l'adresse et du téléphone.
 
 Le code postal est **38600**. Fontaine (Isère) n'en a pas d'autre pour une
 adresse de voirie ; un 386xx en est un CEDEX, réservé aux gros comptes. Le
-numéro et la voie ont été vérifiés dans la Base Adresse Nationale
-(`api-adresse.data.gouv.fr`) — utile avant toute saisie destinée au balisage
-structuré, où une adresse fausse coûte plus qu'une adresse absente.
+numéro, la voie et les coordonnées géographiques ont été vérifiés dans la Base
+Adresse Nationale (`api-adresse.data.gouv.fr`), qui rend le 19 bis en
+`housenumber` — une adresse existante, et non un point interpolé le long de la
+voie. À refaire avant toute saisie destinée au balisage structuré, où une
+adresse fausse coûte plus qu'une adresse absente.
 
-**Ce qui reste ouvert** : le balisage annonce `Organization` + `areaServed`,
-soit « nous intervenons dans cette zone », et non `HomeAndConstructionBusiness`
-+ `openingHours` + `geo`, soit « venez ici ». Le second vaut mieux en
-référencement local, mais suppose que l'atelier reçoive du public à des
-horaires tenus. À trancher avec le client ; tant que ce n'est pas établi, le
-premier est le seul honnête.
+### Le type suit les horaires
+
+Le JSON-LD n'annonce pas toujours la même chose, et **c'est le champ
+« Horaires d'ouverture » du CMS qui en décide** :
+
+| horaires | type déclaré | ce que le moteur comprend |
+|---|---|---|
+| vides | `Organization` + `areaServed` | « nous intervenons autour de Grenoble » |
+| renseignés | `HomeAndConstructionBusiness` + `geo` + `openingHoursSpecification` | « venez ici, à ces heures-là » |
+
+Le second vaut nettement mieux en référencement local — c'est ce qui autorise
+Google à proposer un itinéraire. Mais il n'a de sens que si quelqu'un ouvre
+effectivement la porte : un client devant une porte fermée coûte plus cher que
+le gain. D'où la bascule par la donnée plutôt que par une case à cocher —
+il n'existe aucun état où le site inviterait à venir sans dire quand, et rien
+à penser à changer ailleurs.
+
+`geo` et `openingHoursSpecification` sont conditionnés au même drapeau : ces
+propriétés appartiennent à `Place`, dont `Organization` ne descend pas, et les
+émettre hors bascule produirait un balisage invalide.
+
+Deux garde-fous sur la saisie, tous deux vérifiés en cassant volontairement le
+fichier : une heure mal écrite (`8h` au lieu de `08:00`) fait échouer le build
+avec un message qui nomme le champ, et `npm run verifier` compare les plages
+proposées par le CMS à celles que `src/lib/horaires.ts` sait traduire — une
+valeur ajoutée d'un seul côté est signalée, dans les deux sens.
+
+Pas de carte sur la page Contact : un `iframe` Google Maps rappellerait le CDN
+de Google sur chaque visite, ce que la section « Polices » explique avoir
+justement écarté. L'adresse et les horaires en texte suffisent au visiteur, et
+c'est le balisage — pas une carte — que lit le moteur.
 
 **Lighthouse annonce 66 en référencement, et c'est normal en préversion.** Un
 seul des onze contrôles échoue, `is-crawlable` : la page est délibérément en
@@ -594,6 +620,11 @@ concernés plutôt que d'afficher de fausses informations.
 - [ ] `astro.config.mjs` → passer `HEBERGEMENT` à `'production'` au moment de
       la bascule vers `www.cambiome.fr`. Un seul mot, qui commande `site`,
       `base` et l'indexation (voir « Passer à un domaine propre »)
+- [ ] **Horaires de l'atelier** dans le CMS, entrée « Entreprise » → bloc
+      « Atelier ». Tant qu'ils sont vides, le balisage reste en
+      `Organization` : le site n'invite pas à venir, et le référencement local
+      s'en tient à la zone d'intervention. Les renseigner fait la bascule à lui
+      seul (voir « Le type suit les horaires »)
 - [ ] Une fois en ligne, hors du dépôt : créer la fiche **Google Business
       Profile** — sur des requêtes de ce type, l'établissement local pèse plus
       lourd que tout le référencement technique décrit plus haut — et déposer

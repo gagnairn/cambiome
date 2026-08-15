@@ -891,8 +891,9 @@ content:
           dans les mentions légales à la fois : il n'y a qu'un endroit à
           corriger. Un champ laissé vide fait disparaître la ligne du site,
           plutôt que d'afficher un blanc — mieux vaut ne rien annoncer qu'un
-          numéro qui ne répond plus. Seule exception, les deux adresses : le
-          siège ne sert qu'aux mentions légales, l'atelier à tout le reste.
+          numéro qui ne répond plus. Seule exception, l'adresse : celle d'ici
+          est le siège social, et ne sert qu'aux mentions légales. Celle que
+          voient vos visiteurs est dans le bloc « Atelier », plus bas.
         fields:
           - name: email
             label: E-mail
@@ -908,19 +909,94 @@ content:
               le siège est une donnée juridique, il ne se corrige pas ici mais
               au greffe.
             type: string
-          - name: atelier
-            label: Atelier
-            description: >-
-              L'adresse où l'on travaille, celle qui a une porte. C'est elle
-              qui s'affiche au pied de page et sur la page Contact, et elle
-              qu'annonce le balisage lu par Google. Doit être identique, au
-              signe près, à celle de la fiche Google Business Profile — c'est
-              sur cette concordance que le moteur rapproche la fiche du site.
-              Laissée vide, c'est le siège qui s'affiche partout.
-            type: string
           - name: instagram
             label: Lien Instagram
             type: string
+
+      - name: atelier
+        label: Atelier
+        type: object
+        description: >-
+          L'établissement où l'on travaille, celui qui a une porte — à ne pas
+          confondre avec le siège social ci-dessus. C'est cette adresse qui
+          s'affiche au pied de page et sur la page Contact, et c'est elle
+          qu'annonce le balisage lu par Google.
+        fields:
+          - name: adresse
+            label: Adresse de l'atelier
+            type: string
+            description: >-
+              Doit être identique, au signe près, à celle de la fiche Google
+              Business Profile : c'est sur cette concordance que le moteur
+              rapproche la fiche du site. Laissée vide, c'est le siège social
+              qui s'affiche partout.
+          - name: latitude
+            label: Latitude
+            type: number
+            description: >-
+              Situe la porte au mètre près. Pour l'obtenir : clic droit sur le
+              point exact dans Google Maps, les deux nombres proposés en haut du
+              menu sont la latitude puis la longitude. Laisser 0 si l'on ne
+              sait pas — un 0 est traité comme absent.
+          - name: longitude
+            label: Longitude
+            type: number
+            description: Voir Latitude ci-dessus. Laisser 0 si l'on ne sait pas.
+          - name: horaires
+            label: Horaires d'ouverture
+            type: object
+            list:
+              collapsible: true
+            description: >-
+              ⚠ Ce champ ne fait pas qu'afficher une ligne. Tant qu'il est
+              vide, le site dit aux moteurs de recherche « nous intervenons
+              dans cette zone ». Dès qu'une plage y figure, il dit « venez
+              ici » : Google peut alors proposer un itinéraire vers l'atelier
+              et afficher ces horaires. Ne les renseigner que si quelqu'un
+              ouvre effectivement la porte à ces heures-là — un client devant
+              une porte fermée coûte plus cher que le gain de référencement.
+              Une ligne par plage : « lundi – vendredi 8 h – 12 h » et
+              « lundi – vendredi 14 h – 18 h » font deux lignes.
+            fields:
+              - name: jours
+                label: Jours
+                type: select
+                required: true
+                options:
+                  # Recopié de PLAGES dans src/lib/horaires.ts. Les deux listes
+                  # sont comparées par `npm run verifier` : en ajouter une ici
+                  # sans l'ajouter là-bas fait échouer le build.
+                  values:
+                    - name: lundi-vendredi
+                      label: Lundi – vendredi
+                    - name: lundi-samedi
+                      label: Lundi – samedi
+                    - name: samedi-dimanche
+                      label: Samedi – dimanche
+                    - name: lundi
+                      label: Lundi
+                    - name: mardi
+                      label: Mardi
+                    - name: mercredi
+                      label: Mercredi
+                    - name: jeudi
+                      label: Jeudi
+                    - name: vendredi
+                      label: Vendredi
+                    - name: samedi
+                      label: Samedi
+                    - name: dimanche
+                      label: Dimanche
+              - name: ouverture
+                label: Ouverture
+                type: string
+                required: true
+                description: Sur 24 heures, deux chiffres et deux points — 08:00, 14:30.
+              - name: fermeture
+                label: Fermeture
+                type: string
+                required: true
+                description: Même forme — 12:00, 18:00.
 
       - name: formulaire
         label: Formulaire de contact

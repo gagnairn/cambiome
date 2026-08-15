@@ -17,21 +17,24 @@
  * qui lisent `contact.adresse` directement : c'est le seul endroit où la loi
  * réclame le siège, et le seul où il figure.
  *
- * ⚠ Le type est `Organization`, et non `HomeAndConstructionBusiness` comme on
- * l'attendrait d'une entreprise du bâtiment. Ce dernier descend de
- * `LocalBusiness`, donc de `Place` : il décrit un établissement où l'on se
- * rend, et Google en tire une fiche avec itinéraire et horaires. CAMBIOME va
- * sur les chantiers ; annoncer « venez ici » suppose que quelqu'un ouvre la
- * porte aux horaires annoncés, et envoyer un client devant une porte fermée
- * coûte plus cher que le gain de référencement.
+ * ⚠ Le type n'est pas fixe, et c'est le point le plus important du fichier.
  *
- * L'atelier rend ce choix révisable — il a une porte, là où le siège n'en
- * avait pas. Passer en `HomeAndConstructionBusiness` demanderait d'ajouter
- * `openingHours`, et `geo` ou `hasMap` ; c'est ce qui déclenche l'itinéraire.
- * À ne faire que si l'atelier accueille effectivement du public à des horaires
- * tenus. Tant que ce n'est pas établi, `areaServed` porte seul l'ancrage
- * local : la zone d'intervention déclarée, qui est la forme juste pour une
- * entreprise itinérante.
+ * `HomeAndConstructionBusiness` descend de `LocalBusiness`, donc de `Place` :
+ * il décrit un établissement où l'on se rend, et Google en tire une fiche avec
+ * itinéraire et horaires. C'est nettement plus fort en référencement local que
+ * `Organization` — mais annoncer « venez ici » suppose que quelqu'un ouvre la
+ * porte, et envoyer un client devant une porte fermée coûte plus cher que le
+ * gain de référencement.
+ *
+ * Le type suit donc la donnée : `HomeAndConstructionBusiness` dès que
+ * l'atelier déclare des horaires, `Organization` sinon. Rien à cocher, donc
+ * rien à oublier — et surtout aucun état où le site inviterait à venir sans
+ * dire quand. Remplir les horaires dans le CMS suffit à faire la bascule ;
+ * les vider la défait.
+ *
+ * `areaServed` reste dans les deux cas : itinérante ou non, l'entreprise
+ * intervient sur une zone, et c'est ce qui porte l'ancrage local tant que le
+ * type est `Organization`.
  *
  * Le bloc est posé dans le <head> de chaque page avec le même `@id` : les
  * moteurs y voient une seule et même entité décrite plusieurs fois, pas neuf
@@ -41,8 +44,9 @@
  * numéro change. Un champ vide disparaît de la fiche — une donnée absente vaut
  * mieux qu'une donnée fausse, que les moteurs sanctionnent.
  */
-import { contact, metiers, rge, rgeEnCours, site } from '~/data/site';
+import { atelier, contact, metiers, rge, rgeEnCours, site } from '~/data/site';
 import { lien } from '~/lib/base';
+import { joursSchema } from '~/lib/horaires';
 
 const racine = new URL(lien('/'), Astro.site).href;
 
@@ -72,9 +76,21 @@ const adresse = contact.adresseVisible
     }
   : undefined;
 
+/**
+ * Une entrée par plage saisie. `dayOfWeek` prend un tableau de jours : une
+ * seule ligne couvre donc « lundi – vendredi », là où sept lignes diraient la
+ * même chose.
+ */
+const ouverture = atelier.horaires.map((h) => ({
+  '@type': 'OpeningHoursSpecification',
+  dayOfWeek: joursSchema(h.jours),
+  opens: h.ouverture,
+  closes: h.fermeture,
+}));
+
 const fiche = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
+  '@type': atelier.accueille ? 'HomeAndConstructionBusiness' : 'Organization',
   '@id': `${racine}#entreprise`,
   name: site.nom,
   description: site.description,
@@ -89,6 +105,19 @@ const fiche = {
   ...(contact.email && { email: contact.email }),
   ...(telephone && { telephone }),
   ...(adresse && { address: adresse }),
+  /* `geo` et `openingHoursSpecification` appartiennent à `Place`, dont
+     `Organization` ne descend pas : les émettre hors bascule produirait un
+     balisage invalide. Les deux sont donc conditionnés au même drapeau que le
+     type lui-même, et ne peuvent pas se retrouver seuls dans la fiche. */
+  ...(atelier.accueille &&
+    atelier.situe && {
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: atelier.latitude,
+        longitude: atelier.longitude,
+      },
+    }),
+  ...(atelier.accueille && { openingHoursSpecification: ouverture }),
   ...(contact.instagram && { sameAs: [contact.instagram] }),
   ...(contact.siret && { identifier: { '@type': 'PropertyValue', propertyID: 'SIRET', value: contact.siret } }),
   areaServed: { '@type': 'Place', name: site.zone },

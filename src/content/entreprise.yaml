@@ -9,8 +9,13 @@ coordonnees:
   email: contact@cambiome.fr
   telephone: 06 27 80 42 38
   adresse: 36 avenue Jean Jaurès, 38600 Fontaine
-  atelier: 19 bis rue de la Liberté, 38600 Fontaine
   instagram: https://instagram.com/cambiome_charpente
+
+atelier:
+  adresse: 19 bis rue de la Liberté, 38600 Fontaine
+  latitude: 45.191075
+  longitude: 5.696699
+  horaires: []
 
 formulaire:
   web3formsCle: 09814d19-063c-44f0-9652-ec94edf5091a

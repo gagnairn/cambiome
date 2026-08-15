@@ -2,9 +2,10 @@
 import Base from '~/layouts/Base.astro';
 import TitreSection from '~/components/TitreSection.astro';
 import FormulaireContact from '~/components/FormulaireContact.astro';
-import { site, contact } from '~/data/site';
+import { site, contact, atelier } from '~/data/site';
 import { pageContact } from '~/data/pages';
 import { telephoneInsecable } from '~/lib/texte';
+import { heureFrancaise, libelleJours } from '~/lib/horaires';
 
 const aDesCoordonnees = Boolean(
   contact.telephone || contact.email || contact.adresseVisible
@@ -76,6 +77,22 @@ const aDesCoordonnees = Boolean(
                   <span class="block whitespace-pre-line text-encre">
                     {contact.adresseVisible.replace(/,\s*/, ',\n')}
                   </span>
+                  {/* Les horaires ne s'affichent que s'ils existent, et c'est
+                      la même condition qui fait passer le balisage structuré
+                      en « établissement où l'on se rend ». Page et balisage
+                      disent donc toujours la même chose : sans horaires, ni
+                      l'une ni l'autre n'invite à venir. */}
+                  {atelier.accueille && (
+                    <span class="mt-2 block text-encre/70">
+                      {atelier.horaires.map((h) => (
+                        <span class="block">
+                          {libelleJours(h.jours)}, {heureFrancaise(h.ouverture)}
+                          {' – '}
+                          {heureFrancaise(h.fermeture)}
+                        </span>
+                      ))}
+                    </span>
+                  )}
                 </li>
               )}
             </ul>

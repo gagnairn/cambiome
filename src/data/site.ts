@@ -18,6 +18,7 @@
 import { z } from 'astro/zod';
 import { charger } from '~/lib/contenu';
 import { estEnCours } from '~/lib/echeance';
+import { CODES_PLAGES } from '~/lib/horaires';
 
 /** Chaîne non vide, avec un message en français plutôt que « Required ». */
 const texte = (quoi: string) =>
@@ -27,6 +28,18 @@ const texte = (quoi: string) =>
 const dateIso = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, 'La date doit être écrite AAAA-MM-JJ.');
+
+/**
+ * Heure `HH:MM` sur 24 heures. C'est la forme qu'attend schema.org, et la
+ * seule qu'on puisse comparer ; l'écriture française (« 8 h ») est produite à
+ * l'affichage par `heureFrancaise`. Le motif refuse `8:00` et `25:00` : une
+ * heure mal formée passerait sans bruit dans le balisage, où elle invalide la
+ * plage entière au lieu de sauter aux yeux sur la page.
+ */
+const heure = (quoi: string) =>
+  z
+    .string()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/, `${quoi} doit être écrite HH:MM, par exemple 08:30.`);
 
 const SchemaEntreprise = z.object({
   identite: z.object({
@@ -49,19 +62,11 @@ const SchemaEntreprise = z.object({
    * répond plus. D'où `.default('')` plutôt qu'une chaîne obligatoire : le
    * vide est une valeur de saisie légitime, pas une erreur.
    *
-   * Deux adresses, et il ne faut surtout pas les confondre :
-   *
-   * - `adresse` est le SIÈGE SOCIAL, celui immatriculé au RCS. C'est une
-   *   donnée juridique, pas un choix de rédaction : les mentions légales
-   *   doivent le publier, et lui seul. Il n'a pas à être l'endroit où l'on
-   *   travaille, ni celui où l'on reçoit.
-   * - `atelier` est l'établissement réel, celui qui a une porte. C'est lui
-   *   qu'un visiteur cherche, lui qui doit figurer sur la fiche Google, et
-   *   donc lui que le balisage structuré déclare.
-   *
-   * Tant que `atelier` est vide, le siège tient les deux rôles — c'était
-   * l'état du site avant qu'un atelier existe. Le remplir ne retire rien au
-   * siège : il reste aux mentions légales, où la loi l'attend.
+   * ⚠ `adresse` est le SIÈGE SOCIAL, celui immatriculé au RCS. C'est une
+   * donnée juridique, pas un choix de rédaction : les mentions légales
+   * doivent le publier, et lui seul. Il n'a pas à être l'endroit où l'on
+   * travaille, ni celui où l'on reçoit — voir le bloc `atelier`, qui porte
+   * l'établissement réel et s'affiche partout ailleurs.
    */
   coordonnees: z.object({
     email: z
@@ -69,11 +74,49 @@ const SchemaEntreprise = z.object({
       .default(''),
     telephone: z.string().default(''),
     adresse: z.string().default(''),
-    atelier: z.string().default(''),
     instagram: z
       .union([z.literal(''), z.url('Le lien Instagram est invalide.')])
       .default(''),
   }),
+  /**
+   * L'atelier : l'établissement réel, celui qui a une porte, par opposition au
+   * siège social ci-dessus. C'est l'adresse qu'un visiteur cherche, celle qui
+   * s'affiche au pied de page et sur la page Contact, et celle que le balisage
+   * structuré déclare aux moteurs.
+   *
+   * Le bloc entier est facultatif : tant que `adresse` y est vide, le siège
+   * reprend les deux rôles — c'était l'état du site avant qu'un atelier
+   * existe. Le remplir ne retire rien au siège, qui reste publié aux mentions
+   * légales, où la loi l'attend.
+   *
+   * `latitude` / `longitude` situent la porte au mètre près et lèvent
+   * l'ambiguïté quand une voie porte le même nom dans deux communes voisines.
+   * Elles ne se devinent pas : les valeurs du fichier viennent de la Base
+   * Adresse Nationale (api-adresse.data.gouv.fr), qui a confirmé le numéro en
+   * `housenumber`, c'est-à-dire une adresse existante et non interpolée. Zéro
+   * est traité comme absent : c'est la valeur qu'on obtient d'une saisie vide,
+   * et elle désigne un point au large du golfe de Guinée.
+   *
+   * `horaires` commande à lui seul le type déclaré dans le balisage — voir
+   * DonneesStructurees.astro. Le laisser vide n'est pas un oubli : c'est ce
+   * qui empêche le site d'annoncer « venez ici » sans dire quand.
+   */
+  atelier: z
+    .object({
+      adresse: z.string().default(''),
+      latitude: z.number().default(0),
+      longitude: z.number().default(0),
+      horaires: z
+        .array(
+          z.object({
+            jours: z.enum(CODES_PLAGES),
+            ouverture: heure("L'heure d'ouverture"),
+            fermeture: heure('L’heure de fermeture'),
+          }),
+        )
+        .default([]),
+    })
+    .default({ adresse: '', latitude: 0, longitude: 0, horaires: [] }),
   formulaire: z.object({
     /**
      * Clé d'accès Web3Forms (https://web3forms.com) : le site est statique, il
@@ -290,9 +333,25 @@ export const contact = {
    * `adresse` directement, parce qu'elles doivent publier le siège même
    * lorsqu'un atelier le masque partout ailleurs.
    */
-  adresseVisible: entreprise.coordonnees.atelier || entreprise.coordonnees.adresse,
+  adresseVisible: entreprise.atelier.adresse || entreprise.coordonnees.adresse,
   /** Vrai quand l'adresse affichée est l'atelier, qui se nomme autrement. */
-  adresseEstAtelier: Boolean(entreprise.coordonnees.atelier),
+  adresseEstAtelier: Boolean(entreprise.atelier.adresse),
+};
+
+/**
+ * L'atelier, augmenté des deux questions que lui posent les pages et le
+ * balisage : sait-on où il est, et sait-on quand il ouvre ?
+ *
+ * `accueille` est le drapeau qui commande le type déclaré dans le balisage
+ * structuré. Il est dérivé et non saisi : cocher « nous recevons » puis
+ * oublier de remplir les horaires produirait exactement la fiche qu'on veut
+ * éviter — une invitation à venir, sans dire quand. Les horaires étant seuls
+ * juges, il n'y a pas d'état incohérent possible.
+ */
+export const atelier = {
+  ...entreprise.atelier,
+  situe: entreprise.atelier.latitude !== 0 && entreprise.atelier.longitude !== 0,
+  accueille: entreprise.atelier.horaires.length > 0,
 };
 
 export const hebergeur = entreprise.hebergeur;

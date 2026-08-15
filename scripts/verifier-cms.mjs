@@ -12,9 +12,11 @@
  *     formulaire. `settings.content.merge` le préserve, mais l'éditeur croit
  *     voir tout le contenu alors qu'une partie lui est cachée.
  *
- * On contrôle aussi les valeurs de la liste déroulante des métiers : elles sont
- * recopiées à la main dans `.pages.yml`, faute de pouvoir les lire depuis
- * `metiers.yaml`. Un métier ajouté sans sa valeur ne serait pas proposé.
+ * On contrôle aussi deux listes déroulantes recopiées à la main dans
+ * `.pages.yml`, faute de pouvoir les lire depuis leur source : les métiers,
+ * pris dans `metiers.yaml`, et les plages horaires, prises dans
+ * `src/lib/horaires.ts`. Une valeur ajoutée d'un côté seulement ne serait pas
+ * proposée à la saisie, ou serait proposée sans que le site sache la traiter.
  *
  * Ce script ne juge ni les libellés ni les descriptions — seulement la
  * structure. La validité du contenu, elle, est affaire des schémas zod, au
@@ -147,6 +149,39 @@ if (!valeurs) {
   for (const valeur of valeurs)
     if (!slugs.includes(valeur))
       signaler(`realisations.metierSlug : « ${valeur} » ne correspond à aucun métier`);
+}
+
+/*
+ * Même contrôle pour les plages horaires, recopiées de `src/lib/horaires.ts`.
+ *
+ * On lit les clés dans la source plutôt que d'importer le module : c'est du
+ * TypeScript, que node n'exécute pas ici. La lecture est étroite — les clés du
+ * seul littéral `PLAGES`, à une indentation de deux espaces — et si le fichier
+ * était réécrit au point que le motif ne trouve plus rien, l'absence est
+ * signalée plutôt que passée sous silence.
+ */
+const source = readFileSync(fileURLToPath(new URL('src/lib/horaires.ts', racine)), 'utf8');
+const bloc = source.match(/export const PLAGES = \{([\s\S]*?)\n\} as const/);
+const plages = bloc ? [...bloc[1].matchAll(/^ {2}'?([a-z-]+)'?:/gm)].map((m) => m[1]) : [];
+
+const proposees = feuilles
+  .find((e) => e.name === 'entreprise')
+  ?.fields.find((c) => c.name === 'atelier')
+  ?.fields.find((c) => c.name === 'horaires')
+  ?.fields.find((c) => c.name === 'jours')
+  ?.options?.values.map((v) => v.name ?? v);
+
+if (!plages.length) {
+  signaler('horaires : le littéral PLAGES est introuvable dans src/lib/horaires.ts');
+} else if (!proposees) {
+  signaler('entreprise.atelier.horaires.jours : liste déroulante introuvable dans .pages.yml');
+} else {
+  for (const plage of plages)
+    if (!proposees.includes(plage))
+      signaler(`entreprise.atelier.horaires.jours : la plage « ${plage} » n'est pas proposée`);
+  for (const valeur of proposees)
+    if (!plages.includes(valeur))
+      signaler(`entreprise.atelier.horaires.jours : « ${valeur} » n'existe pas dans PLAGES`);
 }
 
 if (problemes.size) {
