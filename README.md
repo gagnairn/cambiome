@@ -287,10 +287,27 @@ moteurs — mais inégalement : une même phrase gagne 2,6 px sous Chrome et
 apparaître un jour ; un titre, non. Jost s'arrête donc à 400, et c'est
 justement là qu'est l'économie (15,6 Ko contre 23,3).
 
-Ce que cela n'apporte pas, pour éviter le malentendu : **aucun gain de
-vitesse perçue.** Les polices ne sont pas sur le chemin critique — retirer les
-deux préchargements avait laissé le LCP inchangé et dégradé le décalage. Ces
-30 Ko sont du poids de page, pas du temps d'affichage.
+Le gain se voit à l'affichage, mais pas là où on l'attend. Mesuré sur trois
+états successifs du dépôt, accueil bridée mobile :
+
+| | avant | + AVIF du hero | + polices réduites |
+|---|---|---|---|
+| Score performance | 91 | 94 | **95** |
+| LCP | 3,53 s | 3,15 s | **2,93 s** |
+| Premier affichage (FCP) | 1,05 s | 1,05 s | 1,05 s |
+
+Les polices valent donc **0,22 s** sur les 0,60 s gagnées. Non parce qu'elles
+seraient sur le chemin critique — elles ne le sont pas, le FCP ne bouge pas
+d'un millième et le repli métrique affiche le texte tout de suite — mais parce
+que sur un lien bridé elles se disputent la bande passante avec la photo du
+hero. Trente kilo-octets de moins à télécharger, c'est la photo qui arrive
+plus tôt.
+
+La nuance vaut d'être retenue, parce qu'un test antérieur avait conclu
+l'inverse : retirer les deux préchargements n'avait rien changé au LCP, et
+avait dégradé le décalage. C'est cohérent — le préchargement déplace le moment
+de la découverte à nombre d'octets constant, le sous-ensemble supprime des
+octets. Seul le second soulage le tuyau.
 
 Une contrepartie à connaître : le répertoire est désormais un jeu figé, choisi
 comme sur-ensemble délibéré des 94 caractères que les neuf pages rendent
