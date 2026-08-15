@@ -137,8 +137,6 @@ supprimer — utile pour voir le site tel qu'il sera livré.
 Ces éléments manquent au brief. Tant qu'ils sont vides, le site masque les blocs
 concernés plutôt que d'afficher de fausses informations.
 
-- [ ] `src/data/site.ts` → `contact.assuranceDecennale.assureur` : nom de
-      l'assureur et numéro de contrat, dont la mention est obligatoire
 - [ ] `src/data/site.ts` → `contact.web3formsCle` : clé obtenue sur
       [web3forms.com](https://web3forms.com) (saisir l'adresse de réception,
       valider le mail de confirmation, aucun compte à créer) — sans elle le
@@ -364,6 +362,16 @@ Ce qu'il reste dans `src/assets/` couvre tout ce dont le site se sert :
 - **les photos** sont des versions allégées (2400 px, JPEG q82). Les originaux,
   eux, ne sont plus que dans l'archive — pour un recadrage large ou un tirage,
   c'est là qu'il faut aller les chercher.
+
+Huit photos font exception : elles ne viennent pas du brief mais du compte
+[Instagram](https://www.instagram.com/cambiome_charpente) de CAMBIOME, dont
+elles gardent le plafond de **1080 px** au lieu de 2400. Ce sont la couverture
+à tasseaux, la structure de lucarne, la soudure de chéneau, la pergola, les
+chevrons porteurs, les consoles de chêne, le bardage mélèze et le garde-corps.
+Elles suffisent à la galerie, qui ne demande jamais plus de 1200 px, mais un
+recadrage serré ou un tirage y perdrait — si les originaux ressortent du
+téléphone, il n'y a que les fichiers de `src/assets/realisations/` à réécrire,
+les noms et les légendes ne bougent pas.
 
 `bloc-terracotta` est la variante secondaire du bloc : conservée parce qu'elle
 fait partie de la charte, mais référencée nulle part dans le site.

@@ -3,9 +3,17 @@ import type { ImageMetadata } from 'astro';
 import aretier from '~/assets/realisations/charpente-aretier.jpg';
 import poutreI from '~/assets/realisations/charpente-poutre-en-i.jpg';
 import fibreDeBois from '~/assets/realisations/isolation-fibre-de-bois.jpg';
+import tasseaux from '~/assets/realisations/couverture-a-tasseaux.jpg';
+import bardageMeleze from '~/assets/realisations/bardage-meleze-pignon.jpg';
+import lucarne from '~/assets/realisations/lucarne-structure.jpg';
+import chevronsPorteurs from '~/assets/realisations/charpente-chevrons-porteurs.jpg';
+import cheneau from '~/assets/realisations/soudure-cheneau.jpg';
+import pergola from '~/assets/realisations/pergola-bioclimatique.jpg';
 import balcon from '~/assets/realisations/balcon-suspendu.jpg';
 import acroteres from '~/assets/realisations/habillage-acroteres.jpg';
+import gardeCorps from '~/assets/realisations/garde-corps-meleze.jpg';
 import solivage from '~/assets/realisations/solivage-queue-daronde.jpg';
+import consoles from '~/assets/realisations/consoles-chene.jpg';
 import chene from '~/assets/realisations/charpente-chene.jpg';
 
 export type Realisation = {
@@ -20,6 +28,20 @@ export type Realisation = {
   image: ImageMetadata;
 };
 
+/**
+ * L'ordre compte à deux endroits : la page d'accueil affiche les trois
+ * premières, et la page Métiers illustre chaque métier avec la première
+ * réalisation qui porte son `metierSlug`. Déplacer une entrée vers le haut,
+ * c'est la promouvoir.
+ *
+ * Les huit chantiers ajoutés depuis le compte Instagram de CAMBIOME
+ * (couverture à tasseaux, lucarne, chéneau, pergola, chevrons porteurs,
+ * consoles, bardage mélèze, garde-corps) n'existent qu'en 1080 px : c'est le
+ * maximum servi par Instagram, pas les 2400 px du reste du dossier. Ils
+ * tiennent en galerie, qui ne demande jamais plus de 1200 px ; en illustration
+ * de métier, où la page monte à 1400, Astro les laisse à leur taille native.
+ * Si les originaux ressortent un jour, il suffit de réécrire les fichiers.
+ */
 export const realisations: Realisation[] = [
   {
     slug: 'charpente-aretier',
@@ -52,6 +74,65 @@ export const realisations: Realisation[] = [
     image: fibreDeBois,
   },
   {
+    slug: 'couverture-a-tasseaux',
+    titre: 'Couverture à tasseaux',
+    metier: 'Couverture',
+    metierSlug: 'couverture-zinguerie',
+    legende:
+      "Lucarne reprise en couverture à tasseaux lors d'une réfection de toiture, à deux pas de l'église d'Échirolles.",
+    alt: "Pan de toiture neuf en zinc à tasseaux, ses baguettes régulières brillant au soleil, au milieu de toits de tuiles anciens ; clocher, immeubles et montagnes à l'arrière-plan.",
+    image: tasseaux,
+  },
+  {
+    slug: 'bardage-meleze-pignon',
+    titre: 'Pignon de grange en mélèze',
+    metier: 'Menuiserie',
+    metierSlug: 'structure-bois-menuiserie',
+    legende:
+      "Pignon de grange fermé en bardage mélèze, alternant lames épaufrées et claire-voie sous la pergola. Le mélèze grise sans traitement et tient dans le temps.",
+    alt: "Pignon d'une grange rénovée vu depuis la terrasse couverte : charpente apparente en bois clair, bandeau de tasseaux verticaux en claire-voie et grandes baies vitrées reflétant la prairie.",
+    image: bardageMeleze,
+  },
+  {
+    slug: 'lucarne-structure',
+    titre: 'Structure de lucarne',
+    metier: 'Charpente',
+    metierSlug: 'charpente-ossature-bois',
+    legende:
+      "Structure d'une lucarne cintrée, levée sur une toiture en rénovation complète.",
+    alt: "Structure de lucarne en bois neuf, aux montants cintrés en arc, posée sur un toit en travaux dont le versant est couvert d'un écran de sous-toiture et de liteaux ; ville et arbres en contrebas.",
+    image: lucarne,
+  },
+  {
+    slug: 'charpente-chevrons-porteurs',
+    titre: 'Charpente à chevrons porteurs',
+    metier: 'Charpente',
+    metierSlug: 'charpente-ossature-bois',
+    legende:
+      "Charpente refaite à neuf en chevrons porteurs. La contrainte était de conserver la hauteur de latis existante pour rester dans la continuité des toitures mitoyennes : le chevron porteur réduit les chambrées sans superposer les couches.",
+    alt: "Charpente neuve en bois clair vue de l'intérieur du comble, pannes et chevrons se découpant sur un ciel bleu, murs de pierre et matériaux bâchés en contrebas.",
+    image: chevronsPorteurs,
+  },
+  {
+    slug: 'soudure-cheneau',
+    titre: 'Soudure de chéneau',
+    metier: 'Zinguerie',
+    metierSlug: 'couverture-zinguerie',
+    legende: "Chéneau soudé à l'étain en fond de noue, paré pour la pluie.",
+    alt: "Chéneau de zinc neuf longeant un versant d'ardoises, cordon de soudure à l'étain visible en travers du fond ; vallée et montagnes au loin.",
+    image: cheneau,
+  },
+  {
+    slug: 'pergola-bioclimatique',
+    titre: 'Pergola',
+    metier: 'Structure bois',
+    metierSlug: 'structure-bois-menuiserie',
+    legende:
+      "Pergola adossée en façade sud : de l'ombre portée sur la terrasse et sur les baies aux heures les plus chaudes, sans rien changer au bâti.",
+    alt: "Pergola en bois clair adossée à une maison blanche à volets rouges, ses chevrons se détachant sur un ciel de fin de journée ; lavandes et rosier au premier plan.",
+    image: pergola,
+  },
+  {
     slug: 'balcon-suspendu',
     titre: 'Balcon suspendu',
     metier: 'Structure bois',
@@ -71,6 +152,16 @@ export const realisations: Realisation[] = [
     image: acroteres,
   },
   {
+    slug: 'garde-corps-meleze',
+    titre: 'Garde-corps en mélèze',
+    metier: 'Structure bois',
+    metierSlug: 'structure-bois-menuiserie',
+    legende:
+      "Terrasse de grange équipée d'un garde-corps en mélèze de pays, dans le massif de Belledonne.",
+    alt: "Grange de pierre à flanc de pré, dont la terrasse sur pilotis de béton est bordée d'un garde-corps neuf en bois clair à barreaux verticaux ; arbres nus et ciel d'hiver.",
+    image: gardeCorps,
+  },
+  {
     slug: 'solivage-queue-daronde',
     titre: "Solivage en queue d'aronde",
     metier: 'Charpente',
@@ -79,6 +170,15 @@ export const realisations: Realisation[] = [
       "Plancher neuf assemblé en queue d'aronde dans un comble ancien, sous charpente d'origine conservée.",
     alt: "Comble ancien aux murs de pierre, solives neuves en bois clair posées au sol sous une charpente ancienne en bois sombre.",
     image: solivage,
+  },
+  {
+    slug: 'consoles-chene',
+    titre: 'Consoles de dépassée',
+    metier: 'Charpente',
+    metierSlug: 'charpente-ossature-bois',
+    legende: "Consoles de renfort de dépassée, taillées dans du chêne.",
+    alt: "Vue en contre-plongée sous l'avancée d'un toit : une console de chêne clair fraîchement taillée soutient les chevrons anciens en bois sombre, contre un mur de pierres apparentes.",
+    image: consoles,
   },
   {
     slug: 'charpente-chene',
