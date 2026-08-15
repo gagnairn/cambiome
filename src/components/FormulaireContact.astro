@@ -26,8 +26,12 @@ const messageErreur = contact.email
     ? `L'envoi a échoué. Réessayez dans un instant, ou appelez-nous au ${telephoneInsecable(contact.telephone)}.`
     : "L'envoi a échoué. Réessayez dans un instant.";
 
+// `sable-500` et non `sable-300` : le contour d'un champ de saisie est ce qui
+// identifie la commande, WCAG 1.4.11 lui demande 3:1 sur le fond. Le 300 n'en
+// donnait que 1,60. Même raison pour le texte indicatif, remonté de 35 % à
+// 65 % d'opacité — il était à 2,17:1.
 const champ =
-  'mt-2 w-full rounded-md border border-sable-300 bg-white px-4 py-3 text-sm placeholder:text-encre/35 focus:border-ardoise-500';
+  'mt-2 w-full rounded-md border border-sable-500 bg-white px-4 py-3 text-sm placeholder:text-encre/65 focus:border-ardoise-500';
 const label = 'block text-sm text-encre/80';
 ---
 
@@ -124,6 +128,12 @@ const label = 'block text-sm text-encre/80';
             Nature du projet
           </label>
           <select class={champ} id="nature" name="nature">
+            {/* Option vide en tête, et sélectionnée. Sans elle le champ part
+                sur « Charpente / ossature bois » : qui ne touche pas au menu
+                envoie une qualification qu'il n'a pas choisie, et CAMBIOME
+                reçoit une nature de projet fausse. Le champ n'est pas requis,
+                une valeur vide est donc un état légitime. */}
+            <option value="">— Sélectionnez —</option>
             <option>Charpente / ossature bois</option>
             <option>Rénovation thermique</option>
             <option>Couverture / zinguerie</option>
@@ -167,15 +177,23 @@ const label = 'block text-sm text-encre/80';
             required
             class="mt-1 size-4 shrink-0 accent-ardoise-600"
           />
-          <label class="text-xs leading-relaxed text-encre/65" for="consentement">
-            J'accepte que ces informations soient transmises à CAMBIOME pour
-            répondre à ma demande. Elles ne sont ni cédées ni utilisées à des
-            fins commerciales —{' '}
+          {/* Le lien est volontairement HORS du <label>. Imbriqué, un clic
+              dessus suit le lien et coche la case au passage, selon le
+              navigateur — la personne accepte sans l'avoir voulu, sur la
+              case même qui recueille son consentement. Son intitulé nomme
+              aussi sa destination : « en savoir plus » ne dit rien dans la
+              liste des liens d'un lecteur d'écran. */}
+          <div class="text-xs leading-relaxed text-encre/65">
+            <label for="consentement">
+              J'accepte que ces informations soient transmises à CAMBIOME et à
+              son prestataire d'envoi pour répondre à ma demande. Elles ne sont
+              ni cédées ni utilisées à des fins commerciales.{' '}
+              <span aria-hidden="true">*</span>
+            </label>{' '}
             <a class="underline underline-offset-2" href={lien('/mentions-legales')}>
-              en savoir plus
+              Mentions légales
             </a>
-            . <span aria-hidden="true">*</span>
-          </label>
+          </div>
         </div>
 
         <button

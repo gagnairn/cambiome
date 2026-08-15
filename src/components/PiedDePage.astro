@@ -30,7 +30,7 @@ const nbEntrees = (rgeEnCours ? 1 : 0) + 1 + (contact.instagram ? 1 : 0);
 const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
 ---
 
-<footer class="mt-24 bg-marque text-sur-marque">
+<footer class="surface-marque mt-24 bg-marque text-sur-marque">
   <div class="container-page grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-4">
     <div class="sm:col-span-2 lg:col-span-1">
       {/* Marque seule : le nom et la baseline suivent en texte, juste dessous.
@@ -61,7 +61,9 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
       </p>
     </div>
 
-    <div>
+    {/* Les deux colonnes de liens sautent à l'impression : sur papier, une
+        liste de pages est un cul-de-sac. Voir `@media print` dans global.css. */}
+    <div class="impression-masquer">
       <h2 class="text-xs tracking-[0.2em] uppercase">Métiers</h2>
       <ul class="mt-4 space-y-2.5 text-sm">
         {
@@ -79,7 +81,7 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
       </ul>
     </div>
 
-    <div>
+    <div class="impression-masquer">
       <h2 class="text-xs tracking-[0.2em] uppercase">Le site</h2>
       <ul class="mt-4 space-y-2.5 text-sm">
         <li>

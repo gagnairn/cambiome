@@ -1,0 +1,76 @@
+---
+/**
+ * Fiche d'entreprise en JSON-LD (schema.org).
+ *
+ * C'est ce qui permet à un moteur de recherche de savoir que CAMBIOME est une
+ * entreprise du bâtiment située à Fontaine, joignable à tel numéro, et non une
+ * page parmi d'autres. Pour une vitrine dont tout l'objet est d'être trouvée
+ * localement, c'est le balisage qui compte le plus après le titre.
+ *
+ * Le bloc est posé dans le <head> de chaque page avec le même `@id` : les
+ * moteurs y voient une seule et même entité décrite plusieurs fois, pas neuf
+ * entreprises homonymes. C'est la forme recommandée pour un balisage répété.
+ *
+ * Tout est dérivé de `site.ts`, donc du CMS : rien à retoucher ici quand un
+ * numéro change. Un champ vide disparaît de la fiche — une donnée absente vaut
+ * mieux qu'une donnée fausse, que les moteurs sanctionnent.
+ */
+import { contact, metiers, rge, rgeEnCours, site } from '~/data/site';
+import { lien } from '~/lib/base';
+
+const racine = new URL(lien('/'), Astro.site).href;
+
+/**
+ * `36 avenue Jean Jaurès, 38600 Fontaine` -> rue / code postal / commune.
+ * Si la saisie ne suit pas cette forme, tout part dans `streetAddress` : une
+ * adresse d'un seul tenant reste juste, une adresse mal découpée ne l'est pas.
+ */
+const decoupee = contact.adresse.match(/^(.*?),\s*(\d{5})\s+(.+)$/);
+
+const adresse = contact.adresse
+  ? {
+      '@type': 'PostalAddress',
+      streetAddress: decoupee ? decoupee[1] : contact.adresse,
+      ...(decoupee && { postalCode: decoupee[2], addressLocality: decoupee[3] }),
+      addressCountry: 'FR',
+    }
+  : undefined;
+
+const fiche = {
+  '@context': 'https://schema.org',
+  '@type': 'HomeAndConstructionBusiness',
+  '@id': `${racine}#entreprise`,
+  name: site.nom,
+  description: site.description,
+  slogan: site.baseline,
+  url: racine,
+  image: new URL(lien('/og-image.jpg'), Astro.site).href,
+  ...(contact.email && { email: contact.email }),
+  ...(contact.telephone && { telephone: contact.telephone.replace(/\s/g, '') }),
+  ...(adresse && { address: adresse }),
+  ...(contact.instagram && { sameAs: [contact.instagram] }),
+  ...(contact.siret && { identifier: { '@type': 'PropertyValue', propertyID: 'SIRET', value: contact.siret } }),
+  areaServed: { '@type': 'Place', name: site.zone },
+  // Les quatre métiers, tels qu'ils sont présentés au visiteur. `itemOffered`
+  // plutôt qu'une simple liste de mots-clés : ce sont des prestations.
+  makesOffer: metiers.map((m) => ({
+    '@type': 'Offer',
+    itemOffered: { '@type': 'Service', name: m.titre, description: m.chapo },
+  })),
+  // La qualification sort de la fiche le jour où elle expire, comme partout
+  // ailleurs sur le site : l'annoncer périmée serait une allégation trompeuse,
+  // et ici elle serait affichée par le moteur de recherche lui-même.
+  ...(rgeEnCours && {
+    hasCredential: {
+      '@type': 'EducationalOccupationalCredential',
+      name: rge.certificat,
+      credentialCategory: 'certification',
+      recognizedBy: { '@type': 'Organization', name: rge.organisme },
+      url: rge.attestation,
+      validUntil: rge.fin,
+    },
+  }),
+};
+---
+
+<script type="application/ld+json" is:inline set:html={JSON.stringify(fiche)} />

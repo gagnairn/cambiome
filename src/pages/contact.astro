@@ -46,7 +46,7 @@ const aDesCoordonnees = Boolean(
             <ul class="mt-6 space-y-5 text-sm">
               {contact.telephone && (
                 <li>
-                  <span class="block text-encre/50">Téléphone</span>
+                  <span class="block text-encre/65">Téléphone</span>
                   <a
                     class="text-encre underline-offset-4 hover:underline"
                     href={`tel:${contact.telephone.replace(/\s/g, '')}`}
@@ -57,7 +57,7 @@ const aDesCoordonnees = Boolean(
               )}
               {contact.email && (
                 <li>
-                  <span class="block text-encre/50">Email</span>
+                  <span class="block text-encre/65">Email</span>
                   <a
                     class="text-encre underline-offset-4 hover:underline"
                     href={`mailto:${contact.email}`}
@@ -68,7 +68,7 @@ const aDesCoordonnees = Boolean(
               )}
               {contact.adresse && (
                 <li>
-                  <span class="block text-encre/50">Atelier</span>
+                  <span class="block text-encre/65">Atelier</span>
                   {/* Coupée après la voie, comme au pied de page. La donnée
                       reste sur une ligne : les mentions légales la veulent
                       d'un tenant. */}
@@ -79,7 +79,7 @@ const aDesCoordonnees = Boolean(
               )}
             </ul>
           ) : (
-            <p class="mt-6 text-sm leading-relaxed text-encre/60">
+            <p class="mt-6 text-sm leading-relaxed text-encre/65">
               Coordonnées à renseigner dans{' '}
               <code class="rounded bg-sable-100 px-1.5 py-0.5 text-[0.8em]">src/data/site.ts</code>.
             </p>

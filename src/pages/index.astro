@@ -15,8 +15,9 @@ const apercu = realisations.slice(0, 3);
 ---
 
 <Base titre="accueil">
-  <!-- Hero -->
-  <section class="relative">
+  <!-- Hero. `surface-sombre` : sous le voile, l'anneau de focus des deux
+       boutons passe au blanc — voir global.css. -->
+  <section class="surface-sombre relative">
     <div class="absolute inset-0">
       <!--
         La photo est en portrait (1542 × 2048). Sur un écran large,
@@ -89,7 +90,7 @@ const apercu = realisations.slice(0, 3);
     </TitreSection>
 
     <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {metiers.map((m, i) => <CarteMetier metier={m} index={i} />)}
+      {metiers.map((m) => <CarteMetier metier={m} />)}
     </div>
   </section>
 

@@ -10,9 +10,13 @@
 export const site = {
   nom: 'CAMBIOME',
   baseline: "Habitats d'avenir",
-  accroche: 'Éco-construction, charpente et rénovation thermique',
+  // Ces deux chaînes composent le titre et la description de l'accueil : le
+  // titre est `nom — accroche`, et il doit tenir sous 60 signes pour ne pas se
+  // tronquer dans un résultat de recherche ; la description sous 160. Les
+  // longueurs sont contrôlées au build par scripts/verifier-metadonnees.mjs.
+  accroche: 'Charpente et rénovation en éco-construction',
   description:
-    "CAMBIOME est une entreprise spécialisée dans l'éco-construction : charpente, ossature bois, couverture, zinguerie et rénovation thermique. Isolation bio-sourcée, étanchéité à l'air et ventilation double flux.",
+    "Charpente, ossature bois, couverture, zinguerie et rénovation thermique à Grenoble. Éco-construction : isolation bio-sourcée et étanchéité à l'air.",
   zone: 'Grenoble et son bassin',
 } as const;
 

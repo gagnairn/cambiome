@@ -27,7 +27,9 @@ import { themes } from '~/data/site';
   {/* Volontairement en couleurs neutres, hors palette de thème : cette carte
       doit rester lisible à l'identique dans les trois teintes, et ne pas se
       faire passer pour un élément du site. */}
-  <p class="font-display text-[0.6rem] tracking-[0.22em] text-encre/50 uppercase">
+  {/* 65 % et non 50 : à 0,6 rem, ce libellé reste du petit texte, il lui faut
+      4,5:1 (WCAG 1.4.3). Il n'en donnait que 3,23. */}
+  <p class="font-display text-[0.6rem] tracking-[0.22em] text-encre/65 uppercase">
     Piste chromatique
   </p>
 

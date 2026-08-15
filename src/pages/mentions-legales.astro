@@ -28,7 +28,7 @@ const formeEtCapital = contact.capital
 
 <Base
   titre="Mentions légales"
-  description={`Mentions légales du site ${site.nom}.`}
+  description={`Mentions légales de ${site.nom} : éditeur, hébergeur, assurance décennale, qualification RGE et traitement des données personnelles.`}
 >
   <section class="container-page pt-16 pb-8">
     <TitreSection niveau={1} surtitre="Informations" titre="Mentions légales" />
@@ -117,9 +117,21 @@ const formeEtCapital = contact.capital
         <p class="mt-4">
           Les données transmises via le formulaire de contact sont utilisées
           uniquement pour répondre à votre demande et ne font l'objet d'aucune
-          cession à des tiers. Conformément au RGPD, vous disposez d'un droit
-          d'accès, de rectification et de suppression de vos données, en nous
+          cession à des tiers. Le traitement repose sur votre consentement,
+          recueilli par la case à cocher du formulaire. Les données sont
+          conservées trois ans à compter de notre dernier échange, puis
+          supprimées.
+        </p>
+        <p class="mt-4">
+          Conformément au RGPD, vous disposez d'un droit d'accès, de
+          rectification, d'effacement, de limitation, d'opposition et de
+          portabilité de vos données, ainsi que du droit de retirer votre
+          consentement à tout moment, en nous
           contactant {contact.email ? `à ${contact.email}` : `au ${aRemplir(telephoneInsecable(contact.telephone))}`}.
+          Si la réponse ne vous satisfait pas, vous pouvez saisir la{' '}
+          <a class="underline underline-offset-2" href="https://www.cnil.fr/fr/plaintes">
+            CNIL
+          </a>.
         </p>
         {
           contact.web3formsCle && (

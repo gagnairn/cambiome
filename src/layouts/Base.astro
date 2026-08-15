@@ -1,5 +1,6 @@
 ---
 import '~/styles/global.css';
+import DonneesStructurees from '~/components/DonneesStructurees.astro';
 import EnTete from '~/components/EnTete.astro';
 import PiedDePage from '~/components/PiedDePage.astro';
 import SelecteurTheme from '~/components/SelecteurTheme.astro';
@@ -52,6 +53,7 @@ const ogImage = new URL(lien('/og-image.jpg'), Astro.site);
     }
     <title>{titreComplet}</title>
     <meta name="description" content={description} />
+    <DonneesStructurees />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex, follow" />}
     {/* Icônes : le .ico couvre les onglets (16/32/48), l'apple-touch-icon

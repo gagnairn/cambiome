@@ -72,8 +72,9 @@ const actif = (href: string) => ici === href.replace(/\/$/, '');
       </ul>
     </nav>
 
-    <!-- Menu mobile : <details> natif, aucun JS -->
-    <details class="group relative md:hidden">
+    <!-- Menu mobile : <details> natif. Le déploiement ne demande aucun JS ;
+         la fermeture, si — voir le script en bas de fichier. -->
+    <details id="menu-mobile" class="group relative md:hidden">
       <summary
         class="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full border border-sable-300 text-encre [&::-webkit-details-marker]:hidden"
       >
@@ -128,3 +129,50 @@ const actif = (href: string) => ici === href.replace(/\/$/, '');
     </details>
   </div>
 </header>
+
+<script>
+  /**
+   * Fermeture du menu mobile.
+   *
+   * `<details>` sait s'ouvrir et se fermer sur son propre résumé, et c'est
+   * tout : contrairement à `<dialog>` ou à un `popover`, il ignore la touche
+   * Échap et les clics à côté. Un menu ouvert reste donc ouvert par-dessus la
+   * page tant qu'on ne revient pas précisément sur le bouton — sur mobile,
+   * c'est le geste qu'on ne fait pas.
+   *
+   * `popover` réglerait les deux nativement, mais il place le panneau dans la
+   * couche supérieure, hors du flux : il faudrait le repositionner à la main
+   * sous un en-tête collant, ou recourir à l'ancrage CSS. Douze lignes ici
+   * coûtent moins cher que cette bascule.
+   *
+   * Sans JavaScript, le menu s'ouvre et se ferme quand même par son bouton :
+   * ce script améliore, il ne fait pas fonctionner.
+   */
+  const menu = document.querySelector<HTMLDetailsElement>('#menu-mobile');
+
+  if (menu) {
+    const fermer = () => {
+      if (menu.open) menu.open = false;
+    };
+
+    // Clic en dehors. `composedPath` plutôt que `contains` : il traverse les
+    // frontières d'arbre, et le résumé contient des SVG.
+    document.addEventListener('click', (e) => {
+      if (!e.composedPath().includes(menu)) fermer();
+    });
+
+    // Échap, et le focus revient au bouton — sinon il retombe sur le <body>
+    // et la navigation au clavier repart du haut de la page.
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menu.open) {
+        fermer();
+        menu.querySelector('summary')?.focus();
+      }
+    });
+
+    // Focus sorti du menu par Tab : il est derrière nous, on le referme.
+    menu.addEventListener('focusout', () => {
+      if (!menu.contains(document.activeElement)) fermer();
+    });
+  }
+</script>

@@ -8,7 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "verifier": "node scripts/verifier-liens.mjs",
+    "verifier": "node scripts/verifier-liens.mjs && node scripts/verifier-metadonnees.mjs",
     "images": "node scripts/generer-images.mjs"
   },
   "dependencies": {

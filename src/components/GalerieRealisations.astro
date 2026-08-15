@@ -11,9 +11,17 @@ interface Props {
    * ils remontent en h2. Sans ce réglage, la seconde sauterait un niveau.
    */
   niveau?: 2 | 3;
+  /**
+   * Combien d'items charger sans attendre le défilement. Zéro par défaut :
+   * sur l'accueil la galerie est tout en bas, et trois images chargées d'avance
+   * y disputaient la bande passante à celle du hero, qui est l'image que le
+   * visiteur regarde. Sur la page Réalisations, où la galerie commence sous le
+   * titre, la première rangée mérite le traitement inverse.
+   */
+  eager?: number;
 }
 
-const { items, niveau = 3 } = Astro.props;
+const { items, niveau = 3, eager = 0 } = Astro.props;
 
 const Titre = `h${niveau}` as 'h2' | 'h3';
 ---
@@ -29,7 +37,7 @@ const Titre = `h${niveau}` as 'h2' | 'h3';
               alt={r.alt}
               widths={[500, 800, 1200]}
               sizes="(min-width: 1024px) 380px, (min-width: 640px) 45vw, 92vw"
-              loading={i < 3 ? 'eager' : 'lazy'}
+              loading={i < eager ? 'eager' : 'lazy'}
               class="h-full w-full object-cover"
             />
           </div>
