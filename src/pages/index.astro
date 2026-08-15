@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
 import Bouton from '~/components/Bouton.astro';
 import TitreSection from '~/components/TitreSection.astro';
@@ -37,13 +37,29 @@ const apercu = realisations.slice(0, 3);
         `quality` est descendue sous le défaut : la photo est saturée de détail
         fin (panneaux OSB, feuillage, sciure) qui coûte cher à encoder, et le
         voile sombre posé par-dessus masque de toute façon les artefacts.
+
+        AVIF, et `<Picture>` plutôt que `<Image>`. Cette photo EST l'élément
+        LCP de l'accueil, et c'était le seul point faible du site : 3,5 s,
+        contre 1,6 à 2,0 s sur les autres pages, uniquement en transfert. En
+        WebP la variante servie sur un téléphone pesait 178 Ko ; en AVIF elle
+        en pèse 107. Le repli WebP reste produit, pour Safari d'avant 16.4 —
+        deux lignes de balisage pour ne pas servir un hero vide à qui n'a pas
+        mis son iPhone à jour.
+
+        La qualité n'est pas comparable d'un format à l'autre : `quality` est
+        une échelle propre à chaque encodeur. 50 en AVIF a été retenu en
+        comparant les images sous le voile, pas leurs numéros — à 42 la sciure
+        et le fil du bois se lissent visiblement, à 50 rien ne se distingue de
+        l'original.
       -->
-      <Image
+      <Picture
         src={hero}
         alt=""
+        formats={['avif']}
+        fallbackFormat="webp"
         widths={[640, 900, 1200, 1542]}
         sizes="100vw"
-        quality={62}
+        quality={50}
         loading="eager"
         fetchpriority="high"
         class="h-full w-full object-cover object-[50%_68%]"
