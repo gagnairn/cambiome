@@ -73,8 +73,54 @@
   --color-marque-bord: #386478;
   --color-sur-marque: #ffffff;
 
-  --font-display: 'Jost Variable', 'Jost', ui-sans-serif, system-ui, sans-serif;
-  --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Jost Variable', 'Jost', 'Jost repli', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', 'Inter', 'Inter repli', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Polices de repli aux métriques alignées.
+ *
+ * `font-display: swap` affiche le texte tout de suite dans une police système,
+ * puis le rebascule quand la vraie arrive. Le rebasculement décale la page,
+ * parce que les deux polices n'occupent pas la même largeur : mesuré sous
+ * bridage mobile, 0,094 de décalage cumulé sur la page Métiers, au-dessus du
+ * seuil de 0,1 tel que Lighthouse le calcule. Précharger les fichiers n'y
+ * change rien — cela avance la découverte, pas le basculement.
+ *
+ * Ces deux familles sont Arial, étirée pour avancer exactement comme Jost et
+ * comme Inter. Le texte de repli occupe alors la même place, et le
+ * basculement ne déplace plus rien.
+ *
+ * Les pourcentages sont relevés dans Chrome par `measureText`, sur une phrase
+ * française avec ses accents, et non recopiés d'une table : `size-adjust` est
+ * le rapport des largeurs d'avance moyennes, les deux autres ramènent montée
+ * et descente à la taille APRÈS étirement — d'où la division par ce même
+ * rapport. La note « Polices » du README donne le script pour les refaire —
+ * à relancer si une police change, pas autrement.
+ *
+ * Le repli est épinglé par `local()` plutôt que laissé à `sans-serif` : sans
+ * cela, il désignerait une police différente selon la plateforme et
+ * l'étirement serait calculé pour la mauvaise. Arial et Helvetica ont la même
+ * largeur d'avance au millième près — vérifié —, et Liberation Sans est
+ * dessinée pour être métriquement compatible avec Arial. Là où aucune des
+ * trois n'existe (Android), la règle ne s'applique pas et l'on retombe sur le
+ * comportement actuel : pas de régression, pas de gain.
+ */
+@font-face {
+  font-family: 'Jost repli';
+  src: local('Arial'), local('Helvetica'), local('Liberation Sans');
+  size-adjust: 95.02%;
+  ascent-override: 112.61%;
+  descent-override: 39.47%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Inter repli';
+  src: local('Arial'), local('Helvetica'), local('Liberation Sans');
+  size-adjust: 106.3%;
+  ascent-override: 91.16%;
+  descent-override: 22.67%;
+  line-gap-override: 0%;
 }
 
 @layer base {
@@ -145,6 +191,21 @@
 
 @utility container-page {
   @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+}
+
+/* Colonne de lecture : au plus 80 signes par ligne (WCAG 1.4.8).
+
+   57ch et non le `max-w-prose` de Tailwind, qui vaut 65ch. `ch` est la largeur
+   du « 0 », pas celle d'un signe moyen : mesuré sur les textes du site, un
+   signe français en occupe 0,71 — 65ch composent donc 91 signes, et les
+   672 px de `max-w-2xl` en composaient 94. 80 × 0,71 ≈ 57.
+
+   Réservé au texte suivi qu'on lit d'un bout à l'autre — mentions légales,
+   qualification RGE, listes d'engagements. Les chapôs restent plus larges :
+   trois lignes se relisent sans se perdre, et les rétrécir déplacerait la
+   composition de toutes les pages. */
+@utility mesure-lecture {
+  max-width: 57ch;
 }
 
 /* Petit filet décoratif rappelant les cernes du logo */

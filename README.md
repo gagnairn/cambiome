@@ -46,7 +46,7 @@ npm run dev        # http://localhost:4321/cambiome
 | `npm run build` | génère le site dans `dist/` |
 | `npm run preview` | sert `dist/` localement |
 | `npm run check` | vérification des types Astro/TypeScript (exécutée aussi en CI) |
-| `npm run verifier` | vérifie les liens internes de `dist/` — après `build` |
+| `npm run verifier` | cohérence `.pages.yml` ↔ `src/content/`, liens internes et métadonnées de `dist/` — après `build` |
 | `npm run images` | régénère les icônes, la marque seule et l'image de partage |
 
 Les fichiers produits par `npm run images` (favicon `.ico`, icônes 192/512,
@@ -70,27 +70,41 @@ une image de 44 px les rendait illisibles et rognait la marque de moitié.
 ## Où modifier quoi
 
 Côté client, il y a un guide séparé : [GUIDE-MODIFICATION.md](GUIDE-MODIFICATION.md)
-décrit les modifications courantes (coordonnées, textes des métiers, légendes,
-date du RGE) depuis l'éditeur web de GitHub, sans installation ni ligne de
-commande. Il suppose que le compte GitHub de l'entreprise a été ajouté aux
-collaborateurs du dépôt. Ce qui suit s'adresse à qui reprend le code.
+décrit l'ajout d'un chantier avec sa photo et les modifications de texte depuis
+Pages CMS (`app.pagescms.org`), sans compte GitHub ni ligne de commande. Ce qui
+suit s'adresse à qui reprend le code.
 
 ```
 src/
-├── data/
-│   ├── site.ts           ← coordonnées, métiers, démarche  ⟵ 90 % des modifs
-│   └── realisations.ts   ← photos de chantiers + légendes
+├── content/              ← TOUT le contenu, en YAML  ⟵ ce qu'écrit le CMS
+│   ├── entreprise.yaml   ← coordonnées, identité légale, assurance, hébergeur
+│   ├── metiers.yaml      ← les quatre métiers (clé `metiers`)
+│   ├── demarche.yaml     ← les quatre piliers (clé `piliers`)
+│   ├── realisations.yaml ← les chantiers (clé `chantiers`)
+│   ├── rge.yaml          ← la qualification RGE
+│   ├── mission.yaml      ← la mission statutaire
+│   └── pages/            ← la prose des pages, un fichier par page
+├── data/                 ← lecture + validation zod du contenu ci-dessus
+│   ├── site.ts           ← entreprise, métiers, démarche, RGE, mission
+│   ├── realisations.ts   ← chantiers, et rattachement aux fichiers images
+│   └── pages.ts          ← prose des pages, jetons {…} substitués
 ├── assets/
 │   ├── logos/            ← logos fournis ; les `marque-*` sont générés
 │   └── realisations/     ← photos optimisées (2400 px, JPEG q82)
 ├── components/           ← en-tête, pied de page, cartes, galerie…
 ├── layouts/Base.astro    ← <head>, métadonnées, structure de page
-├── lib/                  ← helpers : liens internes (base.ts), typographie (texte.ts)
+├── lib/                  ← helpers : liens (base.ts), typographie (texte.ts),
+│                           lecture YAML (contenu.ts), gabarits (gabarit.ts)
 ├── pages/                ← une page = un fichier
 └── styles/
     ├── global.css        ← charte : couleurs, polices, utilitaires
     └── themes.css        ← pistes chromatiques alternatives (temporaire)
 ```
+
+`.pages.yml`, à la racine, décrit les formulaires du CMS. Il n'est lu que par
+Pages CMS : le site ne le connaît pas. `npm run verifier` contrôle qu'il reste
+en phase avec `src/content/` — un champ décrit ici mais absent du YAML se
+remplirait de vide au premier enregistrement.
 
 Deux conventions, pour qu'un fichier se devine sans le chercher.
 
@@ -117,6 +131,43 @@ Charte relevée sur les logos du brief :
 | Terracotta (secondaire) | `#AD7B7A` |
 | Neutres chauds « sable » | `#FBFAF8` → `#B3A996` |
 | Encre | `#1A1D1F` |
+
+## Le CMS
+
+Le contenu s'édite sur [Pages CMS](https://pagescms.org) hébergé
+(`app.pagescms.org`), qui lit `.pages.yml` et écrit dans `src/content/`. Rien
+n'est ajouté au site : pas de page `/admin`, pas de script, pas d'octet servi
+au visiteur. Un enregistrement produit un commit, donc une publication, donc la
+chaîne `check` → `build` → `verifier` — une saisie invalide fait échouer la
+publication et le site en ligne garde sa version précédente.
+
+**À faire une fois**, dans l'interface, et impossible à scripter :
+
+1. `app.pagescms.org` → *Sign in with GitHub* → installer l'application GitHub
+   sur le compte qui possède le dépôt, en lui donnant accès à `cambiome`.
+2. Ouvrir le dépôt dans Pages CMS, puis la page *Collaborators* → *Invite
+   collaborators* → l'adresse e-mail de l'éditeur. L'invité n'a **pas besoin de
+   compte GitHub** : il reçoit un lien, puis un code à six chiffres à chaque
+   connexion. Il peut modifier le contenu et les médias ; il ne peut ni toucher
+   à `.pages.yml`, ni inviter quelqu'un.
+
+Les collaborateurs vivent dans la base de Pages CMS, pas dans le dépôt : ils ne
+suivent pas si l'installation change de compte, et sont à réinviter.
+
+`settings.commit.identity: user` met le nom de l'éditeur dans le commit plutôt
+que `pages-cms[bot]`. Si un invité par e-mail n'arrive pas à publier, basculer
+sur `app`.
+
+**Deux pièges de Pages CMS**, tous deux vérifiés dans son code source et
+consignés en tête de `.pages.yml` : une liste sous forme d'objet doit porter
+`collapsible` ; et `list` sur une *entrée* n'est honoré que sous la forme
+exacte `list: true`. La forme longue y passe la validation mais est ignorée par
+le formulaire, qui présente alors le tableau comme un objet et l'écrase à
+l'enregistrement. C'est pourquoi les trois fichiers-listes ont une clé de
+premier niveau (`chantiers`, `metiers`, `piliers`) et déclarent leur liste sur
+un champ. `scripts/verifier-cms.mjs` refuse le retour en arrière.
+
+Le guide destiné à l'éditeur est [GUIDE-MODIFICATION.md](GUIDE-MODIFICATION.md).
 
 ## Thèmes — trois pistes soumises au client
 
@@ -209,6 +260,81 @@ générés, et ne se régénèrent qu'une fois le choix fait.
 `themes.selecteur = false` dans `src/data/site.ts` éteint tout sans rien
 supprimer — utile pour voir le site tel qu'il sera livré.
 
+## Polices
+
+Jost pour les titres, Inter pour le texte, toutes deux auto-hébergées via
+`@fontsource-variable` — aucun appel au CDN de Google, ce que la CNIL demande.
+Les deux fichiers `.woff2` sont préchargés depuis `src/layouts/Base.astro`,
+importés en `?url` pour que le nom haché par Vite ne puisse pas se périmer.
+
+### Les replis « Jost repli » et « Inter repli »
+
+`font-display: swap` affiche le texte tout de suite dans une police système
+puis rebascule quand la vraie arrive. Les deux n'occupant pas la même largeur,
+le rebasculement décalait la page : **0,094 de décalage cumulé** sur Métiers,
+mesuré sous bridage mobile — au-dessus du seuil de 0,1 tel que Lighthouse le
+calcule, et le préchargement n'y change rien (il avance la découverte, pas le
+basculement).
+
+`src/styles/global.css` déclare donc deux `@font-face` de repli : Arial,
+étirée pour avancer exactement comme Jost et comme Inter. Le décalage est
+retombé à 0,0007, et Lighthouse donne 0 sur les quatre pages testées.
+
+Le repli est épinglé par `local('Arial'), local('Helvetica'),
+local('Liberation Sans')` plutôt que laissé à `sans-serif` : sans cela il
+désignerait une police différente selon la plateforme et l'étirement serait
+calculé pour la mauvaise. Arial et Helvetica ont la même largeur d'avance au
+millième près (vérifié), Liberation Sans est dessinée pour être métriquement
+compatible avec Arial. Là où aucune des trois n'existe — Android — la règle ne
+s'applique tout simplement pas : pas de gain, pas de régression.
+
+### Refaire les mesures
+
+À relancer **si une police change**, pas autrement. Les pourcentages sont
+relevés dans le navigateur et non recopiés d'une table. Servir le site
+(`npm run preview`), puis dans la console de n'importe quelle page :
+
+```js
+await document.fonts.ready;
+const ctx = document.createElement('canvas').getContext('2d');
+const T = 1000; // grande taille : les arrondis deviennent négligeables
+// Phrase française avec ses accents : c'est la largeur d'avance moyenne sur
+// un vrai texte qui compte, pas sur un alphabet théorique.
+const TXT = "Charpente, ossature bois, couverture et rénovation thermique à Grenoble — étanchéité à l'air maîtrisée.";
+const m = (f) => {
+  ctx.font = `${T}px ${f}`;
+  const x = ctx.measureText(TXT);
+  return {
+    l: x.width / T / TXT.length,
+    a: x.fontBoundingBoxAscent / T,
+    d: x.fontBoundingBoxDescent / T,
+  };
+};
+const repli = m('Arial');
+for (const [nom, web] of [['Jost', m('"Jost Variable"')], ['Inter', m('"Inter Variable"')]]) {
+  const k = web.l / repli.l;
+  console.log(nom, {
+    'size-adjust': (k * 100).toFixed(2) + '%',
+    'ascent-override': ((web.a / k) * 100).toFixed(2) + '%',
+    'descent-override': ((web.d / k) * 100).toFixed(2) + '%',
+  });
+}
+```
+
+`size-adjust` est le rapport des largeurs d'avance moyennes. Montée et descente
+s'expriment en part de la taille de police **après** étirement — d'où la
+division par ce même rapport. `line-gap-override` reste à `0%`.
+
+### La colonne de lecture
+
+`@utility mesure-lecture` (dans `global.css`) borne le texte suivi à `57ch`, et
+non aux `65ch` du `max-w-prose` de Tailwind. `ch` est la largeur du « 0 », pas
+celle d'un signe moyen : mesuré sur les textes du site, un signe français en
+occupe 0,71 — 65ch composent donc 91 signes par ligne, au-delà des 80 que
+recommande WCAG 1.4.8. À utiliser sur ce qui se lit d'un bout à l'autre
+(mentions légales, qualification RGE, listes d'engagements) ; les chapôs
+restent volontairement plus larges.
+
 ## Conformité HTML / CSS
 
 Vérifié le 15 août 2026 sur `dist/`, avec `html-validate` (presets `standard`,
@@ -245,7 +371,8 @@ l'ajouter à la main n'apporterait rien.
 Ces éléments manquent au brief. Tant qu'ils sont vides, le site masque les blocs
 concernés plutôt que d'afficher de fausses informations.
 
-- [ ] `src/data/site.ts` → `contact.web3formsCle` : clé obtenue sur
+- [ ] `src/content/entreprise.yaml` → `formulaire.web3formsCle` (CMS :
+      « L'entreprise → Formulaire de contact ») : clé obtenue sur
       [web3forms.com](https://web3forms.com) (saisir l'adresse de réception,
       valider le mail de confirmation, aucun compte à créer) — sans elle le
       formulaire de contact n'est pas affiché
@@ -266,8 +393,9 @@ les quatre domaines qualifiés, ce que la qualification ne couvre pas, et
 l'attestation. La mention apparaît en outre à trois endroits, qui y renvoient
 ou la reprennent en une ligne : la page Métiers (renvoi sous le bloc Rénovation
 thermique, `RgeRenvoi.astro`), le bandeau du pied de page (logo et numéro de
-certificat) et les mentions légales. Les quatre sont pilotés par `rge` dans
-`src/data/site.ts`, dont les valeurs proviennent du registre public de l'ADEME.
+certificat) et les mentions légales. Les quatre sont pilotés par
+`src/content/rge.yaml` (CMS : « Qualification RGE »), dont les valeurs
+proviennent du registre public de l'ADEME.
 
 Passée la date `rge.fin`, les quatre emplacements se masquent d'eux-mêmes :
 afficher une qualification expirée serait une allégation trompeuse. Mais le
@@ -345,6 +473,15 @@ groupées en une seule demande pour éviter le bruit. Une seule exception y est
 inscrite, `typescript` en `7.x` (motif plus haut) : sans elle, Dependabot
 rouvrirait tous les mois une demande qui ne peut que rougir.
 
+Un second workflow, `.github/workflows/photos.yml`, se déclenche sur toute
+poussée touchant `src/assets/realisations/**` : il ramène à 2400 px / q82 les
+images plus grandes, et recommite. Une photo arrivée du CMS sort d'un téléphone
+— 4000 px, plusieurs mégaoctets — et un dépôt Git ne se dégonfle pas. C'est le
+**seul job du dépôt qui écrive** (`contents: write`) ; les jobs de publication
+n'ont que `contents: read`, d'où le fichier séparé. Son commit, signé par
+`GITHUB_TOKEN`, ne redéclenche rien : la publication déclenchée par le
+téléversement tourne donc sur l'original, ce qui ne change rien au rendu.
+
 Le test de fumée se rejoue en local sur le site en ligne :
 
 ```sh
@@ -388,7 +525,8 @@ Le site est entièrement statique : déployer, c'est téléverser le contenu de
 1. `astro.config.mjs` : `site: 'https://www.cambiome.fr'`, supprimer `base`.
 2. Rien à faire pour `robots.txt` ni le manifeste : ils sont générés depuis
    `site` et `base` (`src/pages/robots.txt.ts`, `src/pages/site.webmanifest.ts`).
-3. `src/data/site.ts` → `hebergeur` : rien à faire si la cible est bien OVH,
+3. `src/content/entreprise.yaml` → `hebergeur` (CMS : « L'entreprise →
+   Hébergeur du site ») : rien à faire si la cible est bien OVH,
    dont les coordonnées y figurent déjà. Pour tout autre hébergeur, ce sont
    son nom, son adresse et son téléphone qu'il faut y mettre : la mention est
    une obligation légale et doit désigner l'hébergeur réel.
@@ -506,7 +644,7 @@ chantier autour. Le recadrage est fait dans le fichier plutôt que par
 `object-position` en CSS, pour ne pas servir des octets qui ne s'affichent
 jamais ; le prix est qu'il n'y reste plus de marge. Les versions non recadrées
 sont récupérables dans l'historique git (`git log -- src/assets/realisations`).
-Attention en y touchant : les `legende` et les `alt` de `realisations.ts`
+Attention en y touchant : les `legende` et les `alt` de `realisations.yaml`
 décrivent le cadrage actuel, pas la photo publiée.
 
 `bloc-terracotta` est la variante secondaire du bloc : conservée parce qu'elle

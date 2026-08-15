@@ -83,7 +83,12 @@ for (const fichier of pages) {
       signale(`description de ${n} signes (min ${DESCRIPTION_MIN})`);
   }
 
-  if (!/<link rel="canonical"/.test(html)) signale('pas de <link rel="canonical">');
+  // La canonique désigne l'adresse de référence d'une page indexable. Une page
+  // en `noindex` n'en a pas : elle ne demande pas à être indexée, et la 404 en
+  // porterait une vers /404/, une adresse qui n'existe pas. `Base.astro` ne
+  // l'émet donc que hors `noindex` — ce contrôle suit la même règle.
+  if (!noindex && !/<link rel="canonical"/.test(html))
+    signale('pas de <link rel="canonical">');
 
   // La fiche d'entreprise. `JSON.parse` est le seul juge qui compte : un bloc
   // invalide est ignoré par les moteurs, en silence et sans message.

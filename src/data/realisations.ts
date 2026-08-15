@@ -1,36 +1,14 @@
-import type { ImageMetadata } from 'astro';
-
-import aretier from '~/assets/realisations/charpente-aretier.jpg';
-import poutreI from '~/assets/realisations/charpente-poutre-en-i.jpg';
-import fibreDeBois from '~/assets/realisations/isolation-fibre-de-bois.jpg';
-import tasseaux from '~/assets/realisations/couverture-a-tasseaux.jpg';
-import bardageMeleze from '~/assets/realisations/bardage-meleze-pignon.jpg';
-import lucarne from '~/assets/realisations/lucarne-structure.jpg';
-import chevronsPorteurs from '~/assets/realisations/charpente-chevrons-porteurs.jpg';
-import cheneau from '~/assets/realisations/soudure-cheneau.jpg';
-import pergola from '~/assets/realisations/pergola-bioclimatique.jpg';
-import balcon from '~/assets/realisations/balcon-suspendu.jpg';
-import acroteres from '~/assets/realisations/habillage-acroteres.jpg';
-import gardeCorps from '~/assets/realisations/garde-corps-meleze.jpg';
-import solivage from '~/assets/realisations/solivage-queue-daronde.jpg';
-import consoles from '~/assets/realisations/consoles-chene.jpg';
-
-export type Realisation = {
-  titre: string;
-  metier: string;
-  /** slug du métier, pour filtrer */
-  metierSlug: string;
-  legende: string;
-  /** Texte alternatif : décrit l'image, ne répète pas le titre. */
-  alt: string;
-  image: ImageMetadata;
-};
-
 /**
- * L'ordre compte à deux endroits : la page d'accueil affiche les trois
- * premières, et la page Métiers illustre chaque métier avec la première
- * réalisation qui porte son `metierSlug`. Déplacer une entrée vers le haut,
- * c'est la promouvoir.
+ * Galerie des chantiers.
+ *
+ * Le contenu est dans `src/content/realisations.yaml`, modifiable depuis le
+ * CMS. Ce module le lit, le valide, et rattache chaque entrée à son fichier
+ * image.
+ *
+ * L'ordre du fichier compte à deux endroits : la page d'accueil affiche les
+ * trois premières entrées, et la page Métiers illustre chaque métier avec la
+ * première réalisation qui porte son `metierSlug`. Déplacer une entrée vers le
+ * haut, c'est la promouvoir.
  *
  * Les huit chantiers ajoutés depuis le compte Instagram de CAMBIOME
  * (couverture à tasseaux, lucarne, chéneau, pergola, chevrons porteurs,
@@ -44,134 +22,143 @@ export type Realisation = {
  * en 4/3 : le rognage par défaut, centré, coupait la rive du pan de zinc, le
  * faîtage du pignon en mélèze, le cordon de soudure du chéneau. Les huit
  * fichiers ont donc été recadrés serré sur l'ouvrage, en 4/3 dans le fichier
- * lui-même — plutôt qu'un ancrage CSS, qui aurait laissé le navigateur
- * décider et gardé du décor inutile dans les octets servis. Les versions
- * d'origine restent dans l'historique Git si un cadrage se révélait trop
- * juste. Une conséquence à retenir : les légendes et les `alt` décrivent le
- * fichier tel qu'il est aujourd'hui, pas la photo publiée sur Instagram.
+ * lui-même — plutôt qu'un ancrage CSS, qui aurait laissé le navigateur décider
+ * et gardé du décor inutile dans les octets servis. Les versions d'origine
+ * restent dans l'historique Git si un cadrage se révélait trop juste. Une
+ * conséquence à retenir : les légendes et les `alt` décrivent le fichier tel
+ * qu'il est aujourd'hui, pas la photo publiée sur Instagram.
  */
-export const realisations: Realisation[] = [
-  {
-    titre: 'Charpente à arêtier',
-    metier: 'Charpente',
-    metierSlug: 'charpente-ossature-bois',
-    legende:
-      "Charpente neuve montée sur un bâti de village, arêtier et chevrons posés avant couverture.",
-    alt: "Charpente en bois clair fraîchement montée sur un toit, vue depuis le faîtage ; toits de tuiles, clocher et falaise en arrière-plan.",
-    image: aretier,
-  },
-  {
-    titre: 'Solivage en poutres en I',
-    metier: 'Ossature bois',
-    metierSlug: 'charpente-ossature-bois',
-    legende:
-      "Extension en ossature bois : solivage en poutres en I et contreventement, avant fermeture de l'enveloppe.",
-    alt: "Intérieur d'une extension en cours de construction, plafond composé de poutres en I régulières et murs en ossature bois avec panneaux de contreventement.",
-    image: poutreI,
-  },
-  {
-    titre: 'Isolation en fibre de bois',
-    metier: 'Rénovation thermique',
-    metierSlug: 'renovation-thermique',
-    legende:
-      "Doublage intérieur en panneaux de fibre de bois entre montants, freine-vapeur continu au plafond et lés adhésivés : l'étanchéité à l'air se joue à ce stade.",
-    alt: "Pièce en travaux dont les murs sont doublés de panneaux de fibre de bois entre montants de bois ; au plafond, un freine-vapeur clair aux lés adhésivés, au sol un plancher d'OSB et un panneau isolant posé à plat.",
-    image: fibreDeBois,
-  },
-  {
-    titre: 'Couverture à tasseaux',
-    metier: 'Couverture',
-    metierSlug: 'couverture-zinguerie',
-    legende:
-      "Lucarne reprise en couverture à tasseaux lors d'une réfection de toiture, à Échirolles.",
-    alt: "Pan de toiture neuf en zinc à tasseaux, ses baguettes régulières brillant au soleil, au milieu de toits de tuiles anciens.",
-    image: tasseaux,
-  },
-  {
-    titre: 'Pignon de grange en mélèze',
-    metier: 'Menuiserie',
-    metierSlug: 'structure-bois-menuiserie',
-    legende:
-      "Pignon de grange fermé en bardage mélèze, alternant lames épaufrées et claire-voie sous la pergola. Le mélèze grise sans traitement et tient dans le temps.",
-    alt: "Pignon d'une grange rénovée vu depuis la terrasse couverte : charpente apparente en bois clair sous le faîtage, lames de mélèze en triangle et bandeau de tasseaux verticaux en claire-voie.",
-    image: bardageMeleze,
-  },
-  {
-    titre: 'Structure de lucarne',
-    metier: 'Charpente',
-    metierSlug: 'charpente-ossature-bois',
-    legende:
-      "Structure d'une lucarne cintrée, levée sur une toiture en rénovation complète.",
-    alt: "Structure de lucarne en bois neuf, aux montants cintrés en arc, posée sur un toit en travaux dont le versant est couvert d'un écran de sous-toiture et de liteaux ; ville et arbres en contrebas.",
-    image: lucarne,
-  },
-  {
-    titre: 'Charpente à chevrons porteurs',
-    metier: 'Charpente',
-    metierSlug: 'charpente-ossature-bois',
-    legende:
-      "Charpente refaite à neuf en chevrons porteurs. La contrainte était de conserver la hauteur de latis existante pour rester dans la continuité des toitures mitoyennes : le chevron porteur réduit les chambrées sans superposer les couches.",
-    alt: "Charpente neuve en bois clair vue de l'intérieur du comble, pannes et chevrons assemblés sur ferrures se découpant sur un ciel bleu.",
-    image: chevronsPorteurs,
-  },
-  {
-    titre: 'Soudure de chéneau',
-    metier: 'Zinguerie',
-    metierSlug: 'couverture-zinguerie',
-    legende: "Chéneau soudé à l'étain en fond de noue, paré pour la pluie.",
-    alt: "Chéneau de zinc neuf longeant un versant d'ardoises, cordon de soudure à l'étain visible en travers du fond ; vallée en contrebas.",
-    image: cheneau,
-  },
-  {
-    titre: 'Pergola',
-    metier: 'Structure bois',
-    metierSlug: 'structure-bois-menuiserie',
-    legende:
-      "Pergola adossée en façade sud : de l'ombre portée sur la terrasse et sur les baies aux heures les plus chaudes, sans rien changer au bâti.",
-    alt: "Pergola en bois clair adossée à une maison blanche à volets rouges, ses chevrons se détachant sur un ciel nuageux ; rosier grimpant au premier plan.",
-    image: pergola,
-  },
-  {
-    titre: 'Balcon suspendu',
-    metier: 'Structure bois',
-    metierSlug: 'structure-bois-menuiserie',
-    legende:
-      'Balcon suspendu et bardage vertical, contreventés sur la structure existante.',
-    alt: "Balcon en bois suspendu à la façade d'une maison en bardage bois vertical, vu en contre-plongée sur ciel bleu.",
-    image: balcon,
-  },
-  {
-    titre: "Habillage d'acrotères",
-    metier: 'Zinguerie',
-    metierSlug: 'couverture-zinguerie',
-    legende: "Angle d'acrotère façonné à l'atelier, plis et soudures réalisés sur mesure.",
-    alt: "Pièce de zinc pliée en angle posée sur un établi d'atelier, plis nets et surface satinée.",
-    image: acroteres,
-  },
-  {
-    titre: 'Garde-corps en mélèze',
-    metier: 'Structure bois',
-    metierSlug: 'structure-bois-menuiserie',
-    legende:
-      "Terrasse de grange équipée d'un garde-corps en mélèze de pays, dans le massif de Belledonne.",
-    alt: "Grange de pierre à flanc de pré, dont la terrasse sur pilotis de béton est bordée d'un garde-corps neuf en bois clair à barreaux verticaux ; montagne boisée à l'arrière-plan.",
-    image: gardeCorps,
-  },
-  {
-    titre: "Solivage en queue d'aronde",
-    metier: 'Charpente',
-    metierSlug: 'charpente-ossature-bois',
-    legende:
-      "Plancher neuf assemblé en queue d'aronde dans un comble ancien, sous charpente d'origine conservée.",
-    alt: "Comble ancien aux murs de pierre, solives neuves en bois clair posées au sol sous une charpente ancienne en bois sombre.",
-    image: solivage,
-  },
-  {
-    titre: 'Consoles de dépassée',
-    metier: 'Charpente',
-    metierSlug: 'charpente-ossature-bois',
-    legende: "Consoles de renfort de dépassée, taillées dans du chêne.",
-    alt: "Vue en contre-plongée sous l'avancée d'un toit : une console de chêne clair fraîchement taillée soutient les chevrons anciens en bois sombre, contre un mur de pierres apparentes.",
-    image: consoles,
-  },
-];
+import type { ImageMetadata } from 'astro';
+import { z } from 'astro/zod';
+import { charger } from '~/lib/contenu';
+import { metiers } from '~/data/site';
+
+/**
+ * Index de toutes les photos du dossier, construit au build.
+ *
+ * Auparavant chaque photo avait son `import` en tête de fichier. C'était plus
+ * direct à lire, mais cela mettait l'ajout d'un chantier hors de portée d'un
+ * éditeur : il fallait écrire une ligne d'import puis la référencer. Ici, le
+ * YAML ne contient qu'un nom de fichier et la résolution se fait au build.
+ *
+ * Le glob reste statique — Vite l'exige, et c'est ce qui permet à Astro de
+ * n'inclure dans la version publiée que les images réellement citées.
+ */
+const PHOTOS = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/realisations/*.{jpg,jpeg,png,webp,avif}',
+  { eager: true },
+);
+
+/**
+ * Retrouve une photo à partir de ce qu'écrit le fichier de contenu.
+ *
+ * On ne compare que le nom de fichier, pas le chemin : selon le réglage
+ * `media.output` du CMS, la même photo peut être écrite `consoles-chene.jpg`,
+ * `/consoles-chene.jpg` ou `src/assets/realisations/consoles-chene.jpg`. Les
+ * trois désignent le même fichier, et un site qui casse parce qu'une barre
+ * oblique s'est ajoutée serait un mauvais service rendu à l'éditeur.
+ */
+function photo(reference: string, titre: string): ImageMetadata {
+  const fichier = reference.split('/').pop();
+  const trouve = Object.entries(PHOTOS).find(
+    ([chemin]) => chemin.split('/').pop() === fichier,
+  );
+
+  if (!trouve) {
+    // Échouer bruyamment plutôt que d'afficher un trou : la chaîne
+    // d'intégration refusera de publier, et le site en ligne gardera sa
+    // version précédente le temps que la photo soit téléversée.
+    const disponibles = Object.keys(PHOTOS)
+      .map((c) => c.split('/').pop())
+      .sort()
+      .join('\n  ');
+    throw new Error(
+      `Le chantier « ${titre} » cite la photo « ${reference} », qui n'existe pas ` +
+        `dans src/assets/realisations/.\n` +
+        `Photos disponibles :\n  ${disponibles}`,
+    );
+  }
+
+  return trouve[1].default;
+}
+
+/**
+ * La liste vit sous une clé `chantiers`, et non à la racine du fichier.
+ *
+ * Ce n'est pas un choix de goût : Pages CMS ne sait construire un formulaire de
+ * liste pour un fichier dont la racine est un tableau que si l'entrée déclare
+ * exactement `list: true` (`components/entry/entry.tsx`, comparaison stricte).
+ * La forme longue — celle qui porte le résumé repliable — n'est honorée que sur
+ * un champ. Sans clé de premier niveau, il fallait donc choisir entre un
+ * formulaire correct et quatorze blocs intitulés « Item #7 ».
+ */
+const SchemaChantiers = z
+  .array(
+    z.object({
+      titre: z
+        .string()
+        .trim()
+        .min(1, 'Le titre du chantier ne peut pas être vide.')
+        // Le titre est affiché sur une ligne par-dessus la vignette ; au-delà,
+        // il passe à la ligne et recouvre la photo.
+        .max(
+          60,
+          'Le titre du chantier dépasse 60 signes ; il recouvrirait la photo.',
+        ),
+      /** Étiquette affichée sur la vignette, libre — « Zinguerie », « Ossature bois ». */
+      metier: z.string().trim().min(1, "L'étiquette de métier ne peut pas être vide."),
+      /**
+       * Rattache le chantier à l'un des métiers de `metiers.yaml`. La
+       * cohérence entre les deux fichiers est vérifiée plus bas : un slug
+       * inconnu ferait disparaître silencieusement la photo de la page
+       * Métiers, sans que rien ne le signale.
+       */
+      metierSlug: z.string().trim().min(1, 'Le métier du chantier est obligatoire.'),
+      legende: z.string().trim().min(1, 'La légende ne peut pas être vide.'),
+      /**
+       * Texte alternatif : décrit l'image, ne répète pas le titre. Obligatoire
+       * — c'est ce que lisent les personnes aveugles et les moteurs de
+       * recherche, et une image décorative n'aurait pas sa place en galerie.
+       */
+      alt: z
+        .string()
+        .trim()
+        .min(1, "La description de la photo (alt) est obligatoire : elle est lue par les personnes aveugles."),
+      image: z.string().trim().min(1, 'Le chantier doit citer une photo.'),
+    }),
+  )
+  .min(1, 'La galerie ne peut pas être vide.')
+  // Un `metierSlug` qui ne correspond à aucun métier ne produit pas d'erreur
+  // visible : la photo reste en galerie, elle disparaît seulement de la page
+  // Métiers. C'est précisément le genre de panne qu'on ne remarque pas. On la
+  // transforme donc en échec de build.
+  .superRefine((liste, ctx) => {
+    const connus = new Set(metiers.map((m) => m.slug));
+    liste.forEach((r, i) => {
+      if (!connus.has(r.metierSlug)) {
+        ctx.addIssue({
+          code: 'custom',
+          path: [i, 'metierSlug'],
+          message:
+            `Le chantier « ${r.titre} » est rattaché au métier « ${r.metierSlug} », ` +
+            `qui n'existe pas. Métiers possibles : ${[...connus].join(', ')}.`,
+        });
+      }
+    });
+  });
+
+export type Realisation = {
+  titre: string;
+  metier: string;
+  /** slug du métier, pour filtrer */
+  metierSlug: string;
+  legende: string;
+  /** Texte alternatif : décrit l'image, ne répète pas le titre. */
+  alt: string;
+  image: ImageMetadata;
+};
+
+export const realisations: Realisation[] = charger(
+  'realisations',
+  z.object({ chantiers: SchemaChantiers }),
+).chantiers.map((r) => ({ ...r, image: photo(r.image, r.titre) }));

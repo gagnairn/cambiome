@@ -4,18 +4,17 @@ import TitreSection from '~/components/TitreSection.astro';
 import GalerieRealisations from '~/components/GalerieRealisations.astro';
 import AppelContact from '~/components/AppelContact.astro';
 import { realisations } from '~/data/realisations';
+import { pageRealisations } from '~/data/pages';
 ---
 
-<Base
-  titre="Réalisations"
-  description="Charpentes, solivages, extensions en ossature bois, zinguerie et structures bois : quelques chantiers réalisés par CAMBIOME."
->
+<Base titre={pageRealisations.titreOnglet} description={pageRealisations.description}>
   <section class="container-page pt-16">
-    <TitreSection niveau={1} surtitre="Chantiers" titre="Nos réalisations">
-      <p>
-        Une sélection de chantiers, du solivage en queue d'aronde dans un comble
-        ancien à l'habillage d'acrotères façonné à l'atelier.
-      </p>
+    <TitreSection
+      niveau={1}
+      surtitre={pageRealisations.surtitre}
+      titre={pageRealisations.titre}
+    >
+      <p>{pageRealisations.texte}</p>
     </TitreSection>
 
     <div class="mt-12">

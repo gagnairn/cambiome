@@ -171,8 +171,16 @@ const actif = (href: string) => ici === href.replace(/\/$/, '');
     });
 
     // Focus sorti du menu par Tab : il est derrière nous, on le referme.
-    menu.addEventListener('focusout', () => {
-      if (!menu.contains(document.activeElement)) fermer();
+    //
+    // `relatedTarget` et non `document.activeElement` : `focusout` part avant
+    // que le focus soit posé ailleurs, et à cet instant `activeElement` vaut
+    // encore `body`. Interroger `activeElement` refermait donc le menu à la
+    // première tabulation — y compris quand le focus allait vers un lien du
+    // menu lui-même, qui devenait inatteignable au clavier. `relatedTarget`
+    // désigne l'élément qui reçoit le focus, il est exact tout de suite.
+    menu.addEventListener('focusout', (e) => {
+      const arrivee = e.relatedTarget;
+      if (!(arrivee instanceof Node) || !menu.contains(arrivee)) fermer();
     });
   }
 </script>

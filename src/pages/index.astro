@@ -8,6 +8,7 @@ import GalerieRealisations from '~/components/GalerieRealisations.astro';
 import AppelContact from '~/components/AppelContact.astro';
 import { site, metiers, demarche } from '~/data/site';
 import { realisations } from '~/data/realisations';
+import { accueil } from '~/data/pages';
 import hero from '~/assets/realisations/comble-charpente-chantier.jpg';
 import { lien } from '~/lib/base';
 
@@ -58,21 +59,19 @@ const apercu = realisations.slice(0, 3);
         {site.baseline}
       </p>
       <h1 class="mt-6 max-w-3xl text-4xl leading-[1.1] text-white sm:text-5xl lg:text-6xl">
-        Construire et rénover avec des matériaux qui tiennent dans le temps.
+        {accueil.hero.titre}
       </h1>
       <p class="mt-7 max-w-xl text-lg leading-relaxed text-white/85">
-        CAMBIOME est une entreprise d'éco-construction : charpente et ossature
-        bois, couverture et zinguerie, rénovation thermique en matériaux
-        bio-sourcés.
+        {accueil.hero.texte}
       </p>
       <div class="mt-10 flex flex-wrap gap-3">
-        <Bouton href={lien('/metiers')} variante="clair">Découvrir nos métiers</Bouton>
+        <Bouton href={lien('/metiers')} variante="clair">{accueil.hero.boutonMetiers}</Bouton>
         <Bouton
           href={lien('/contact')}
           variante="contour"
           class="border-white/50 text-white hover:border-white hover:bg-white/10"
         >
-          Parler de votre projet
+          {accueil.hero.boutonContact}
         </Bouton>
       </div>
     </div>
@@ -80,13 +79,8 @@ const apercu = realisations.slice(0, 3);
 
   <!-- Métiers -->
   <section class="container-page mt-24">
-    <TitreSection surtitre="Nos réalisations par métiers" titre="Quatre savoir-faire, un même bâtiment">
-      <p>
-        Charpente, couverture, isolation et menuiserie sont traitées ensemble.
-        C'est la condition pour que l'enveloppe soit cohérente : pas de rupture
-        d'étanchéité à l'air entre deux corps de métier, pas de détail laissé au
-        suivant.
-      </p>
+    <TitreSection surtitre={accueil.metiers.surtitre} titre={accueil.metiers.titre}>
+      <p>{accueil.metiers.texte}</p>
     </TitreSection>
 
     <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -97,32 +91,35 @@ const apercu = realisations.slice(0, 3);
   <!-- Démarche -->
   <section class="mt-24 bg-sable-100 py-24">
     <div class="container-page">
-      <TitreSection surtitre="Notre démarche" titre="Le confort d'abord, la performance ensuite">
-        <p>
-          Une isolation bio-sourcée dense pour le confort d'été, une étanchéité
-          à l'air maîtrisée, une ventilation double flux et des parois qui
-          respirent. Ces quatre points se tiennent : négliger l'un dégrade les
-          trois autres.
-        </p>
+      <TitreSection surtitre={accueil.demarche.surtitre} titre={accueil.demarche.titre}>
+        <p>{accueil.demarche.texte}</p>
       </TitreSection>
 
-      <dl class="mt-12 grid gap-x-10 gap-y-10 sm:grid-cols-2">
+      {/* Une liste ordonnée et non une liste de définitions. Un `<dl>` n'admet
+          entre ses `<div>` que des `<dt>` et des `<dd>` : le numéro d'étape,
+          posé dans un `<span>` à côté, en faisait un balisage invalide — relevé
+          par axe. Et c'est la bonne structure sur le fond, ces quatre entrées
+          étant des étapes qui se suivent, pas des termes définis. La page
+          Démarche présente déjà la même donnée en `<ol>`, les deux se
+          répondent. Le numéro reste dans le flux : il est lu comme le début de
+          l'étape, ce qu'il est. */}
+      <ol class="mt-12 grid list-none gap-x-10 gap-y-10 sm:grid-cols-2">
         {
           demarche.map((d, i) => (
-            <div class="border-t border-sable-300 pt-6">
+            <li class="border-t border-sable-300 pt-6">
               <span class="font-display text-sm text-ardoise-500">
                 {String(i + 1).padStart(2, '0')}
               </span>
-              <dt class="mt-2 font-display text-xl font-light">{d.titre}</dt>
-              <dd class="mt-3 text-sm leading-relaxed text-encre/70">{d.texte}</dd>
-            </div>
+              <h3 class="mt-2 font-display text-xl font-light">{d.titre}</h3>
+              <p class="mt-3 text-sm leading-relaxed text-encre/70">{d.texte}</p>
+            </li>
           ))
         }
-      </dl>
+      </ol>
 
       <div class="mt-12">
         <Bouton href={lien('/demarche')} variante="contour">
-          En savoir plus sur notre démarche
+          {accueil.demarche.bouton}
         </Bouton>
       </div>
     </div>
@@ -130,13 +127,16 @@ const apercu = realisations.slice(0, 3);
 
   <!-- Réalisations -->
   <section class="container-page mt-24">
-    <TitreSection surtitre="Chantiers" titre="Quelques réalisations" />
+    <TitreSection
+      surtitre={accueil.realisations.surtitre}
+      titre={accueil.realisations.titre}
+    />
     <div class="mt-12">
       <GalerieRealisations items={apercu} />
     </div>
     <div class="mt-10">
       <Bouton href={lien('/realisations')} variante="contour">
-        Voir toutes les réalisations
+        {accueil.realisations.bouton}
       </Bouton>
     </div>
   </section>

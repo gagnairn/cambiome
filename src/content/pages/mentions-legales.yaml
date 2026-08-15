@@ -1,0 +1,51 @@
+titreOnglet: Mentions légales
+description: >-
+  Mentions légales de {nom} : éditeur, hébergeur, assurance décennale,
+  qualification RGE et traitement des données personnelles.
+
+surtitre: Informations
+titre: Mentions légales
+
+titreEditeur: Éditeur du site
+statut: 'Statut : société à mission (art. L210-10 du code de commerce)'
+
+titreQualification: Qualification professionnelle
+qualification: >-
+  {certificat}, délivré par {organisme} et valable jusqu'au {date}. Qualification
+  « Reconnu Garant de l'Environnement » portant sur : {domaines}.
+
+titreAssurance: Assurance professionnelle
+
+titreHebergement: Hébergement
+
+titrePropriete: Propriété intellectuelle
+propriete: >-
+  L'ensemble des contenus de ce site (textes, photographies, logotype) est la
+  propriété de {nom}, sauf mention contraire. Toute reproduction sans
+  autorisation préalable est interdite.
+
+titreDonnees: Données personnelles
+donnees: >-
+  Les données transmises via le formulaire de contact sont utilisées uniquement
+  pour répondre à votre demande et ne font l'objet d'aucune cession à des tiers.
+  Le traitement repose sur votre consentement, recueilli par la case à cocher du
+  formulaire. Les données sont conservées trois ans à compter de notre dernier
+  échange, puis supprimées.
+droits: >-
+  Conformément au RGPD, vous disposez d'un droit d'accès, de rectification,
+  d'effacement, de limitation, d'opposition et de portabilité de vos données,
+  ainsi que du droit de retirer votre consentement à tout moment, en nous
+  contactant {contact}. Si la réponse ne vous satisfait pas, vous pouvez saisir
+  la {lienCnil}.
+libelleLienCnil: CNIL
+web3forms: >-
+  L'envoi du formulaire passe par Web3Forms, qui nous transmet le message par
+  email sans le stocker et n'en garde que des journaux techniques, effacés sous
+  deux mois. Ses serveurs sont hors de l'Union européenne. Pour éviter cet
+  intermédiaire, écrivez-nous ou appelez-nous directement.
+
+titreCookies: Cookies
+cookies: >-
+  Ce site ne dépose aucun cookie et n'utilise aucun outil de mesure d'audience.
+  Les polices de caractères sont hébergées sur le site lui-même : aucune requête
+  n'est adressée à un service tiers lors de la consultation des pages.

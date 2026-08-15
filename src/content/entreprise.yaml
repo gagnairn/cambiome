@@ -1,0 +1,36 @@
+identite:
+  nom: CAMBIOME
+  baseline: Habitats d'avenir
+  accroche: Charpente et rénovation en éco-construction
+  description: "Charpente, ossature bois, couverture, zinguerie et rénovation thermique à Grenoble. Éco-construction : isolation bio-sourcée et étanchéité à l'air."
+  zone: Grenoble et son bassin
+
+coordonnees:
+  email: contact@cambiome.fr
+  telephone: 06 27 80 42 38
+  adresse: 36 avenue Jean Jaurès, 38600 Fontaine
+  instagram: https://instagram.com/cambiome_charpente
+
+formulaire:
+  web3formsCle: 09814d19-063c-44f0-9652-ec94edf5091a
+
+identiteLegale:
+  siret: 933 226 086 00017
+  formeJuridique: SAS
+  formeJuridiqueLongue: société par actions simplifiée à associé unique
+  capital: 6 000 €
+  rcs: 933 226 086 R.C.S. Grenoble
+  tva: FR56933226086
+  directeurPublication: Nicolas Hans
+
+assurance:
+  souscrite: true
+  assureur: BPCE IARD
+  contrat: 138297629 Q - MCE - 001
+  adresse: Route de Chaban, 79180 Chauray
+  couverture: France
+
+hebergeur:
+  nom: OVH SAS
+  adresse: 2 rue Kellermann, 59100 Roubaix, France
+  telephone: "1007"

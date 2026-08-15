@@ -1,0 +1,1135 @@
+# Configuration de Pages CMS (https://pagescms.org).
+#
+# Ce fichier décrit les formulaires que voit l'éditeur du site sur
+# app.pagescms.org. Il ne change rien au site lui-même : le site est construit à
+# partir de src/content/*.yaml, que ces formulaires écrivent.
+#
+# Le garde-fou n'est pas ici, il est dans le code : chaque fichier de contenu est
+# validé au build par un schéma (src/data/site.ts, src/data/realisations.ts,
+# src/data/pages.ts). Une saisie invalide fait échouer la publication et
+# le site en ligne garde sa version précédente. Les `required`, `pattern` et
+# `maxlength` ci-dessous ne font que signaler l'erreur plus tôt, dans le
+# formulaire, plutôt que dix minutes plus tard dans un rapport rouge.
+#
+# Les intitulés et descriptions sont en français : ce sont eux que lit
+# l'éditeur, ils font partie du produit.
+#
+# Deux pièges de Pages CMS, tous deux vérifiés dans son code source :
+#
+#   — une liste écrite sous forme d'objet doit comporter `collapsible` : le
+#     schéma le rend obligatoire dès qu'on quitte le simple `list: true` ;
+#   — `list` posé sur une *entrée* n'est honoré que dans sa forme `list: true`
+#     (comparaison stricte, components/entry/entry.tsx). La forme longue y est
+#     acceptée par la validation mais ignorée par le formulaire, qui traite
+#     alors le tableau comme un objet et l'écrase à l'enregistrement. Les trois
+#     fichiers qui portent une liste ont donc une clé de premier niveau
+#     — `chantiers`, `metiers`, `piliers` — et la liste est déclarée sur un
+#     champ, où toutes les options fonctionnent. `scripts/verifier-cms.mjs`
+#     interdit le retour en arrière.
+
+media:
+  - name: chantiers
+    # `label` n'est pas dans le schéma de Pages CMS, mais la barre latérale le
+    # lit (`item.label || item.name`) et la validation laisse passer les clés
+    # qu'elle ne connaît pas. Sans lui, le menu afficherait « chantiers » en
+    # minuscules, seul intitulé anglo-technique d'une interface française.
+    label: Photos de chantiers
+    input: src/assets/realisations
+    output: src/assets/realisations
+    extensions: [jpg, jpeg, png, webp]
+    # Les photos arrivent d'un téléphone, avec des noms comme
+    # « IMG_2026-08-14 (1).jpg ». On les assainit à l'arrivée : les espaces et
+    # les parenthèses compliquent tout par la suite.
+    rename: safe
+
+content:
+  # ---------------------------------------------------------------- chantiers
+  # En tête de liste : c'est le geste le plus fréquent, et celui pour lequel le
+  # CMS a été mis en place.
+  - name: realisations
+    label: Chantiers
+    type: file
+    path: src/content/realisations.yaml
+    format: yaml
+    fields:
+      - name: chantiers
+        label: false
+        type: object
+        list:
+          # L'ordre de la liste est l'ordre du site : la page d'accueil montre les
+          # trois premiers chantiers, et la page Métiers illustre chaque métier avec
+          # le premier de sa catégorie. Faire glisser un chantier vers le haut, c'est
+          # le mettre en avant.
+          min: 1
+          collapsible:
+            collapsed: true
+            summary: '{fields.titre}'
+        fields:
+          - name: titre
+            label: Titre
+            type: string
+            required: true
+            description: Le nom du chantier, affiché sur la photo.
+            options:
+              maxlength: 60
+          - name: metier
+            label: Étiquette
+            type: string
+            required: true
+            description: >-
+              Le mot affiché dans le coin de la vignette : « Charpente »,
+              « Zinguerie »… Il est libre et peut être plus précis que le métier
+              ci-dessous.
+          - name: metierSlug
+            label: Métier
+            type: select
+            required: true
+            description: >-
+              Détermine sur quelle page Métiers la photo apparaît. La première photo
+              de chaque métier sert à l'illustrer.
+            options:
+              # Recopié de src/content/metiers.yaml. Ajouter un métier là-bas suppose
+              # d'ajouter sa valeur ici, sinon il ne sera pas proposé. Le build
+              # refuse un rattachement à un métier inexistant : la désynchronisation
+              # ne peut pas passer inaperçue.
+              values:
+                - name: charpente-ossature-bois
+                  label: Charpente et ossature bois
+                - name: renovation-thermique
+                  label: Rénovation thermique
+                - name: couverture-zinguerie
+                  label: Couverture et zinguerie
+                - name: structure-bois-menuiserie
+                  label: Structure bois et menuiserie
+          - name: legende
+            label: Légende
+            type: text
+            required: true
+            description: >-
+              Une à trois phrases sur le chantier, lues par vos visiteurs. C'est
+              l'endroit pour dire la contrainte du chantier et comment elle a été
+              résolue.
+          - name: alt
+            label: Description de la photo
+            type: text
+            required: true
+            description: >-
+              Ce qu'on voit sur la photo, pour les personnes aveugles et pour Google.
+              Décrivez l'image, ne répétez pas la légende : « Charpente neuve en bois
+              clair vue depuis le faîtage, toits de tuiles en arrière-plan ».
+          - name: image
+            label: Photo
+            type: image
+            required: true
+            description: >-
+              Téléversez la photo telle qu'elle sort de l'appareil : elle est allégée
+              automatiquement après publication. Cadrez serré sur l'ouvrage, en
+              paysage de préférence.
+            options:
+              media: chantiers
+
+  # --------------------------------------------------------- textes des pages
+  # Un groupe, une entrée par page. À part des données ci-dessous : on ne
+  # corrige pas une accroche dans le même formulaire qu'un numéro de SIRET.
+  #
+  # Les noms d'entrée sont préfixés « page- » parce que trois pages portent le
+  # nom d'une entrée de données — métiers, réalisations, démarche — et qu'un
+  # doublon rendrait l'une des deux inatteignable.
+  - name: textes-pages
+    label: Textes des pages
+    type: group
+    description: >-
+      Dans chaque page : « Titre d'onglet » et « Description » sont ce que
+      lisent l'onglet du navigateur et les résultats de recherche ;
+      « Surtitre » et « Titre » forment l'en-tête affiché en haut de la page.
+
+      ⚠ Les mots entre accolades — {nom}, {zone}, {lienCnil}… — sont remplacés à
+      la publication par une valeur du site ou par un lien. Recopiez-les tels
+      quels, accolades comprises. En supprimer un fait échouer la publication
+      avec un message qui le nomme : rien ne part en ligne amputé.
+    items:
+      - name: page-accueil
+        label: Accueil
+        type: file
+        path: src/content/pages/accueil.yaml
+        format: yaml
+        description: >-
+          Pas de titre d'onglet ni de description ici : l'accueil porte ceux du
+          site entier, dans « L'entreprise ».
+        fields:
+          - name: hero
+            label: Bandeau d'ouverture
+            type: object
+            fields:
+              - name: titre
+                label: Titre
+                type: text
+                required: true
+              - name: texte
+                label: Texte
+                type: text
+                required: true
+              - name: boutonMetiers
+                label: Bouton vers les métiers
+                type: string
+                required: true
+              - name: boutonContact
+                label: Bouton vers le contact
+                type: string
+                required: true
+          - name: metiers
+            label: Section « métiers »
+            type: object
+            fields:
+              - name: surtitre
+                label: Surtitre
+                type: string
+                required: true
+              - name: titre
+                label: Titre
+                type: string
+                required: true
+              - name: texte
+                label: Texte
+                type: text
+                required: true
+          - name: demarche
+            label: Section « démarche »
+            type: object
+            fields:
+              - name: surtitre
+                label: Surtitre
+                type: string
+                required: true
+              - name: titre
+                label: Titre
+                type: string
+                required: true
+              - name: texte
+                label: Texte
+                type: text
+                required: true
+              - name: bouton
+                label: Libellé du bouton
+                type: string
+                required: true
+          - name: realisations
+            label: Section « chantiers »
+            type: object
+            description: >-
+              Cette section n'a pas de texte : les trois premiers chantiers
+              parlent d'eux-mêmes.
+            fields:
+              - name: surtitre
+                label: Surtitre
+                type: string
+                required: true
+              - name: titre
+                label: Titre
+                type: string
+                required: true
+              - name: bouton
+                label: Libellé du bouton
+                type: string
+                required: true
+
+      - name: page-metiers
+        label: Nos métiers
+        type: file
+        path: src/content/pages/metiers.yaml
+        format: yaml
+        fields:
+          - name: titreOnglet
+            label: Titre d'onglet
+            type: string
+            required: true
+          - name: description
+            label: Description
+            type: text
+            required: true
+            options:
+              maxlength: 320
+          - name: surtitre
+            label: Surtitre
+            type: string
+            required: true
+          - name: titre
+            label: Titre
+            type: string
+            required: true
+          - name: texte
+            label: Texte d'introduction
+            type: text
+            required: true
+          - name: sommaire
+            label: Nom du sommaire
+            type: string
+            required: true
+            description: >-
+              N'apparaît pas à l'écran : c'est le nom que les lecteurs d'écran
+              annoncent devant la liste des quatre métiers.
+
+      - name: page-realisations
+        label: Réalisations
+        type: file
+        path: src/content/pages/realisations.yaml
+        format: yaml
+        fields:
+          - name: titreOnglet
+            label: Titre d'onglet
+            type: string
+            required: true
+          - name: description
+            label: Description
+            type: text
+            required: true
+            options:
+              maxlength: 320
+          - name: surtitre
+            label: Surtitre
+            type: string
+            required: true
+          - name: titre
+            label: Titre
+            type: string
+            required: true
+          - name: texte
+            label: Texte d'introduction
+            type: text
+            required: true
+
+      - name: page-demarche
+        label: Notre démarche
+        type: file
+        path: src/content/pages/demarche.yaml
+        format: yaml
+        fields:
+          - name: titreOnglet
+            label: Titre d'onglet
+            type: string
+            required: true
+          - name: description
+            label: Description
+            type: text
+            required: true
+            options:
+              maxlength: 320
+          - name: surtitre
+            label: Surtitre
+            type: string
+            required: true
+          - name: titre
+            label: Titre
+            type: string
+            required: true
+          - name: texte
+            label: Texte d'introduction
+            type: text
+            required: true
+          - name: mission
+            label: Section « société à mission »
+            type: object
+            description: >-
+              La mission elle-même se modifie dans « Mission de la société à
+              mission ». Ici, seule la façon de l'introduire.
+            fields:
+              - name: surtitre
+                label: Surtitre
+                type: string
+                required: true
+              - name: titre
+                label: Titre
+                type: string
+                required: true
+              - name: texte
+                label: Texte
+                type: text
+                required: true
+                description: '{nom} : le nom de l''entreprise.'
+              - name: avertissement
+                label: Avertissement
+                type: text
+                required: true
+                description: >-
+                  ⚠ Prévient que ce qui suit est repris des statuts sans
+                  reformulation. Retirer cette phrase laisserait croire que le
+                  texte est une présentation commerciale, alors qu'il engage la
+                  société.
+              - name: titrePromeut
+                label: Titre « ce que la société promeut »
+                type: string
+                required: true
+              - name: titreObjectifs
+                label: Titre « les objectifs »
+                type: string
+                required: true
+          - name: collaboration
+            label: Section « travailler ensemble »
+            type: object
+            fields:
+              - name: surtitre
+                label: Surtitre
+                type: string
+                required: true
+              - name: titre
+                label: Titre
+                type: string
+                required: true
+              - name: texte
+                label: Paragraphes
+                type: text
+                required: true
+                list:
+                  min: 1
+                  collapsible: false
+
+      - name: page-contact
+        label: Contact
+        type: file
+        path: src/content/pages/contact.yaml
+        format: yaml
+        fields:
+          - name: titreOnglet
+            label: Titre d'onglet
+            type: string
+            required: true
+          - name: description
+            label: Description
+            type: text
+            required: true
+            description: '{zone} : la zone d''intervention, reprise de « L''entreprise ».'
+            options:
+              maxlength: 320
+          - name: surtitre
+            label: Surtitre
+            type: string
+            required: true
+          - name: titre
+            label: Titre
+            type: string
+            required: true
+          - name: texte
+            label: Texte d'introduction
+            type: text
+            required: true
+
+      - name: page-rge
+        label: Entreprise RGE Qualibat
+        type: file
+        path: src/content/pages/rge-qualibat.yaml
+        format: yaml
+        description: >-
+          Le numéro de certificat, les dates et les domaines qualifiés se
+          modifient dans « Qualification RGE ». Ici, seulement ce qui les
+          entoure.
+        fields:
+          - name: titreOnglet
+            label: Titre d'onglet
+            type: string
+            required: true
+          - name: description
+            label: Description
+            type: text
+            required: true
+            description: '{nom} : le nom de l''entreprise.'
+            options:
+              maxlength: 320
+          - name: surtitre
+            label: Surtitre
+            type: string
+            required: true
+          - name: titre
+            label: Titre
+            type: string
+            required: true
+          - name: introEnCours
+            label: Introduction, qualification en cours
+            type: text
+            required: true
+            description: '{nom} et {organisme}.'
+          - name: introExpiree
+            label: Introduction, qualification expirée
+            type: text
+            required: true
+            description: >-
+              ⚠ Ce texte remplace le précédent le jour où la qualification
+              arrive à échéance, et le reste de la page disparaît : afficher une
+              qualification expirée est une allégation trompeuse. {nom}, {date}
+              et {lienMetiers}, qui marque l'endroit du lien vers les métiers.
+          - name: libelleLienMetiers
+            label: Libellé du lien vers les métiers
+            type: string
+            required: true
+          - name: titreAides
+            label: Titre « les aides »
+            type: string
+            required: true
+          - name: aides
+            label: Les aides
+            type: object
+            list:
+              min: 1
+              collapsible:
+                collapsed: true
+                summary: '{fields.titre}'
+            fields:
+              - name: titre
+                label: Nom de l'aide
+                type: string
+                required: true
+              - name: texte
+                label: Texte
+                type: text
+                required: true
+                description: >-
+                  ⚠ N'annoncez aucun montant ni aucun taux : les barèmes changent
+                  chaque année et une page qui les affiche devient fausse sans
+                  prévenir.
+          - name: noteAides
+            label: Note sous les aides
+            type: text
+            required: true
+          - name: titreDomaines
+            label: Titre « domaines qualifiés »
+            type: string
+            required: true
+          - name: noteDomaines
+            label: Note sous les domaines
+            type: text
+            required: true
+            description: >-
+              ⚠ Dit ce que la qualification ne couvre pas. Mieux vaut le lire ici
+              que le découvrir au moment du dossier d'aide.
+          - name: titreAttestation
+            label: Titre « l'attestation »
+            type: string
+            required: true
+          - name: libelleLienAttestation
+            label: Libellé du lien vers l'attestation
+            type: string
+            required: true
+          - name: texteAttestation
+            label: Texte autour du lien
+            type: text
+            required: true
+            description: '{lienAttestation} marque l''endroit du lien.'
+
+      - name: page-mentions
+        label: Mentions légales
+        type: file
+        path: src/content/pages/mentions-legales.yaml
+        format: yaml
+        description: >-
+          ⚠ Page à contenu imposé (art. 6-III de la LCEN, art. L243-2 du code des
+          assurances, RGPD). Les valeurs — SIRET, assureur, hébergeur — se
+          modifient dans « L'entreprise » ; ce sont les phrases qui les portent
+          qui se modifient ici. Elles disent le droit : les raccourcir, c'est
+          retirer une mention obligatoire.
+        fields:
+          - name: titreOnglet
+            label: Titre d'onglet
+            type: string
+            required: true
+          - name: description
+            label: Description
+            type: text
+            required: true
+            description: '{nom} : le nom de l''entreprise.'
+            options:
+              maxlength: 320
+          - name: surtitre
+            label: Surtitre
+            type: string
+            required: true
+          - name: titre
+            label: Titre
+            type: string
+            required: true
+          - name: titreEditeur
+            label: Titre « éditeur du site »
+            type: string
+            required: true
+          - name: statut
+            label: Ligne « statut »
+            type: string
+            required: true
+            description: >-
+              ⚠ La mention de société à mission est exigée de toute société qui
+              se déclare telle (art. L210-10 du code de commerce).
+          - name: titreQualification
+            label: Titre « qualification professionnelle »
+            type: string
+            required: true
+          - name: qualification
+            label: Texte de la qualification
+            type: text
+            required: true
+            description: '{certificat}, {organisme}, {date} et {domaines}.'
+          - name: titreAssurance
+            label: Titre « assurance professionnelle »
+            type: string
+            required: true
+            description: >-
+              Le texte de cette section est composé à partir de « L'entreprise »
+              seule : il n'affiche l'adresse de l'assureur que si elle est
+              renseignée, ce qu'un texte à trous ne saurait pas faire.
+          - name: titreHebergement
+            label: Titre « hébergement »
+            type: string
+            required: true
+          - name: titrePropriete
+            label: Titre « propriété intellectuelle »
+            type: string
+            required: true
+          - name: propriete
+            label: Texte de la propriété intellectuelle
+            type: text
+            required: true
+            description: '{nom} : le nom de l''entreprise.'
+          - name: titreDonnees
+            label: Titre « données personnelles »
+            type: string
+            required: true
+          - name: donnees
+            label: Texte sur les données
+            type: text
+            required: true
+            description: >-
+              ⚠ Finalité, base légale et durée de conservation sont exigées par
+              les art. 13 et 14 du RGPD. La durée annoncée — trois ans — doit
+              être celle qui est réellement appliquée.
+          - name: droits
+            label: Texte sur les droits
+            type: text
+            required: true
+            description: >-
+              ⚠ L'énumération des droits est celle du RGPD ; le droit de saisir
+              la CNIL doit y figurer. {contact} devient l'adresse e-mail, ou le
+              téléphone à défaut ; {lienCnil} marque l'endroit du lien.
+          - name: libelleLienCnil
+            label: Libellé du lien vers la CNIL
+            type: string
+            required: true
+          - name: web3forms
+            label: Texte sur Web3Forms
+            type: text
+            required: true
+            description: >-
+              ⚠ Ne s'affiche que si le formulaire de contact est activé. Il
+              signale un transfert hors Union européenne, information exigée par
+              l'art. 13 du RGPD.
+          - name: titreCookies
+            label: Titre « cookies »
+            type: string
+            required: true
+          - name: cookies
+            label: Texte sur les cookies
+            type: text
+            required: true
+            description: >-
+              ⚠ Le site ne dépose aucun cookie et n'appelle aucun service tiers.
+              Cette phrase doit rester vraie : si un outil de mesure d'audience
+              était ajouté, il faudrait la réécrire et poser un bandeau de
+              consentement.
+
+      - name: page-merci
+        label: Merci (après envoi du formulaire)
+        type: file
+        path: src/content/pages/merci.yaml
+        format: yaml
+        description: >-
+          Page d'arrivée après l'envoi du formulaire sans JavaScript. Avec
+          JavaScript, la confirmation s'affiche sur la page Contact et celle-ci
+          n'est jamais vue.
+        fields:
+          - name: titreOnglet
+            label: Titre d'onglet
+            type: string
+            required: true
+          - name: description
+            label: Description
+            type: text
+            required: true
+            options:
+              maxlength: 320
+          - name: surtitre
+            label: Surtitre
+            type: string
+            required: true
+          - name: titre
+            label: Titre
+            type: string
+            required: true
+          - name: texte
+            label: Texte
+            type: text
+            required: true
+          - name: urgence
+            label: Phrase sur le téléphone
+            type: text
+            required: true
+            description: >-
+              Ajoutée à la suite du texte, et seulement si un numéro de
+              téléphone est renseigné.
+          - name: bouton
+            label: Libellé du bouton
+            type: string
+            required: true
+
+      - name: page-404
+        label: Page introuvable
+        type: file
+        path: src/content/pages/404.yaml
+        format: yaml
+        fields:
+          - name: titreOnglet
+            label: Titre d'onglet
+            type: string
+            required: true
+          - name: description
+            label: Description
+            type: text
+            required: true
+            options:
+              maxlength: 320
+          - name: surtitre
+            label: Surtitre
+            type: string
+            required: true
+          - name: titre
+            label: Titre
+            type: string
+            required: true
+          - name: texte
+            label: Texte
+            type: text
+            required: true
+          - name: boutonAccueil
+            label: Bouton vers l'accueil
+            type: string
+            required: true
+          - name: boutonRealisations
+            label: Bouton vers les réalisations
+            type: string
+            required: true
+
+      - name: textes-communs
+        label: Blocs répétés sur plusieurs pages
+        type: file
+        path: src/content/pages/commun.yaml
+        format: yaml
+        description: >-
+          Ces deux blocs reviennent sur plusieurs pages : les modifier ici les
+          modifie partout.
+        fields:
+          - name: appelContact
+            label: Encadré « un projet en tête ? »
+            type: object
+            description: Au pied de l'accueil, des métiers, des chantiers et de la démarche.
+            fields:
+              - name: titre
+                label: Titre
+                type: string
+                required: true
+              - name: texte
+                label: Texte
+                type: text
+                required: true
+              - name: bouton
+                label: Libellé du bouton
+                type: string
+                required: true
+          - name: renvoiRge
+            label: Renvoi vers la qualification RGE
+            type: object
+            description: >-
+              Sous le métier « Rénovation thermique », et seulement lui : le RGE
+              n'ouvre aucun droit sur la charpente ou la zinguerie. Disparaît de
+              lui-même passée la date d'échéance.
+            fields:
+              - name: surtitre
+                label: Surtitre
+                type: string
+                required: true
+                description: '{organisme} : l''organisme qualificateur.'
+              - name: texte
+                label: Texte
+                type: text
+                required: true
+              - name: lien
+                label: Libellé du lien
+                type: string
+                required: true
+
+  # ------------------------------------------------------------------ métiers
+  - name: metiers
+    label: Les quatre métiers
+    type: file
+    path: src/content/metiers.yaml
+    format: yaml
+    fields:
+      - name: metiers
+        label: false
+        type: object
+        list:
+          min: 1
+          collapsible:
+            collapsed: true
+            summary: '{fields.titre}'
+        fields:
+          - name: slug
+            label: Identifiant
+            type: string
+            required: true
+            pattern:
+              regex: '^[a-z0-9]+(-[a-z0-9]+)*$'
+              message: Minuscules sans accent, chiffres et tirets uniquement.
+            description: >-
+              ⚠ Adresse interne du métier. Elle apparaît dans les liens du pied de
+              page et rattache les chantiers à ce métier. Ne la modifiez pas sur un
+              métier existant : les liens tomberaient en panne et les photos s'en
+              détacheraient.
+          - name: titre
+            label: Titre
+            type: string
+            required: true
+            description: Affiché sur la page Métiers, la page d'accueil et le pied de page.
+            options:
+              maxlength: 48
+          - name: chapo
+            label: Phrase d'introduction
+            type: text
+            required: true
+            description: Une phrase, affichée en gros caractères sous le titre.
+            options:
+              maxlength: 160
+          - name: texte
+            label: Paragraphes
+            type: text
+            required: true
+            list:
+              min: 1
+              collapsible: false
+            description: Un paragraphe par entrée. Pas de mise en forme ni de lien.
+          - name: points
+            label: Liste à puces
+            type: string
+            list: true
+            description: Les prestations, une par entrée. Peut rester vide.
+
+  # ----------------------------------------------------------------- démarche
+  # « Les quatre piliers » et non « Notre démarche » : la page du même nom est
+  # déjà dans le groupe ci-dessus, et deux entrées de menu identiques
+  # obligeraient l'éditeur à ouvrir les deux pour savoir laquelle est laquelle.
+  - name: demarche
+    label: Les quatre piliers de la démarche
+    type: file
+    path: src/content/demarche.yaml
+    format: yaml
+    fields:
+      - name: piliers
+        label: false
+        type: object
+        list:
+          min: 1
+          collapsible:
+            collapsed: true
+            summary: '{fields.titre}'
+        fields:
+          - name: titre
+            label: Titre du pilier
+            type: string
+            required: true
+          - name: texte
+            label: Texte
+            type: text
+            required: true
+
+  # --------------------------------------------------------------- entreprise
+  - name: entreprise
+    label: L'entreprise
+    type: file
+    path: src/content/entreprise.yaml
+    format: yaml
+    fields:
+      - name: identite
+        label: Identité
+        type: object
+        fields:
+          - name: nom
+            label: Nom
+            type: string
+            required: true
+          - name: baseline
+            label: Baseline
+            type: string
+            required: true
+            description: Affichée sous le nom dans l'en-tête.
+          - name: accroche
+            label: Accroche
+            type: string
+            required: true
+          - name: description
+            label: Description du site
+            type: text
+            required: true
+            description: >-
+              Le résumé que Google affiche sous le lien du site. Au-delà
+              d'environ 160 signes, il est coupé.
+            options:
+              maxlength: 320
+          - name: zone
+            label: Zone d'intervention
+            type: string
+            required: true
+
+      - name: coordonnees
+        label: Coordonnées
+        type: object
+        description: >-
+          Ces coordonnées apparaissent au pied de page, sur la page Contact et
+          dans les mentions légales à la fois : il n'y a qu'un endroit à
+          corriger. Un champ laissé vide fait disparaître la ligne du site,
+          plutôt que d'afficher un blanc — mieux vaut ne rien annoncer qu'un
+          numéro qui ne répond plus.
+        fields:
+          - name: email
+            label: E-mail
+            type: string
+          - name: telephone
+            label: Téléphone
+            type: string
+          - name: adresse
+            label: Adresse postale
+            type: string
+          - name: instagram
+            label: Lien Instagram
+            type: string
+
+      - name: formulaire
+        label: Formulaire de contact
+        type: object
+        fields:
+          - name: web3formsCle
+            label: Clé Web3Forms
+            type: string
+            description: >-
+              Tant que ce champ est vide, la page Contact n'affiche que le
+              téléphone et l'e-mail, sans formulaire. Pour l'activer, obtenez une
+              clé gratuite sur web3forms.com en y saisissant l'adresse qui
+              recevra les messages, puis collez-la ici. Cette clé est publique
+              par conception, il n'y a rien à cacher.
+
+      - name: identiteLegale
+        label: Identité légale
+        type: object
+        description: >-
+          ⚠ Contenu imposé par la loi (art. 6-III de la LCEN). Ces mentions
+          doivent figurer sur le site et être exactes ; les vider ou les
+          approximer expose l'entreprise. À ne corriger qu'à partir d'un document
+          officiel — extrait Kbis, statuts.
+        fields:
+          - name: siret
+            label: SIRET
+            type: string
+            required: true
+          - name: formeJuridique
+            label: Forme juridique (abrégée)
+            type: string
+            required: true
+            description: Telle qu'elle apparaît en pied de page. Ex. « SAS ».
+          - name: formeJuridiqueLongue
+            label: Forme juridique (en toutes lettres)
+            type: string
+            required: true
+            description: >-
+              Reprise des statuts, art. 1er. Ex. « société par actions simplifiée
+              à associé unique ».
+          - name: capital
+            label: Capital social
+            type: string
+            required: true
+            description: Celui inscrit aux statuts, mention imposée par leur art. 2.
+          - name: rcs
+            label: Immatriculation au RCS
+            type: string
+            required: true
+          - name: tva
+            label: TVA intracommunautaire
+            type: string
+            required: true
+          - name: directeurPublication
+            label: Directeur de la publication
+            type: string
+            required: true
+            description: Le représentant légal — pour une SASU, le président.
+
+      - name: assurance
+        label: Assurance professionnelle
+        type: object
+        description: >-
+          ⚠ La garantie décennale est obligatoire (art. L241-1 du code des
+          assurances) et l'art. L243-2 impose d'en afficher les coordonnées :
+          assureur, contrat, couverture géographique. À reprendre de
+          l'attestation d'assurance, sans rien inventer.
+        fields:
+          - name: souscrite
+            label: Contrat en cours
+            type: boolean
+            required: true
+          - name: assureur
+            label: Assureur
+            type: string
+            required: true
+          - name: contrat
+            label: Numéro de contrat
+            type: string
+            required: true
+          - name: adresse
+            label: Adresse de l'assureur
+            type: string
+            description: >-
+              Le siège social — pas l'adresse de résiliation du contrat, qui n'a
+              rien à faire dans des mentions légales. Peut rester vide : la page
+              n'affiche alors que le nom, ce qui reste exact.
+          - name: couverture
+            label: Couverture géographique
+            type: string
+            required: true
+
+      - name: hebergeur
+        label: Hébergeur du site
+        type: object
+        description: >-
+          ⚠ Nom, adresse et téléphone exigés par l'art. 6-III de la LCEN. La
+          mention doit désigner l'hébergeur réel du moment : elle sert à savoir
+          qui détient les fichiers en cas de litige. Ne la modifiez que si
+          l'hébergement change — auquel cas prévenez-nous, c'est une bascule
+          technique.
+        fields:
+          - name: nom
+            label: Nom
+            type: string
+            required: true
+          - name: adresse
+            label: Adresse
+            type: string
+            required: true
+          - name: telephone
+            label: Téléphone
+            type: string
+            required: true
+
+  # ---------------------------------------------------------------------- RGE
+  - name: rge
+    label: Qualification RGE
+    type: file
+    path: src/content/rge.yaml
+    format: yaml
+    fields:
+      - name: organisme
+        label: Organisme
+        type: string
+        required: true
+      - name: certificat
+        label: Numéro de certificat
+        type: string
+        required: true
+      - name: attestation
+        label: Lien vers l'attestation (PDF)
+        type: string
+        required: true
+        pattern:
+          regex: '^https://'
+          message: L'adresse doit commencer par https://
+      - name: debut
+        label: Début de validité
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+      - name: fin
+        label: Fin de validité
+        type: date
+        required: true
+        description: >-
+          ⚠ Passée cette date, le site retire de lui-même la page RGE, le bandeau
+          du pied de page et le renvoi de la page Métiers : afficher une
+          qualification expirée est une allégation trompeuse. Mais le site étant
+          figé, ce retrait ne prend effet qu'à la publication suivante. Le jour
+          où la qualification est renouvelée — ou le jour où elle expire —
+          prévenez-nous : il faut relancer une publication.
+        options:
+          format: yyyy-MM-dd
+      - name: domaines
+        label: Domaines qualifiés
+        type: string
+        required: true
+        list:
+          min: 1
+          collapsible: false
+        description: >-
+          ⚠ À recopier du registre public de l'ADEME, à l'identique. Annoncer un
+          domaine non couvert est une allégation trompeuse au sens du code de la
+          consommation.
+
+  # ------------------------------------------------------------------ mission
+  - name: mission
+    label: Mission de la société à mission
+    type: file
+    path: src/content/mission.yaml
+    format: yaml
+    fields:
+      - name: promeut
+        label: Ce que la société promeut
+        type: text
+        required: true
+        list:
+          min: 1
+          collapsible: false
+        description: >-
+          ⚠ Repris mot pour mot de l'article 3 des statuts constitutifs du
+          11 septembre 2024. Ne reformulez pas : la mission d'une société à
+          mission est opposable (art. L210-10 du code de commerce), le site doit
+          dire ce que disent les statuts, pas une version arrangée. Si la mission
+          change, ce sont les statuts qui changent d'abord.
+      - name: objectifs
+        label: Objectifs statutaires
+        type: object
+        description: >-
+          ⚠ Même remarque : ces objectifs sont ceux des statuts, à la lettre.
+        list:
+          min: 1
+          collapsible:
+            collapsed: true
+            summary: '{fields.titre}'
+        fields:
+          - name: titre
+            label: Intitulé du groupe
+            type: string
+            required: true
+          - name: items
+            label: Objectifs
+            type: text
+            required: true
+            list:
+              min: 1
+              collapsible: false
+
+settings:
+  content:
+    # Les clés que ce fichier ne décrit pas sont conservées telles quelles au
+    # lieu d'être effacées à l'enregistrement. Filet de sécurité pour le jour où
+    # un champ est ajouté au site mais pas encore ici.
+    merge: true
+  commit:
+    # Les commits portent le nom de la personne qui a fait la modification,
+    # plutôt que celui de l'application : sur un site à un seul éditeur, savoir
+    # qui a touché à quoi vaut mieux qu'une colonne de « pages-cms[bot] ».
+    # Basculer sur `app` si un éditeur invité par e-mail n'arrive pas à publier.
+    identity: user
+    templates:
+      create: 'Ajout de {filename} (depuis le CMS)'
+      update: 'Modification de {filename} (depuis le CMS)'
+      delete: 'Suppression de {filename} (depuis le CMS)'
+      rename: 'Renommage de {oldPath} en {newPath} (depuis le CMS)'

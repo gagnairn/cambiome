@@ -3,23 +3,16 @@ import { Image } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
 import TitreSection from '~/components/TitreSection.astro';
 import AppelContact from '~/components/AppelContact.astro';
-import { demarche, site, societeAMission } from '~/data/site';
+import { demarche, societeAMission } from '~/data/site';
+import { pageDemarche } from '~/data/pages';
 import solivage from '~/assets/realisations/solivage-queue-daronde.jpg';
 import chene from '~/assets/realisations/charpente-chene.jpg';
 ---
 
-<Base
-  titre="Notre démarche"
-  description="Isolation bio-sourcée, étanchéité à l'air maîtrisée, ventilation double flux : l'enveloppe pensée comme un tout, par une société à mission."
->
+<Base titre={pageDemarche.titreOnglet} description={pageDemarche.description}>
   <section class="container-page pt-16">
-    <TitreSection niveau={1} surtitre="Éco-construction" titre="Une enveloppe pensée comme un tout">
-      <p>
-        Un bâtiment confortable n'est pas un empilement de bonnes intentions :
-        c'est une enveloppe cohérente. Isolation, étanchéité à l'air,
-        ventilation intérieure et ventilation des parois forment un même
-        système. Voici comment nous l'abordons.
-      </p>
+    <TitreSection niveau={1} surtitre={pageDemarche.surtitre} titre={pageDemarche.titre}>
+      <p>{pageDemarche.texte}</p>
     </TitreSection>
   </section>
 
@@ -65,27 +58,18 @@ import chene from '~/assets/realisations/charpente-chene.jpg';
       réécrit pas pour le rendre plus vendeur. */}
   <section id="mission" class="container-page mt-24 scroll-mt-24">
     <TitreSection
-      surtitre="Société à mission"
-      titre="La mission inscrite aux statuts"
+      surtitre={pageDemarche.mission.surtitre}
+      titre={pageDemarche.mission.titre}
       niveau={2}
     >
-      <p>
-        {site.nom} est enregistrée comme société à mission. Ce statut, prévu par
-        l'article L210-10 du code de commerce et déclaré au registre national
-        des entreprises, inscrit dans les statuts des objectifs sociaux et
-        environnementaux que la société se donne pour mission de poursuivre — et
-        dont elle répond, au-delà de son activité commerciale.
-      </p>
-      <p class="mt-4">
-        Ce qui suit est l'article 3 des statuts constitutifs, repris sans
-        reformulation.
-      </p>
+      <p>{pageDemarche.mission.texte}</p>
+      <p class="mt-4">{pageDemarche.mission.avertissement}</p>
     </TitreSection>
 
     <h3 class="mt-12 font-display text-xl leading-snug">
-      La société se donne pour mission de promouvoir
+      {pageDemarche.mission.titrePromeut}
     </h3>
-    <ul class="mt-6 max-w-3xl space-y-3">
+    <ul class="mt-6 mesure-lecture space-y-3">
       {
         societeAMission.promeut.map((p) => (
           <li class="border-l-2 border-ardoise-300 pl-5 leading-relaxed text-encre/80">
@@ -96,7 +80,7 @@ import chene from '~/assets/realisations/charpente-chene.jpg';
     </ul>
 
     <h3 class="mt-14 font-display text-xl leading-snug">
-      Les objectifs qu'elle se donne pour y parvenir
+      {pageDemarche.mission.titreObjectifs}
     </h3>
     <div class="mt-8 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
       {
@@ -134,19 +118,20 @@ import chene from '~/assets/realisations/charpente-chene.jpg';
         />
       </div>
       <div>
-        <TitreSection surtitre="Travailler ensemble" titre="Bâti ancien, bureau d'études et auto-rénovation" niveau={2} />
-        <p class="mt-6 leading-relaxed text-encre/75">
-          Sur les charpentes existantes, nous travaillons en étroite
-          collaboration avec un bureau d'études structure : les reprises de
-          pièces, les modifications de pans et les créations d'ouvertures sont
-          calculées avant d'être taillées.
-        </p>
-        <p class="mt-4 leading-relaxed text-encre/75">
-          Nous proposons également un accompagnement à l'auto-rénovation. Nous
-          prenons en charge les lots techniques — charpente, couverture,
-          étanchéité à l'air — et vous gardez la main sur ce que vous pouvez
-          réaliser vous-même, avec nos conseils de mise en œuvre.
-        </p>
+        <TitreSection
+          surtitre={pageDemarche.collaboration.surtitre}
+          titre={pageDemarche.collaboration.titre}
+          niveau={2}
+        />
+        {/* Le premier paragraphe se décolle davantage du titre que les
+            suivants ne se décollent entre eux. */}
+        {
+          pageDemarche.collaboration.texte.map((p, i) => (
+            <p class:list={[i === 0 ? 'mt-6' : 'mt-4', 'leading-relaxed text-encre/75']}>
+              {p}
+            </p>
+          ))
+        }
       </div>
     </div>
   </section>

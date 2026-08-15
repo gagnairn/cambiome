@@ -1,9 +1,9 @@
 /**
  * Retouches typographiques appliquées à l'affichage, jamais à la donnée.
  *
- * Le principe : `src/data/site.ts` reste lisible et modifiable par quelqu'un
- * qui ne connaît pas les entités HTML. C'est au rendu de coller les espaces
- * qu'il ne faut pas casser.
+ * Le principe : `src/content/` reste lisible et modifiable par quelqu'un qui ne
+ * connaît pas les entités HTML — et qui, depuis le CMS, saisit dans un champ de
+ * formulaire. C'est au rendu de coller les espaces qu'il ne faut pas casser.
  */
 
 /** Espace insécable (U+00A0). */

@@ -8,6 +8,14 @@ import { site, themes } from '~/data/site';
 import { lien } from '~/lib/base';
 import { SCRIPT_THEME } from '~/lib/theme-script';
 
+// Les deux sous-ensembles latins, les seuls qu'un texte français télécharge —
+// les autres (cyrillique, grec, vietnamien) sont déclarés avec leur
+// `unicode-range` et ne partent jamais. Importés en `?url` pour obtenir le nom
+// haché que Vite leur donne au build : l'écrire à la main le figerait, et le
+// préchargement pointerait dans le vide au prochain build.
+import policeTexte from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import policeTitres from '@fontsource-variable/jost/files/jost-latin-wght-normal.woff2?url';
+
 interface Props {
   titre: string;
   description?: string;
@@ -51,10 +59,26 @@ const ogImage = new URL(lien('/og-image.jpg'), Astro.site);
          CSP est dérivé de la même chaîne dans astro.config.mjs. */
       themes.selecteur && <script is:inline set:html={SCRIPT_THEME} />
     }
+    {/* Préchargement des polices. Sans lui, le navigateur ne découvre les
+        `woff2` qu'après avoir analysé la feuille de style : le texte s'affiche
+        d'abord dans la police de repli, puis saute quand la vraie arrive.
+        Mesuré sur la page Métiers sous bridage mobile — décalage cumulé de
+        0,094, au-dessus du seuil de 0,1 quand Lighthouse le mesure ; 0,000 en
+        empêchant les polices de se charger, ce qui désigne bien le coupable.
+        `crossorigin` est obligatoire même pour une police du même domaine :
+        les requêtes de police sont anonymes, et sans lui le navigateur
+        téléchargerait le fichier deux fois. */}
+    <link rel="preload" as="font" type="font/woff2" href={policeTexte} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={policeTitres} crossorigin />
     <title>{titreComplet}</title>
     <meta name="description" content={description} />
     <DonneesStructurees />
-    <link rel="canonical" href={canonical} />
+    {/* Pas de canonique sur une page en `noindex` : elle ne demande pas à être
+        indexée, l'adresse de référence n'a donc rien à désigner. Sur la 404 la
+        balise était même fausse — elle pointait vers /404/, qui n'existe pas.
+        `og:url` la garde : les réseaux sociaux s'en servent pour identifier ce
+        qui est partagé, indépendamment de l'indexation. */}
+    {!noindex && <link rel="canonical" href={canonical} />}
     {noindex && <meta name="robots" content="noindex, follow" />}
     {/* Icônes : le .ico couvre les onglets (16/32/48), l'apple-touch-icon
         l'ajout à l'écran d'accueil iOS, le manifeste Android. Pas de favicon

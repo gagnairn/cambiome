@@ -13,6 +13,17 @@ import { telephoneInsecable } from '~/lib/texte';
  * L'envoi se fait en fetch pour rester sur la page, mais le formulaire reste un
  * vrai <form> POST : sans JavaScript, le navigateur poste directement vers
  * Web3Forms, qui renvoie ensuite sur la page /merci (champ `redirect`).
+ *
+ * Deux conventions de Web3Forms commandent le nommage des champs ci-dessous :
+ *
+ * — les noms réservés (`access_key`, `subject`, `from_name`, `redirect`,
+ *   `replyto`, `botcheck`) pilotent le service et ne ressortent pas dans le
+ *   message ; tous les autres sont recopiés dans l'e-mail reçu, avec leur nom
+ *   pour intitulé. D'où « Commune du chantier » plutôt que `commune` : c'est
+ *   une étiquette lue par CAMBIOME, pas un identifiant de code ;
+ * — le champ nommé exactement `email` devient l'adresse de réponse. Répondre
+ *   au message reçu écrit donc à la personne, sans copier-coller. C'est la
+ *   raison pour laquelle celui-là seul garde un nom en minuscules.
  */
 const ENDPOINT = 'https://api.web3forms.com/submit';
 
@@ -58,9 +69,12 @@ const label = 'block text-sm text-encre/80';
         action={ENDPOINT}
         method="POST"
         data-message-erreur={messageErreur}
+        data-sujet={`${site.nom} — demande`}
       >
         {/* Champs de service Web3Forms */}
         <input type="hidden" name="access_key" value={contact.web3formsCle} />
+        {/* Sujet de repli, utilisé tel quel sans JavaScript. Avec JavaScript,
+            le script le complète du nom et de la commune : voir plus bas. */}
         <input
           type="hidden"
           name="subject"
@@ -78,7 +92,7 @@ const label = 'block text-sm text-encre/80';
             <input
               class={champ}
               id="nom"
-              name="nom"
+              name="Nom"
               type="text"
               required
               autocomplete="name"
@@ -104,7 +118,7 @@ const label = 'block text-sm text-encre/80';
             <input
               class={champ}
               id="telephone"
-              name="telephone"
+              name="Téléphone"
               type="tel"
               autocomplete="tel"
             />
@@ -116,7 +130,7 @@ const label = 'block text-sm text-encre/80';
             <input
               class={champ}
               id="commune"
-              name="commune"
+              name="Commune du chantier"
               type="text"
               autocomplete="address-level2"
             />
@@ -127,7 +141,7 @@ const label = 'block text-sm text-encre/80';
           <label class={label} for="nature">
             Nature du projet
           </label>
-          <select class={champ} id="nature" name="nature">
+          <select class={champ} id="nature" name="Nature du projet">
             {/* Option vide en tête, et sélectionnée. Sans elle le champ part
                 sur « Charpente / ossature bois » : qui ne touche pas au menu
                 envoie une qualification qu'il n'a pas choisie, et CAMBIOME
@@ -149,7 +163,7 @@ const label = 'block text-sm text-encre/80';
           <textarea
             class={champ}
             id="message"
-            name="message"
+            name="Message"
             rows="6"
             required
             placeholder="Type de bâtiment, surface, travaux envisagés, échéance…"
@@ -159,21 +173,19 @@ const label = 'block text-sm text-encre/80';
         {/* Piège à robots Web3Forms : masqué aux humains, coché par les bots */}
         <div class="hidden" aria-hidden="true">
           <label for="botcheck">Ne pas remplir</label>
-          <input
-            id="botcheck"
-            name="botcheck"
-            type="checkbox"
-            tabindex="-1"
-            autocomplete="off"
-          />
+          {/* Pas d'`autocomplete` : l'attribut n'est pas autorisé sur une case
+              à cocher, et html-validate le refuse. Il n'y servait de toute
+              façon à rien — le remplissage automatique ne coche pas les cases
+              d'un formulaire. */}
+          <input id="botcheck" name="botcheck" type="checkbox" tabindex="-1" />
         </div>
 
         <div class="mt-8 flex gap-3">
           <input
             id="consentement"
-            name="consentement"
+            name="Consentement"
             type="checkbox"
-            value="oui"
+            value="accordé"
             required
             class="mt-1 size-4 shrink-0 accent-ardoise-600"
           />
@@ -221,15 +233,9 @@ const label = 'block text-sm text-encre/80';
         <a class="underline underline-offset-2" href="https://web3forms.com">
           web3forms.com
         </a>
-        , validez le mail de confirmation, puis collez la clé obtenue dans{' '}
-        <code class="rounded bg-white px-1.5 py-0.5 text-[0.8em]">
-          contact.web3formsCle
-        </code>{' '}
-        (fichier{' '}
-        <code class="rounded bg-white px-1.5 py-0.5 text-[0.8em]">
-          src/data/site.ts
-        </code>
-        ). Le formulaire complet s'affichera alors ici.
+        , validez le mail de confirmation, puis collez la clé obtenue dans le
+        CMS, entrée « Entreprise », champ « Clé Web3Forms ». Le formulaire
+        complet s'affichera alors ici.
       </p>
     </div>
   )
@@ -250,6 +256,27 @@ const label = 'block text-sm text-encre/80';
       else delete statut.dataset.etat;
     };
 
+    const rendreLaMain = () => {
+      if (!bouton) return;
+      bouton.disabled = false;
+      bouton.textContent = 'Envoyer';
+    };
+
+    /**
+     * Sujet de l'e-mail reçu par CAMBIOME. Le champ caché `subject` porte un
+     * libellé fixe, qui sert quand ce script ne tourne pas ; ici on peut dire
+     * mieux : qui écrit, et d'où. Une boîte de réception se trie alors d'un
+     * coup d'œil, au lieu d'aligner vingt fois la même ligne.
+     */
+    const sujet = (donnees: Record<string, unknown>) => {
+      const base = formulaire.dataset.sujet;
+      const qui = String(donnees['Nom'] ?? '').trim();
+      if (!base || !qui) return donnees.subject;
+
+      const ou = String(donnees['Commune du chantier'] ?? '').trim();
+      return `${base} de ${qui}${ou ? ` (${ou})` : ''}`;
+    };
+
     formulaire.addEventListener('submit', async (evenement) => {
       // La validation native a déjà eu lieu : `submit` ne part que si le
       // formulaire est valide.
@@ -262,14 +289,31 @@ const label = 'block text-sm text-encre/80';
       annoncer('Envoi en cours…');
 
       try {
+        const donnees = Object.fromEntries(new FormData(formulaire));
+        donnees.subject = sujet(donnees) as FormDataEntryValue;
+
         const reponse = await fetch(formulaire.action, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
           },
-          body: JSON.stringify(Object.fromEntries(new FormData(formulaire))),
+          body: JSON.stringify(donnees),
         });
+
+        // 429 : Web3Forms limite la cadence des envois. Ce n'est pas une
+        // panne, et le message générique — « réessayez dans un instant » —
+        // ferait recommencer aussitôt, donc échouer encore. On dit le délai,
+        // et on ne propose pas le téléphone pour ce qui se résout en attendant.
+        if (reponse.status === 429) {
+          annoncer(
+            'Trop de messages envoyés coup sur coup. Patientez une minute, puis réessayez : votre texte est conservé.',
+            'erreur'
+          );
+          rendreLaMain();
+          return;
+        }
+
         const resultat = await reponse.json();
 
         if (!reponse.ok || !resultat.success) {
@@ -286,10 +330,7 @@ const label = 'block text-sm text-encre/80';
           formulaire.dataset.messageErreur ?? "L'envoi a échoué. Réessayez dans un instant.",
           'erreur'
         );
-        if (bouton) {
-          bouton.disabled = false;
-          bouton.textContent = 'Envoyer';
-        }
+        rendreLaMain();
       }
     });
   }

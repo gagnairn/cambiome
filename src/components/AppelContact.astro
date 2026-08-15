@@ -1,6 +1,7 @@
 ---
 import Bouton from '~/components/Bouton.astro';
 import { contact } from '~/data/site';
+import { appelContact } from '~/data/pages';
 import { lien } from '~/lib/base';
 import { telephoneInsecable } from '~/lib/texte';
 ---
@@ -13,14 +14,10 @@ import { telephoneInsecable } from '~/lib/texte';
   <div
     class="surface-marque rounded-lg bg-marque px-8 py-14 text-center text-sur-marque sm:px-14"
   >
-    <h2 class="text-3xl leading-tight sm:text-4xl">Un projet en tête ?</h2>
-    <p class="mx-auto mt-5 max-w-xl leading-relaxed">
-      Rénovation de toiture, extension bois, isolation performante ou simple
-      conseil sur votre bâti : parlons-en. Nous nous déplaçons pour évaluer le
-      chantier avant tout chiffrage.
-    </p>
+    <h2 class="text-3xl leading-tight sm:text-4xl">{appelContact.titre}</h2>
+    <p class="mx-auto mt-5 max-w-xl leading-relaxed">{appelContact.texte}</p>
     <div class="mt-9 flex flex-wrap justify-center gap-3">
-      <Bouton href={lien('/contact')} variante="sur-marque">Nous contacter</Bouton>
+      <Bouton href={lien('/contact')} variante="sur-marque">{appelContact.bouton}</Bouton>
       {
         contact.telephone && (
           <Bouton

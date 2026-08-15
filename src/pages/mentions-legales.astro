@@ -1,7 +1,9 @@
 ---
 import Base from '~/layouts/Base.astro';
 import TitreSection from '~/components/TitreSection.astro';
-import { site, contact, hebergeur, rge, rgeEnCours } from '~/data/site';
+import { site, contact, hebergeur, rgeEnCours } from '~/data/site';
+import { pageMentions } from '~/data/pages';
+import { remplir } from '~/lib/gabarit';
 import { telephoneInsecable } from '~/lib/texte';
 
 const aRemplir = (v: string) => v || '⚠ à compléter';
@@ -24,16 +26,29 @@ const forme = `${contact.formeJuridique} (${contact.formeJuridiqueLongue})`;
 const formeEtCapital = contact.capital
   ? `${forme} au capital de ${contact.capital}`
   : `${forme} — capital social : ⚠ à compléter`;
+
+// L'adresse où exercer ses droits RGPD : l'email s'il est renseigné, le
+// téléphone à défaut. La phrase qui l'accueille vient du CMS, mais pas ce
+// choix-là — il dépend de ce qui est rempli, pas de ce qui est écrit.
+const ouNousEcrire = contact.email
+  ? `à ${contact.email}`
+  : `au ${aRemplir(telephoneInsecable(contact.telephone))}`;
 ---
 
-<Base
-  titre="Mentions légales"
-  description={`Mentions légales de ${site.nom} : éditeur, hébergeur, assurance décennale, qualification RGE et traitement des données personnelles.`}
->
+<Base titre={pageMentions.titreOnglet} description={pageMentions.description}>
   <section class="container-page pt-16 pb-8">
-    <TitreSection niveau={1} surtitre="Informations" titre="Mentions légales" />
+    <TitreSection
+      niveau={1}
+      surtitre={pageMentions.surtitre}
+      titre={pageMentions.titre}
+    />
 
-    <div class="mt-12 max-w-2xl space-y-10 text-sm leading-relaxed text-encre/75">
+    {/* `mesure-lecture` et non `max-w-2xl` : la première borne est en `ch`,
+        donc solidaire de la taille du texte, la seconde en `rem`. En
+        `text-sm`, 42 rem laissaient passer 107 signes par ligne — l'œil perd
+        le début de la suivante bien avant. Mesuré, pas estimé ; voir
+        global.css pour le calcul. */}
+    <div class="mesure-lecture mt-12 space-y-10 text-sm leading-relaxed text-encre/75">
       {
         manquants > 0 && (
           <div class="rounded-md border border-terre-200 bg-terre-50 p-5 text-terre-800">
@@ -42,13 +57,13 @@ const formeEtCapital = contact.capital
             {manquants > 1
               ? ` Les ${manquants} valeurs manquantes sont à renseigner dans `
               : ' La valeur manquante est à renseigner dans '}
-            <code class="rounded bg-white px-1.5 py-0.5">src/data/site.ts</code>.
+            l'entrée « Entreprise » du CMS.
           </div>
         )
       }
 
       <div>
-        <h2 class="text-xl text-encre">Éditeur du site</h2>
+        <h2 class="text-xl text-encre">{pageMentions.titreEditeur}</h2>
         <ul class="mt-4 space-y-1.5">
           <li>Dénomination : {site.nom}</li>
           <li>Forme juridique : {formeEtCapital}</li>
@@ -61,25 +76,21 @@ const formeEtCapital = contact.capital
           <li>
             Directeur de la publication : {aRemplir(contact.directeurPublication)}
           </li>
-          <li>Statut : société à mission (art. L210-10 du code de commerce)</li>
+          <li>{pageMentions.statut}</li>
         </ul>
       </div>
 
       {
         rgeEnCours && (
           <div>
-            <h2 class="text-xl text-encre">Qualification professionnelle</h2>
-            <p class="mt-4">
-              {rge.certificat}, délivré par {rge.organisme} et valable jusqu'au{' '}
-              {rge.fin.split('-').reverse().join('/')}. Qualification « Reconnu
-              Garant de l'Environnement » portant sur : {rge.domaines.join(', ')}.
-            </p>
+            <h2 class="text-xl text-encre">{pageMentions.titreQualification}</h2>
+            <p class="mt-4">{pageMentions.qualification}</p>
           </div>
         )
       }
 
       <div>
-        <h2 class="text-xl text-encre">Assurance professionnelle</h2>
+        <h2 class="text-xl text-encre">{pageMentions.titreAssurance}</h2>
         {/* Un seul contrat porte les deux garanties, la loi n'impose de
             mentionner que la décennale : les nommer toutes les deux évite de
             laisser croire que la responsabilité civile n'est pas couverte. */}
@@ -95,7 +106,7 @@ const formeEtCapital = contact.capital
       </div>
 
       <div>
-        <h2 class="text-xl text-encre">Hébergement</h2>
+        <h2 class="text-xl text-encre">{pageMentions.titreHebergement}</h2>
         {/* Le téléphone est libellé : le numéro d'OVH est un court « 1007 »
             qu'on ne reconnaîtrait pas comme tel en fin d'énumération. */}
         <p class="mt-4">
@@ -104,56 +115,26 @@ const formeEtCapital = contact.capital
       </div>
 
       <div>
-        <h2 class="text-xl text-encre">Propriété intellectuelle</h2>
-        <p class="mt-4">
-          L'ensemble des contenus de ce site (textes, photographies, logotype)
-          est la propriété de {site.nom}, sauf mention contraire. Toute
-          reproduction sans autorisation préalable est interdite.
-        </p>
+        <h2 class="text-xl text-encre">{pageMentions.titrePropriete}</h2>
+        <p class="mt-4">{pageMentions.propriete}</p>
       </div>
 
       <div>
-        <h2 class="text-xl text-encre">Données personnelles</h2>
+        <h2 class="text-xl text-encre">{pageMentions.titreDonnees}</h2>
+        <p class="mt-4">{pageMentions.donnees}</p>
         <p class="mt-4">
-          Les données transmises via le formulaire de contact sont utilisées
-          uniquement pour répondre à votre demande et ne font l'objet d'aucune
-          cession à des tiers. Le traitement repose sur votre consentement,
-          recueilli par la case à cocher du formulaire. Les données sont
-          conservées trois ans à compter de notre dernier échange, puis
-          supprimées.
-        </p>
-        <p class="mt-4">
-          Conformément au RGPD, vous disposez d'un droit d'accès, de
-          rectification, d'effacement, de limitation, d'opposition et de
-          portabilité de vos données, ainsi que du droit de retirer votre
-          consentement à tout moment, en nous
-          contactant {contact.email ? `à ${contact.email}` : `au ${aRemplir(telephoneInsecable(contact.telephone))}`}.
-          Si la réponse ne vous satisfait pas, vous pouvez saisir la{' '}
+          {remplir(pageMentions.droits[0], { contact: ouNousEcrire })}
           <a class="underline underline-offset-2" href="https://www.cnil.fr/fr/plaintes">
-            CNIL
-          </a>.
+            {pageMentions.libelleLienCnil}
+          </a>
+          {pageMentions.droits[1]}
         </p>
-        {
-          contact.web3formsCle && (
-            <p class="mt-4">
-              L'envoi du formulaire transite par Web3Forms, prestataire
-              technique qui réexpédie le message par email sans le conserver.
-              Ses serveurs sont situés hors de l'Union européenne. Si vous
-              préférez éviter cet intermédiaire, écrivez-nous directement par
-              email ou par téléphone.
-            </p>
-          )
-        }
+        {contact.web3formsCle && <p class="mt-4">{pageMentions.web3forms}</p>}
       </div>
 
       <div>
-        <h2 class="text-xl text-encre">Cookies</h2>
-        <p class="mt-4">
-          Ce site ne dépose aucun cookie et n'utilise aucun outil de mesure
-          d'audience. Les polices de caractères sont hébergées sur le site
-          lui-même : aucune requête n'est adressée à un service tiers lors de la
-          consultation des pages.
-        </p>
+        <h2 class="text-xl text-encre">{pageMentions.titreCookies}</h2>
+        <p class="mt-4">{pageMentions.cookies}</p>
       </div>
     </div>
   </section>

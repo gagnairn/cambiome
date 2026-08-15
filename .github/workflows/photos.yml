@@ -1,0 +1,80 @@
+name: Redimensionnement des photos
+
+# Les photos arrivent maintenant du CMS, donc d'un téléphone : 4000 px et
+# plusieurs mégaoctets. Le site n'en sert jamais plus de 1400 px, mais le dépôt
+# garderait chaque original pour toujours — un dépôt Git ne se dégonfle pas.
+# Ce workflow réécrit les fichiers trop lourds juste après leur arrivée.
+#
+# L'éditeur n'a donc rien à faire : il téléverse la photo telle qu'elle sort de
+# son appareil.
+on:
+  push:
+    branches: [main]
+    paths:
+      - src/assets/realisations/**
+  workflow_dispatch:
+
+permissions: {}
+
+# Deux téléversements rapprochés se marcheraient dessus au moment du push :
+# le second reprendrait une base périmée. On sérialise, sans annuler — un
+# travail interrompu laisserait une photo non traitée.
+concurrency:
+  group: photos
+  cancel-in-progress: false
+
+jobs:
+  redimensionner:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Le seul travail du dépôt qui écrive. Les jobs de publication, eux, n'ont
+    # que `contents: read` : c'est pour cela que le redimensionnement vit dans
+    # son propre fichier plutôt que greffé sur deploy.yml.
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Ici, à l'inverse des autres workflows, le jeton doit rester : c'est
+          # lui qui signe le push de retour.
+          persist-credentials: true
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+
+      # `sharp` embarque des binaires natifs ; `npm ci` installe tout le reste
+      # pour rien, mais garantit la même version qu'en local et évite de
+      # maintenir un second manifeste.
+      - run: npm ci
+
+      - id: redimensionner
+        run: npm run photos
+
+      - name: Committer les photos redimensionnées
+        env:
+          # Identité du robot GitHub Actions, celle que porteront les commits.
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          if git diff --quiet -- src/assets/realisations; then
+            echo "Aucune photo à redimensionner."
+            exit 0
+          fi
+          git add src/assets/realisations
+          git commit -m "Redimensionnement automatique des photos de chantier"
+          # `--force-with-lease` plutôt que `push` sec : si une modification est
+          # arrivée entre le checkout et maintenant, on échoue au lieu de
+          # l'écraser.
+          git push --force-with-lease
+
+      # Un push signé par GITHUB_TOKEN ne redéclenche aucun workflow : c'est le
+      # garde-fou de GitHub contre les boucles, et il joue en notre faveur ici.
+      # La publication déclenchée par le téléversement tourne donc à partir de
+      # la photo d'origine, pas de la version allégée — sans conséquence
+      # visible, Astro produisant les mêmes dérivés depuis un original de
+      # 4000 px ou de 2400 px. Seul le commit suivant repartira du fichier
+      # allégé.

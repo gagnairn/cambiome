@@ -1,21 +1,29 @@
 ---
 import Base from '~/layouts/Base.astro';
 import Bouton from '~/components/Bouton.astro';
+import { page404 } from '~/data/pages';
 import { lien } from '~/lib/base';
 ---
 
-<Base titre="Page introuvable" description="La page demandée n'existe pas.">
+{/* `noindex` : cette page est servie en réponse à n'importe quelle URL fausse,
+    elle n'a donc pas de contenu propre à indexer. GitHub Pages la sert déjà
+    avec un statut 404, qui suffit aux moteurs ; ce ne sera plus garanti chez
+    un hébergeur, où la page est désignée par `ErrorDocument` dans .htaccess.
+    La balise, elle, vaut partout. Elle supprime du même coup le
+    `<link rel="canonical">` généré vers /404/, une adresse qui n'existe pas :
+    voir le <head> de Base.astro. */}
+<Base titre={page404.titreOnglet} description={page404.description} noindex>
   <section class="container-page flex min-h-[55vh] flex-col justify-center py-24">
     <p class="font-display text-xs tracking-[0.28em] text-ardoise-600 uppercase">
-      Erreur 404
+      {page404.surtitre}
     </p>
-    <h1 class="mt-4 text-4xl leading-tight sm:text-5xl">Cette page n'existe pas.</h1>
-    <p class="mt-6 max-w-md text-encre/70">
-      Le lien est peut-être obsolète, ou l'adresse comporte une faute de frappe.
-    </p>
+    <h1 class="mt-4 text-4xl leading-tight sm:text-5xl">{page404.titre}</h1>
+    <p class="mt-6 max-w-md text-encre/70">{page404.texte}</p>
     <div class="mt-9 flex flex-wrap gap-3">
-      <Bouton href={lien('/')}>Retour à l'accueil</Bouton>
-      <Bouton href={lien('/realisations')} variante="contour">Voir les réalisations</Bouton>
+      <Bouton href={lien('/')}>{page404.boutonAccueil}</Bouton>
+      <Bouton href={lien('/realisations')} variante="contour">
+        {page404.boutonRealisations}
+      </Bouton>
     </div>
   </section>
 </Base>

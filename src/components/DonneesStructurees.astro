@@ -3,9 +3,24 @@
  * Fiche d'entreprise en JSON-LD (schema.org).
  *
  * C'est ce qui permet à un moteur de recherche de savoir que CAMBIOME est une
- * entreprise du bâtiment située à Fontaine, joignable à tel numéro, et non une
- * page parmi d'autres. Pour une vitrine dont tout l'objet est d'être trouvée
- * localement, c'est le balisage qui compte le plus après le titre.
+ * entreprise du bâtiment intervenant autour de Grenoble, joignable à tel
+ * numéro, et non une page parmi d'autres. Pour une vitrine dont tout l'objet
+ * est d'être trouvée localement, c'est le balisage qui compte le plus après le
+ * titre.
+ *
+ * ⚠ Le type est `Organization`, et non `HomeAndConstructionBusiness` comme on
+ * l'attendrait d'une entreprise du bâtiment. Ce dernier descend de
+ * `LocalBusiness`, donc de `Place` : il décrit un établissement où l'on se
+ * rend, et Google en tire une fiche avec itinéraire et horaires. CAMBIOME va
+ * sur les chantiers, elle ne reçoit personne au 36 avenue Jean Jaurès — cette
+ * adresse est celle du siège. Envoyer un client devant une porte qui ne
+ * s'ouvre pas coûte plus cher que le gain de référencement.
+ *
+ * Ce qui porte l'ancrage local ici, c'est `areaServed` : la zone d'intervention
+ * déclarée, qui est la forme juste pour une entreprise itinérante. L'adresse
+ * reste dans la fiche — elle identifie la société, et elle est de toute façon
+ * publiée aux mentions légales — mais sans `geo`, `hasMap` ni `openingHours`,
+ * qui sont les propriétés par lesquelles un moteur comprend « venez ici ».
  *
  * Le bloc est posé dans le <head> de chaque page avec le même `@id` : les
  * moteurs y voient une seule et même entité décrite plusieurs fois, pas neuf
@@ -27,6 +42,16 @@ const racine = new URL(lien('/'), Astro.site).href;
  */
 const decoupee = contact.adresse.match(/^(.*?),\s*(\d{5})\s+(.+)$/);
 
+/**
+ * `06 27 80 42 38` -> `+33627804238`. schema.org demande la forme
+ * internationale : un numéro national est ambigu hors de France, et les fiches
+ * d'établissement des moteurs s'appuient dessus pour rapprocher un numéro d'un
+ * établissement connu. Une saisie déjà en `+…` est laissée telle quelle.
+ */
+const telephone = contact.telephone
+  ? contact.telephone.replace(/[\s.-]/g, '').replace(/^0/, '+33')
+  : '';
+
 const adresse = contact.adresse
   ? {
       '@type': 'PostalAddress',
@@ -38,15 +63,20 @@ const adresse = contact.adresse
 
 const fiche = {
   '@context': 'https://schema.org',
-  '@type': 'HomeAndConstructionBusiness',
+  '@type': 'Organization',
   '@id': `${racine}#entreprise`,
   name: site.nom,
   description: site.description,
   slogan: site.baseline,
   url: racine,
   image: new URL(lien('/og-image.jpg'), Astro.site).href,
+  // `image` et `logo` ne jouent pas le même rôle : la première illustre
+  // l'entreprise dans un résultat, le second l'identifie dans un panneau de
+  // connaissance. Les moteurs attendent les deux, et prennent la marque
+  // seule — pas la photo de chantier — pour le logo.
+  logo: new URL(lien('/icon-512.png'), Astro.site).href,
   ...(contact.email && { email: contact.email }),
-  ...(contact.telephone && { telephone: contact.telephone.replace(/\s/g, '') }),
+  ...(telephone && { telephone }),
   ...(adresse && { address: adresse }),
   ...(contact.instagram && { sameAs: [contact.instagram] }),
   ...(contact.siret && { identifier: { '@type': 'PropertyValue', propertyID: 'SIRET', value: contact.siret } }),

@@ -3,6 +3,7 @@ import Base from '~/layouts/Base.astro';
 import TitreSection from '~/components/TitreSection.astro';
 import FormulaireContact from '~/components/FormulaireContact.astro';
 import { site, contact } from '~/data/site';
+import { pageContact } from '~/data/pages';
 import { telephoneInsecable } from '~/lib/texte';
 
 const aDesCoordonnees = Boolean(
@@ -10,17 +11,10 @@ const aDesCoordonnees = Boolean(
 );
 ---
 
-<Base
-  titre="Contact"
-  description={`Contacter CAMBIOME pour un projet de charpente, de couverture ou de rénovation thermique — ${site.zone}.`}
->
+<Base titre={pageContact.titreOnglet} description={pageContact.description}>
   <section class="container-page pt-16">
-    <TitreSection niveau={1} surtitre="Contact" titre="Parlons de votre projet">
-      <p>
-        Décrivez-nous le bâtiment, ce que vous souhaitez faire et l'échéance que
-        vous avez en tête. Nous nous déplaçons pour évaluer le chantier avant
-        tout chiffrage.
-      </p>
+    <TitreSection niveau={1} surtitre={pageContact.surtitre} titre={pageContact.titre}>
+      <p>{pageContact.texte}</p>
     </TitreSection>
 
     <div class="mt-14 grid gap-14 lg:grid-cols-[1fr_20rem]">
@@ -68,7 +62,7 @@ const aDesCoordonnees = Boolean(
               )}
               {contact.adresse && (
                 <li>
-                  <span class="block text-encre/65">Atelier</span>
+                  <span class="block text-encre/65">Adresse postale</span>
                   {/* Coupée après la voie, comme au pied de page. La donnée
                       reste sur une ligne : les mentions légales la veulent
                       d'un tenant. */}
@@ -79,9 +73,12 @@ const aDesCoordonnees = Boolean(
               )}
             </ul>
           ) : (
+            /* Ce repli ne s'affiche que si les trois coordonnées sont vides,
+               c'est-à-dire jamais en ligne. Il s'adresse donc à qui tient le
+               site, et le renvoie là où il peut agir : l'entrée « Entreprise »
+               du CMS, et non un fichier du dépôt qu'il n'ouvrira pas. */
             <p class="mt-6 text-sm leading-relaxed text-encre/65">
-              Coordonnées à renseigner dans{' '}
-              <code class="rounded bg-sable-100 px-1.5 py-0.5 text-[0.8em]">src/data/site.ts</code>.
+              Coordonnées à renseigner dans le CMS, entrée « Entreprise ».
             </p>
           )
         }

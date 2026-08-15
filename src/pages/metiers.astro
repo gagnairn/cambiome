@@ -6,25 +6,20 @@ import AppelContact from '~/components/AppelContact.astro';
 import RgeRenvoi from '~/components/RgeRenvoi.astro';
 import { metiers } from '~/data/site';
 import { realisations } from '~/data/realisations';
+import { pageMetiers } from '~/data/pages';
 
 const illustrations = new Map(
   metiers.map((m) => [m.slug, realisations.find((r) => r.metierSlug === m.slug)])
 );
 ---
 
-<Base
-  titre="Nos métiers"
-  description="Charpente et ossature bois, rénovation thermique, couverture et zinguerie, structure bois et menuiserie : les quatre savoir-faire de CAMBIOME."
->
+<Base titre={pageMetiers.titreOnglet} description={pageMetiers.description}>
   <section class="container-page pt-16">
-    <TitreSection niveau={1} surtitre="Savoir-faire" titre="Nos réalisations par métiers">
-      <p>
-        Quatre familles de chantiers, menées par des équipes formées à
-        l'éco-construction et au bâti ancien.
-      </p>
+    <TitreSection niveau={1} surtitre={pageMetiers.surtitre} titre={pageMetiers.titre}>
+      <p>{pageMetiers.texte}</p>
     </TitreSection>
 
-    <nav aria-label="Sommaire des métiers" class="mt-10">
+    <nav aria-label={pageMetiers.sommaire} class="mt-10">
       <ul class="flex flex-wrap gap-2">
         {
           metiers.map((m) => (

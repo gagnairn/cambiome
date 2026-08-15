@@ -1,10 +1,25 @@
 // @ts-check
 import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import yaml from 'js-yaml';
 import { SCRIPT_THEME } from './src/lib/theme-script.ts';
-import { rgeEnCours } from './src/data/site.ts';
+import { estEnCours } from './src/lib/echeance.ts';
+
+// Le contenu du site est en YAML, lu ailleurs par `src/lib/contenu.ts` — mais
+// ce chargeur repose sur `import.meta.glob`, que Vite fournit et que Node
+// ignore. Or ce fichier est chargé par Node, et relu tel quel par
+// `scripts/verifier-liens.mjs`. On relit donc le YAML à la main, pour la seule
+// donnée dont le sitemap a besoin. La règle d'échéance, elle, n'est pas
+// recopiée : elle vient de `src/lib/echeance.ts`, comme pour les pages.
+const rge = /** @type {{ fin: string }} */ (
+  yaml.load(readFileSync(new URL('./src/content/rge.yaml', import.meta.url), 'utf8'), {
+    schema: yaml.JSON_SCHEMA,
+  })
+);
+const rgeEnCours = estEnCours(rge.fin);
 
 // Hachage du seul script `is:inline` du site, celui qui restaure la piste
 // chromatique choisie. Astro hache tout seul les scripts qu'il groupe, mais

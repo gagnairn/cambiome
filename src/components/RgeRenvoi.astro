@@ -14,7 +14,8 @@
  * Ne rend rien si la qualification est expirée — l'afficher au-delà de sa date
  * de fin serait une allégation trompeuse au sens du code de la consommation.
  */
-import { rge, rgeEnCours } from '~/data/site';
+import { rgeEnCours } from '~/data/site';
+import { renvoiRge } from '~/data/pages';
 import { lien } from '~/lib/base';
 ---
 
@@ -25,13 +26,12 @@ import { lien } from '~/lib/base';
       class="group mt-10 block rounded-lg border border-ardoise-200 bg-ardoise-50 p-5 transition-colors hover:border-ardoise-300"
     >
       <span class="block font-display text-sm tracking-[0.18em] text-ardoise-700 uppercase">
-        Entreprise RGE {rge.organisme}
+        {renvoiRge.surtitre}
       </span>
       <span class="mt-2 block text-sm leading-relaxed text-encre/75">
-        Nos chantiers d'isolation ouvrent droit à MaPrimeRénov' et aux
-        certificats d'économies d'énergie.{' '}
+        {renvoiRge.texte}{' '}
         <span class="text-ardoise-700 underline-offset-4 group-hover:underline">
-          Voir la qualification →
+          {renvoiRge.lien}
         </span>
       </span>
     </a>

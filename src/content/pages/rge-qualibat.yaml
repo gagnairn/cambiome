@@ -1,0 +1,52 @@
+titreOnglet: Entreprise RGE Qualibat
+description: >-
+  {nom} est qualifiée RGE Qualibat pour l'isolation des murs, toitures et
+  rampants : elle ouvre droit à MaPrimeRénov' et aux certificats d'économies
+  d'énergie.
+
+surtitre: Qualification
+titre: Entreprise RGE Qualibat
+
+introEnCours: >-
+  {nom} est qualifiée RGE — « Reconnu Garant de l'Environnement » — par
+  {organisme} pour ses travaux d'isolation. C'est cette qualification qui rend le
+  chantier éligible aux aides publiques à la rénovation énergétique : sans elle,
+  quelle que soit la qualité de l'ouvrage, aucune aide n'est versée.
+
+introExpiree: >-
+  La qualification RGE de {nom} est arrivée à échéance le {date}. Tant qu'elle
+  n'est pas renouvelée, nos chantiers d'isolation n'ouvrent pas droit à
+  MaPrimeRénov' ni aux certificats d'économies d'énergie. Nos {lienMetiers}
+  restent inchangés.
+libelleLienMetiers: quatre métiers
+
+titreAides: Les aides que la qualification ouvre
+aides:
+  - titre: MaPrimeRénov'
+    texte: >-
+      Aide de l'État distribuée par l'Anah, calculée d'après vos revenus et le
+      gain énergétique des travaux. Elle est versée après réalisation, sur
+      présentation de la facture.
+  - titre: Certificats d'économies d'énergie
+    texte: >-
+      Primes financées par les fournisseurs d'énergie, tenus par la loi de faire
+      réaliser des économies d'énergie. Elles se cumulent avec MaPrimeRénov' et
+      se demandent avant la signature du devis.
+noteAides: >-
+  Les conditions d'attribution et les montants sont fixés par les barèmes en
+  vigueur, qui évoluent chaque année. Dans les deux cas, le dossier réclame
+  l'attestation de qualification de l'entreprise : elle est téléchargeable plus
+  bas.
+
+titreDomaines: Domaines qualifiés
+noteDomaines: >-
+  La qualification ne porte que sur ces quatre domaines. Nos autres métiers —
+  charpente, couverture et zinguerie, menuiserie — n'ouvrent pas droit à ces
+  aides, même réalisés au cours du même chantier.
+
+titreAttestation: L'attestation
+libelleLienAttestation: Consulter l'attestation
+texteAttestation: >-
+  {lienAttestation} (PDF). La qualification est également vérifiable
+  indépendamment de nous, sur le registre public des entreprises RGE tenu par
+  l'ADEME.

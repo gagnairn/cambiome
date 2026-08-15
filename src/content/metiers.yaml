@@ -1,0 +1,52 @@
+metiers:
+  - slug: charpente-ossature-bois
+    titre: Charpente et ossature bois
+    chapo: De la reprise ponctuelle d’une ferme ancienne au bâtiment neuf complet.
+    texte:
+      - "En étroite collaboration avec un bureau d'études, nous réalisons vos projets de réanimation et de modification de charpente."
+      - "Que ce soit la réalisation d'extension en mur ossature bois, la fabrication de lucarnes, le changement de pièces de charpente ou la création d'un bâtiment complet, nos équipes sont formées à ce type de chantier."
+    points:
+      - Reprise et modification de charpente existante
+      - Extension en mur ossature bois
+      - Fabrication de lucarnes
+      - Bâtiment neuf complet
+      - "Travail avec bureau d'études structure"
+
+  - slug: renovation-thermique
+    titre: Rénovation thermique
+    chapo: "Forte épaisseur, matériaux bio-sourcés et étanchéité à l'air maîtrisée."
+    texte:
+      - "L'utilisation de matériaux bio-sourcés à faible impact environnemental, en forte épaisseur et forte densité, l'amélioration des performances des fenêtres, la bonne mise en œuvre de l'étanchéité à l'air, la mise en place de protections solaires, la ventilation des parois extérieures et l'installation d'une ventilation double flux."
+      - "Autant d'aspects essentiels pour améliorer le confort du bâti existant et diminuer nos consommations d'énergie. Nous pouvons aussi vous proposer un accompagnement à l'auto-rénovation."
+    points:
+      - Isolation bio-sourcée dense — confort d’été
+      - "Étanchéité à l'air du bâtiment"
+      - Ventilation double flux
+      - Ventilation des parois extérieures
+      - Protections solaires et menuiseries
+      - "Accompagnement à l'auto-rénovation"
+
+  - slug: couverture-zinguerie
+    titre: Couverture et zinguerie
+    chapo: La rénovation des toitures du bâti ancien, jusqu’à la finition.
+    texte:
+      - "Une grande partie de l'activité de CAMBIOME consiste en la rénovation des toitures des bâtis anciens."
+      - Une attention particulière est donnée à la finition des sous-faces en lambris et aux travaux de zinguerie.
+    points:
+      - Rénovation de toiture du bâti ancien
+      - Sous-faces en lambris
+      - Zinguerie façonnée à l’atelier
+      - Habillage d’acrotères, noues et rives
+
+  - slug: structure-bois-menuiserie
+    titre: Structure bois et menuiserie
+    chapo: Le bois local, du mobilier à la terrasse.
+    texte:
+      - Notre entreprise propose la réalisation de mobilier et de structures bois en tout genre.
+      - "Nous apprécierons de relever le défi de vos envies : terrasse en bois local, escalier, cuisine, persiennes, bardage claire-voie et autres claustras."
+    points:
+      - Terrasse en bois local
+      - Escaliers
+      - Cuisine et mobilier sur mesure
+      - Persiennes
+      - Bardage claire-voie, claustras

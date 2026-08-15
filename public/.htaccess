@@ -62,3 +62,11 @@
 <IfModule mod_autoindex.c>
   Options -Indexes
 </IfModule>
+
+# Page introuvable. GitHub Pages sert /404.html tout seul, par convention ;
+# Apache ne le devine pas et afficherait sa propre page, celle qui ne ressemble
+# à rien. Le chemin est absolu depuis la racine du site : c'est ce qu'attend
+# `ErrorDocument`, et cela vaut pour une URL fausse à n'importe quelle
+# profondeur. Le statut renvoyé reste bien 404 — Apache ne le remplace pas par
+# une redirection —, ce qui importe autant aux moteurs qu'aux visiteurs.
+ErrorDocument 404 /404.html
