@@ -16,7 +16,6 @@ import solivage from '~/assets/realisations/solivage-queue-daronde.jpg';
 import consoles from '~/assets/realisations/consoles-chene.jpg';
 
 export type Realisation = {
-  slug: string;
   titre: string;
   metier: string;
   /** slug du métier, pour filtrer */
@@ -53,7 +52,6 @@ export type Realisation = {
  */
 export const realisations: Realisation[] = [
   {
-    slug: 'charpente-aretier',
     titre: 'Charpente à arêtier',
     metier: 'Charpente',
     metierSlug: 'charpente-ossature-bois',
@@ -63,7 +61,6 @@ export const realisations: Realisation[] = [
     image: aretier,
   },
   {
-    slug: 'charpente-poutre-en-i',
     titre: 'Solivage en poutres en I',
     metier: 'Ossature bois',
     metierSlug: 'charpente-ossature-bois',
@@ -73,7 +70,6 @@ export const realisations: Realisation[] = [
     image: poutreI,
   },
   {
-    slug: 'isolation-fibre-de-bois',
     titre: 'Isolation en fibre de bois',
     metier: 'Rénovation thermique',
     metierSlug: 'renovation-thermique',
@@ -83,7 +79,6 @@ export const realisations: Realisation[] = [
     image: fibreDeBois,
   },
   {
-    slug: 'couverture-a-tasseaux',
     titre: 'Couverture à tasseaux',
     metier: 'Couverture',
     metierSlug: 'couverture-zinguerie',
@@ -93,7 +88,6 @@ export const realisations: Realisation[] = [
     image: tasseaux,
   },
   {
-    slug: 'bardage-meleze-pignon',
     titre: 'Pignon de grange en mélèze',
     metier: 'Menuiserie',
     metierSlug: 'structure-bois-menuiserie',
@@ -103,7 +97,6 @@ export const realisations: Realisation[] = [
     image: bardageMeleze,
   },
   {
-    slug: 'lucarne-structure',
     titre: 'Structure de lucarne',
     metier: 'Charpente',
     metierSlug: 'charpente-ossature-bois',
@@ -113,7 +106,6 @@ export const realisations: Realisation[] = [
     image: lucarne,
   },
   {
-    slug: 'charpente-chevrons-porteurs',
     titre: 'Charpente à chevrons porteurs',
     metier: 'Charpente',
     metierSlug: 'charpente-ossature-bois',
@@ -123,7 +115,6 @@ export const realisations: Realisation[] = [
     image: chevronsPorteurs,
   },
   {
-    slug: 'soudure-cheneau',
     titre: 'Soudure de chéneau',
     metier: 'Zinguerie',
     metierSlug: 'couverture-zinguerie',
@@ -132,7 +123,6 @@ export const realisations: Realisation[] = [
     image: cheneau,
   },
   {
-    slug: 'pergola-bioclimatique',
     titre: 'Pergola',
     metier: 'Structure bois',
     metierSlug: 'structure-bois-menuiserie',
@@ -142,7 +132,6 @@ export const realisations: Realisation[] = [
     image: pergola,
   },
   {
-    slug: 'balcon-suspendu',
     titre: 'Balcon suspendu',
     metier: 'Structure bois',
     metierSlug: 'structure-bois-menuiserie',
@@ -152,7 +141,6 @@ export const realisations: Realisation[] = [
     image: balcon,
   },
   {
-    slug: 'habillage-acroteres',
     titre: "Habillage d'acrotères",
     metier: 'Zinguerie',
     metierSlug: 'couverture-zinguerie',
@@ -161,7 +149,6 @@ export const realisations: Realisation[] = [
     image: acroteres,
   },
   {
-    slug: 'garde-corps-meleze',
     titre: 'Garde-corps en mélèze',
     metier: 'Structure bois',
     metierSlug: 'structure-bois-menuiserie',
@@ -171,7 +158,6 @@ export const realisations: Realisation[] = [
     image: gardeCorps,
   },
   {
-    slug: 'solivage-queue-daronde',
     titre: "Solivage en queue d'aronde",
     metier: 'Charpente',
     metierSlug: 'charpente-ossature-bois',
@@ -181,7 +167,6 @@ export const realisations: Realisation[] = [
     image: solivage,
   },
   {
-    slug: 'consoles-chene',
     titre: 'Consoles de dépassée',
     metier: 'Charpente',
     metierSlug: 'charpente-ossature-bois',
