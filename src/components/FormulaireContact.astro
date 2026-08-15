@@ -29,6 +29,9 @@ const ENDPOINT = 'https://api.web3forms.com/submit';
 
 const urlMerci = new URL(lien('/merci'), Astro.site).href;
 
+/** Domaine réellement servi — « www.cambiome.fr » en production. */
+const origine = new URL(urlMerci).hostname;
+
 // Message d'échec : on n'oriente vers un moyen de contact direct que s'il est
 // effectivement renseigné dans `site.ts`.
 const messageErreur = contact.email
@@ -83,6 +86,27 @@ const label = 'block text-sm text-encre/80';
         <input type="hidden" name="from_name" value={`Site ${site.nom}`} />
         {/* Retour après envoi quand JavaScript est indisponible */}
         <input type="hidden" name="redirect" value={urlMerci} />
+        {/* Provenance, pour trier dans la messagerie.
+
+            La clé d'accès Web3Forms est publique — elle est dans ce HTML — et
+            le POST part du navigateur vers api.web3forms.com sans passer par
+            nous : qui la recopie peut envoyer des messages comme s'ils
+            venaient du formulaire. Web3Forms sait refuser ces envois
+            (« Restrict to Domain »), mais c'est une option payante ; côté
+            code, il n'y a rien à verrouiller, le contrôle n'aurait de sens
+            qu'à l'endroit où part le mail.
+
+            Cette ligne n'est donc pas une barrière : elle se recopie aussi
+            facilement que la clé. C'est une étiquette, qui permet à CAMBIOME
+            de filtrer sur la provenance — ce qui suffit contre le spam de clé
+            récoltée, automatisé et qui ne se donne pas cette peine. Devant un
+            envoi ciblé, la vraie réponse reste de changer la clé : un champ du
+            CMS, et l'ancienne devient muette.
+
+            La valeur est celle du domaine réellement servi, pas une chaîne
+            écrite en dur : en préversion elle dira github.io, et ces messages
+            de test se distingueront des vrais. */}
+        <input type="hidden" name="Origine" value={origine} />
 
         <div class="grid gap-6 sm:grid-cols-2">
           <div>
