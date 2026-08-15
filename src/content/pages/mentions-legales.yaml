@@ -41,8 +41,7 @@ libelleLienCnil: CNIL
 web3forms: >-
   L'envoi du formulaire passe par Web3Forms, qui nous transmet le message par
   email sans le stocker et n'en garde que des journaux techniques, effacés sous
-  deux mois. Ses serveurs sont hors de l'Union européenne. Pour éviter cet
-  intermédiaire, écrivez-nous ou appelez-nous directement.
+  deux mois.
 
 titreCookies: Cookies
 cookies: >-
