@@ -290,11 +290,14 @@ justement là qu'est l'économie (15,6 Ko contre 23,3).
 Le gain se voit à l'affichage, mais pas là où on l'attend. Mesuré sur trois
 états successifs du dépôt, accueil bridée mobile :
 
-| | avant | + AVIF du hero | + polices réduites |
-|---|---|---|---|
-| Score performance | 91 | 94 | **95** |
-| LCP | 3,53 s | 3,15 s | **2,93 s** |
-| Premier affichage (FCP) | 1,05 s | 1,05 s | 1,05 s |
+| | avant | + AVIF du hero | + polices réduites | + plafond de densité |
+|---|---|---|---|---|
+| Score performance | 91 | 94 | 95 | **98** |
+| LCP | 3,53 s | 3,15 s | 2,93 s | **2,48 s** |
+| Premier affichage (FCP) | 1,05 s | 1,05 s | 1,05 s | 1,05 s |
+
+(La dernière colonne ne concerne pas les polices : c'est le `sizes` du hero,
+expliqué en commentaire dans `src/pages/index.astro`.)
 
 Les polices valent donc **0,22 s** sur les 0,60 s gagnées. Non parce qu'elles
 seraient sur le chemin critique — elles ne le sont pas, le FCP ne bouge pas

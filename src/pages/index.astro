@@ -51,6 +51,24 @@ const apercu = realisations.slice(0, 3);
         comparant les images sous le voile, pas leurs numéros — à 42 la sciure
         et le fil du bois se lissent visiblement, à 50 rien ne se distingue de
         l'original.
+
+        `sizes` annonce 85vw sous 768 px alors que l'image en occupe 100. Ce
+        n'est pas une erreur, c'est un plafond de densité, et il faut le lire
+        comme tel : le navigateur multiplie la valeur de `sizes` par la
+        densité de l'écran, si bien qu'un téléphone de 390 px en densité 2,625
+        réclamait 1024 px et recevait la variante 1200w — 181 Ko, sur
+        l'élément LCP de la page. Avec 85vw il en réclame 870 et reçoit la
+        900w : 107 Ko, soit 74 de moins, sans rien perdre à l'écran.
+
+        Le facteur n'a rien d'arbitraire. Il est le plus élevé qui fasse
+        encore basculer les écrans en densité 2 comme en densité 2,625 sur la
+        900w — descendre plus bas ferait tomber les premiers sur la 640w, et
+        celle-là se voit : le fil du bois s'y écrase, comparé sous le voile.
+        Les écrans en densité 3 restent sur la 1200w, faute d'un `sizes` qui
+        puisse viser une largeur fixe à travers plusieurs densités.
+
+        Au-dessus de 768 px, `100vw` reprend : un grand écran en densité 1 a
+        besoin de toute la largeur, et n'a pas le même problème de débit.
       -->
       <Picture
         src={hero}
@@ -58,7 +76,7 @@ const apercu = realisations.slice(0, 3);
         formats={['avif']}
         fallbackFormat="webp"
         widths={[640, 900, 1200, 1542]}
-        sizes="100vw"
+        sizes="(max-width: 767px) 85vw, 100vw"
         quality={50}
         loading="eager"
         fetchpriority="high"
