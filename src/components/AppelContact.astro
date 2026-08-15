@@ -2,26 +2,30 @@
 import Bouton from '~/components/Bouton.astro';
 import { contact } from '~/data/site';
 import { base } from '~/lib/base';
+import { telephoneInsecable } from '~/lib/texte';
 ---
 
 <section class="container-page mt-24">
-  <div class="rounded-lg bg-ardoise-700 px-8 py-14 text-center text-white sm:px-14">
+  {/* Aplat de marque : tout ce qui est posé dessus s'exprime en `sur-marque`,
+      y compris les boutons. Le paragraphe est au même ton que le titre — sur
+      un fond à mi-tons il ne reste pas 4,5:1 de marge pour un second ton, la
+      hiérarchie passe donc par la taille. */}
+  <div class="rounded-lg bg-marque px-8 py-14 text-center text-sur-marque sm:px-14">
     <h2 class="text-3xl leading-tight sm:text-4xl">Un projet en tête ?</h2>
-    <p class="mx-auto mt-5 max-w-xl leading-relaxed text-ardoise-100">
+    <p class="mx-auto mt-5 max-w-xl leading-relaxed">
       Rénovation de toiture, extension bois, isolation performante ou simple
       conseil sur votre bâti : parlons-en. Nous nous déplaçons pour évaluer le
       chantier avant tout chiffrage.
     </p>
     <div class="mt-9 flex flex-wrap justify-center gap-3">
-      <Bouton href={`${base}/contact`} variante="clair">Nous contacter</Bouton>
+      <Bouton href={`${base}/contact`} variante="sur-marque">Nous contacter</Bouton>
       {
         contact.telephone && (
           <Bouton
             href={`tel:${contact.telephone.replace(/\s/g, '')}`}
-            variante="contour"
-            class="border-white/40 text-white hover:border-white hover:bg-white/10"
+            variante="contour-sur-marque"
           >
-            {contact.telephone}
+            {telephoneInsecable(contact.telephone)}
           </Bouton>
         )
       }

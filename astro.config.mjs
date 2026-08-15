@@ -4,6 +4,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { SCRIPT_THEME } from './src/lib/theme-script.ts';
+import { rgeEnCours } from './src/data/site.ts';
 
 // Hachage du seul script `is:inline` du site, celui qui restaure la piste
 // chromatique choisie. Astro hache tout seul les scripts qu'il groupe, mais
@@ -22,8 +23,16 @@ const HACHAGE_SCRIPT_THEME = `sha256-${createHash('sha256').update(SCRIPT_THEME)
 export default defineConfig({
   site: 'https://gagnairn.github.io',
   base: '/cambiome',
-  // La page de confirmation d'envoi n'a rien à faire dans l'index.
-  integrations: [sitemap({ filter: (page) => !page.endsWith('/merci/') })],
+  // La page de confirmation d'envoi n'a rien à faire dans l'index. La page de
+  // qualification en sort le jour où la qualification expire : elle ne dit
+  // alors plus que son échéance, ce n'est pas ce qu'on propose aux moteurs.
+  integrations: [
+    sitemap({
+      filter: (page) =>
+        !page.endsWith('/merci/') &&
+        (rgeEnCours || !page.endsWith('/rge-qualibat/')),
+    }),
+  ],
 
   // Politique de sécurité du contenu. Astro calcule au build le hachage de
   // chaque script et style inline et injecte la meta correspondante : pas de

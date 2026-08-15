@@ -14,13 +14,16 @@ const { class: classe = '' } = Astro.props;
 
 <div
   class:list={[
-    'flex items-center justify-center overflow-hidden bg-ardoise-700',
+    'flex items-center justify-center overflow-hidden bg-marque text-sur-marque',
     classe,
   ]}
   aria-hidden="true"
 >
+  {/* `currentColor` plutôt qu'un blanc en dur : les cernes suivent ainsi la
+      couleur de texte de l'aplat, et restent visibles quand une piste claire
+      fait passer `sur-marque` à l'encre. */}
   <svg viewBox="0 0 200 150" class="h-full w-full" preserveAspectRatio="xMidYMid slice">
-    <g fill="none" stroke="#ffffff" stroke-opacity="0.28" stroke-linecap="round">
+    <g fill="none" stroke="currentColor" stroke-opacity="0.28" stroke-linecap="round">
       {
         [16, 30, 44, 58, 72, 86].map((r, i) => (
           <path

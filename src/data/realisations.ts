@@ -14,7 +14,6 @@ import acroteres from '~/assets/realisations/habillage-acroteres.jpg';
 import gardeCorps from '~/assets/realisations/garde-corps-meleze.jpg';
 import solivage from '~/assets/realisations/solivage-queue-daronde.jpg';
 import consoles from '~/assets/realisations/consoles-chene.jpg';
-import chene from '~/assets/realisations/charpente-chene.jpg';
 
 export type Realisation = {
   slug: string;
@@ -41,6 +40,16 @@ export type Realisation = {
  * tiennent en galerie, qui ne demande jamais plus de 1200 px ; en illustration
  * de métier, où la page monte à 1400, Astro les laisse à leur taille native.
  * Si les originaux ressortent un jour, il suffit de réécrire les fichiers.
+ *
+ * Instagram rend aussi ses photos au carré, quand les vignettes du site sont
+ * en 4/3 : le rognage par défaut, centré, coupait la rive du pan de zinc, le
+ * faîtage du pignon en mélèze, le cordon de soudure du chéneau. Les huit
+ * fichiers ont donc été recadrés serré sur l'ouvrage, en 4/3 dans le fichier
+ * lui-même — plutôt qu'un ancrage CSS, qui aurait laissé le navigateur
+ * décider et gardé du décor inutile dans les octets servis. Les versions
+ * d'origine restent dans l'historique Git si un cadrage se révélait trop
+ * juste. Une conséquence à retenir : les légendes et les `alt` décrivent le
+ * fichier tel qu'il est aujourd'hui, pas la photo publiée sur Instagram.
  */
 export const realisations: Realisation[] = [
   {
@@ -79,8 +88,8 @@ export const realisations: Realisation[] = [
     metier: 'Couverture',
     metierSlug: 'couverture-zinguerie',
     legende:
-      "Lucarne reprise en couverture à tasseaux lors d'une réfection de toiture, à deux pas de l'église d'Échirolles.",
-    alt: "Pan de toiture neuf en zinc à tasseaux, ses baguettes régulières brillant au soleil, au milieu de toits de tuiles anciens ; clocher, immeubles et montagnes à l'arrière-plan.",
+      "Lucarne reprise en couverture à tasseaux lors d'une réfection de toiture, à Échirolles.",
+    alt: "Pan de toiture neuf en zinc à tasseaux, ses baguettes régulières brillant au soleil, au milieu de toits de tuiles anciens.",
     image: tasseaux,
   },
   {
@@ -90,7 +99,7 @@ export const realisations: Realisation[] = [
     metierSlug: 'structure-bois-menuiserie',
     legende:
       "Pignon de grange fermé en bardage mélèze, alternant lames épaufrées et claire-voie sous la pergola. Le mélèze grise sans traitement et tient dans le temps.",
-    alt: "Pignon d'une grange rénovée vu depuis la terrasse couverte : charpente apparente en bois clair, bandeau de tasseaux verticaux en claire-voie et grandes baies vitrées reflétant la prairie.",
+    alt: "Pignon d'une grange rénovée vu depuis la terrasse couverte : charpente apparente en bois clair sous le faîtage, lames de mélèze en triangle et bandeau de tasseaux verticaux en claire-voie.",
     image: bardageMeleze,
   },
   {
@@ -110,7 +119,7 @@ export const realisations: Realisation[] = [
     metierSlug: 'charpente-ossature-bois',
     legende:
       "Charpente refaite à neuf en chevrons porteurs. La contrainte était de conserver la hauteur de latis existante pour rester dans la continuité des toitures mitoyennes : le chevron porteur réduit les chambrées sans superposer les couches.",
-    alt: "Charpente neuve en bois clair vue de l'intérieur du comble, pannes et chevrons se découpant sur un ciel bleu, murs de pierre et matériaux bâchés en contrebas.",
+    alt: "Charpente neuve en bois clair vue de l'intérieur du comble, pannes et chevrons assemblés sur ferrures se découpant sur un ciel bleu.",
     image: chevronsPorteurs,
   },
   {
@@ -119,7 +128,7 @@ export const realisations: Realisation[] = [
     metier: 'Zinguerie',
     metierSlug: 'couverture-zinguerie',
     legende: "Chéneau soudé à l'étain en fond de noue, paré pour la pluie.",
-    alt: "Chéneau de zinc neuf longeant un versant d'ardoises, cordon de soudure à l'étain visible en travers du fond ; vallée et montagnes au loin.",
+    alt: "Chéneau de zinc neuf longeant un versant d'ardoises, cordon de soudure à l'étain visible en travers du fond ; vallée en contrebas.",
     image: cheneau,
   },
   {
@@ -129,7 +138,7 @@ export const realisations: Realisation[] = [
     metierSlug: 'structure-bois-menuiserie',
     legende:
       "Pergola adossée en façade sud : de l'ombre portée sur la terrasse et sur les baies aux heures les plus chaudes, sans rien changer au bâti.",
-    alt: "Pergola en bois clair adossée à une maison blanche à volets rouges, ses chevrons se détachant sur un ciel de fin de journée ; lavandes et rosier au premier plan.",
+    alt: "Pergola en bois clair adossée à une maison blanche à volets rouges, ses chevrons se détachant sur un ciel nuageux ; rosier grimpant au premier plan.",
     image: pergola,
   },
   {
@@ -158,7 +167,7 @@ export const realisations: Realisation[] = [
     metierSlug: 'structure-bois-menuiserie',
     legende:
       "Terrasse de grange équipée d'un garde-corps en mélèze de pays, dans le massif de Belledonne.",
-    alt: "Grange de pierre à flanc de pré, dont la terrasse sur pilotis de béton est bordée d'un garde-corps neuf en bois clair à barreaux verticaux ; arbres nus et ciel d'hiver.",
+    alt: "Grange de pierre à flanc de pré, dont la terrasse sur pilotis de béton est bordée d'un garde-corps neuf en bois clair à barreaux verticaux ; montagne boisée à l'arrière-plan.",
     image: gardeCorps,
   },
   {
@@ -179,14 +188,5 @@ export const realisations: Realisation[] = [
     legende: "Consoles de renfort de dépassée, taillées dans du chêne.",
     alt: "Vue en contre-plongée sous l'avancée d'un toit : une console de chêne clair fraîchement taillée soutient les chevrons anciens en bois sombre, contre un mur de pierres apparentes.",
     image: consoles,
-  },
-  {
-    slug: 'charpente-chene',
-    titre: 'Charpente chêne',
-    metier: 'Charpente',
-    metierSlug: 'charpente-ossature-bois',
-    legende: 'Pause sur une poutre de chêne, en cours de taille.',
-    alt: "Deux tasses à café émaillées posées sur une poutre de chêne fraîchement taillée, devant un mur de pierre.",
-    image: chene,
   },
 ];

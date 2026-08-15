@@ -3,6 +3,7 @@ import Base from '~/layouts/Base.astro';
 import TitreSection from '~/components/TitreSection.astro';
 import FormulaireContact from '~/components/FormulaireContact.astro';
 import { site, contact } from '~/data/site';
+import { telephoneInsecable } from '~/lib/texte';
 
 const aDesCoordonnees = Boolean(
   contact.telephone || contact.email || contact.adresse
@@ -14,7 +15,7 @@ const aDesCoordonnees = Boolean(
   description={`Contacter CAMBIOME pour un projet de charpente, de couverture ou de rénovation thermique — ${site.zone}.`}
 >
   <section class="container-page pt-16">
-    <TitreSection surtitre="Contact" titre="Parlons de votre projet">
+    <TitreSection niveau={1} surtitre="Contact" titre="Parlons de votre projet">
       <p>
         Décrivez-nous le bâtiment, ce que vous souhaitez faire et l'échéance que
         vous avez en tête. Nous nous déplaçons pour évaluer le chantier avant
@@ -27,8 +28,16 @@ const aDesCoordonnees = Boolean(
         <FormulaireContact />
       </div>
 
-      <aside class="lg:border-l lg:border-sable-200 lg:pl-10">
-        <h2 class="font-display text-xs tracking-[0.28em] text-ardoise-600 uppercase">
+      {/* Le repère est nommé par son propre titre plutôt que par un
+          `aria-label` qui redirait la même chose à côté. */}
+      <aside
+        aria-labelledby="titre-nous-joindre"
+        class="lg:border-l lg:border-sable-200 lg:pl-10"
+      >
+        <h2
+          id="titre-nous-joindre"
+          class="font-display text-xs tracking-[0.28em] text-ardoise-600 uppercase"
+        >
           Nous joindre
         </h2>
 
@@ -42,7 +51,7 @@ const aDesCoordonnees = Boolean(
                     class="text-encre underline-offset-4 hover:underline"
                     href={`tel:${contact.telephone.replace(/\s/g, '')}`}
                   >
-                    {contact.telephone}
+                    {telephoneInsecable(contact.telephone)}
                   </a>
                 </li>
               )}

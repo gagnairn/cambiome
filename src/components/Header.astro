@@ -44,6 +44,11 @@ const actif = (href: string) => ici === href.replace(/\/$/, '');
       </span>
     </a>
 
+    {/* Les deux <nav> de l'en-tête portent des noms distincts. Un seul est
+        exposé à la fois — `hidden md:block` et `md:hidden` posent un
+        `display:none`, qui retire l'autre de l'arbre d'accessibilité — mais
+        deux repères de même nom dans un même document restent une ambiguïté
+        pour qui audite le balisage, et les distinguer ne coûte rien. */}
     <nav aria-label="Navigation principale" class="hidden md:block">
       <ul class="flex items-center gap-8">
         {
@@ -98,7 +103,7 @@ const actif = (href: string) => ici === href.replace(/\/$/, '');
         </svg>
       </summary>
       <nav
-        aria-label="Navigation principale"
+        aria-label="Menu principal"
         class="absolute right-0 mt-3 w-60 rounded-lg border border-sable-200 bg-sable-50 p-2 shadow-lg shadow-ardoise-900/5"
       >
         <ul>

@@ -40,10 +40,11 @@ import { themes } from '~/data/site';
           aria-pressed="false"
           class="flex items-center gap-2.5 rounded px-2 py-1.5 text-left text-xs text-encre/70 transition-colors hover:bg-sable-100 aria-pressed:bg-sable-100 aria-pressed:font-medium aria-pressed:text-encre"
         >
-          <span
-            class="size-3.5 shrink-0 rounded-full border border-black/15"
-            style={`background-color:${theme.teinte}`}
-          />
+          {/* La couleur vient de themes.css et non d'un `style=` en ligne :
+              la CSP du site n'accorde pas 'unsafe-inline' à style-src, un
+              attribut de style serait purement et simplement ignoré et la
+              pastille resterait vide. */}
+          <span class="pastille size-3.5 shrink-0 rounded-full border border-black/15" />
           {theme.nom}
         </button>
       ))

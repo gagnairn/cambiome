@@ -1,9 +1,11 @@
 ---
 import { Image } from 'astro:assets';
-import marque from '~/assets/logos/marque-blanche.png';
+import marqueClaire from '~/assets/logos/marque-blanche.png';
+import marqueSombre from '~/assets/logos/marque-noire.png';
 import logoRge from '~/assets/logos/rge-qualibat.png';
 import { site, contact, metiers, rge, rgeEnCours } from '~/data/site';
 import { lien } from '~/lib/base';
+import { telephoneInsecable } from '~/lib/texte';
 
 const annee = 2026; // mise à jour manuelle : le site est statique, pas de JS d'horloge
 
@@ -12,11 +14,15 @@ const annee = 2026; // mise à jour manuelle : le site est statique, pas de JS d
 // RGE a expiré et que la mission passe en tête. Chacune se cale ensuite dans sa
 // colonne (à gauche, au centre, à droite) pour occuper toute la largeur du pied
 // de page plutôt que de se tasser d'un côté.
+// Tout le pied de page tient sur un seul ton de texte, `sur-marque`. Ce n'est
+// pas un appauvrissement gratuit : le fond est désormais la couleur de marque,
+// à mi-tons, et il n'y reste pas 4,5:1 de marge pour un second ton (×1,15 sous
+// Ardoise, ×1,06 sous Terracotta — calculé, pas estimé). La hiérarchie passe
+// donc par la casse, l'interlettrage et la taille, pas par la couleur.
 const entreeBandeau =
-  'group flex items-center gap-4 sm:border-l sm:border-ardoise-700 sm:first:border-l-0';
-const titreBandeau = 'block font-display tracking-[0.16em] text-ardoise-100 uppercase';
-const lienBandeau =
-  'block text-ardoise-300 underline-offset-4 group-hover:text-ardoise-100 group-hover:underline';
+  'group flex items-center gap-4 sm:border-l sm:border-sur-marque/25 sm:first:border-l-0';
+const titreBandeau = 'block font-display tracking-[0.16em] uppercase';
+const lienBandeau = 'block underline-offset-4 group-hover:underline';
 
 // Le nombre de colonnes suit le nombre d'entrées réellement rendues, sans quoi
 // une entrée masquée laisserait une colonne vide à droite.
@@ -24,27 +30,45 @@ const nbEntrees = (rgeEnCours ? 1 : 0) + 1 + (contact.instagram ? 1 : 0);
 const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
 ---
 
-<footer class="mt-24 bg-ardoise-800 text-ardoise-100">
+<footer class="mt-24 bg-marque text-sur-marque">
   <div class="container-page grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-4">
     <div class="sm:col-span-2 lg:col-span-1">
-      {/* Marque seule : le nom et la baseline suivent en texte, juste dessous. */}
-      <Image src={marque} alt="" width={56} height={56} densities={[1, 2, 3]} class="h-14 w-14" />
-      <p class="mt-4 font-display text-lg tracking-[0.22em] text-white">
+      {/* Marque seule : le nom et la baseline suivent en texte, juste dessous.
+          Les deux versions sont rendues et le thème en masque une (règles dans
+          themes.css) : la marque blanche donne 1,88:1 sur le fond clair de la
+          piste Ciel, elle y serait invisible. */}
+      <Image
+        src={marqueClaire}
+        alt=""
+        width={56}
+        height={56}
+        densities={[1, 2, 3]}
+        class="logo-sur-marque-clair h-14 w-14"
+      />
+      <Image
+        src={marqueSombre}
+        alt=""
+        width={56}
+        height={56}
+        densities={[1, 2, 3]}
+        class="logo-sur-marque-sombre h-14 w-14"
+      />
+      <p class="mt-4 font-display text-lg tracking-[0.22em]">
         {site.nom}
       </p>
-      <p class="font-display text-[0.62rem] tracking-[0.3em] text-ardoise-300 uppercase">
+      <p class="font-display text-[0.62rem] tracking-[0.3em] uppercase">
         {site.baseline}
       </p>
     </div>
 
     <div>
-      <h2 class="text-xs tracking-[0.2em] text-ardoise-300 uppercase">Métiers</h2>
+      <h2 class="text-xs tracking-[0.2em] uppercase">Métiers</h2>
       <ul class="mt-4 space-y-2.5 text-sm">
         {
           metiers.map((m) => (
             <li>
               <a
-                class="text-ardoise-100 underline-offset-4 hover:underline"
+                class="underline-offset-4 hover:underline"
                 href={`${lien('/metiers')}#${m.slug}`}
               >
                 {m.titre}
@@ -56,7 +80,7 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
     </div>
 
     <div>
-      <h2 class="text-xs tracking-[0.2em] text-ardoise-300 uppercase">Le site</h2>
+      <h2 class="text-xs tracking-[0.2em] uppercase">Le site</h2>
       <ul class="mt-4 space-y-2.5 text-sm">
         <li>
           <a class="underline-offset-4 hover:underline" href={lien('/demarche')}>
@@ -82,7 +106,7 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
     </div>
 
     <div>
-      <h2 class="text-xs tracking-[0.2em] text-ardoise-300 uppercase">Contact</h2>
+      <h2 class="text-xs tracking-[0.2em] uppercase">Contact</h2>
       <ul class="mt-4 space-y-2.5 text-sm">
         {
           contact.telephone && (
@@ -91,7 +115,7 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
                 class="underline-offset-4 hover:underline"
                 href={`tel:${contact.telephone.replace(/\s/g, '')}`}
               >
-                {contact.telephone}
+                {telephoneInsecable(contact.telephone)}
               </a>
             </li>
           )
@@ -110,7 +134,7 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
             ligne — les mentions légales, elles, la veulent d'un tenant. */}
         {
           contact.adresse && (
-            <li class="whitespace-pre-line text-ardoise-200">
+            <li class="whitespace-pre-line">
               {contact.adresse.replace(/,\s*/, ',\n')}
             </li>
           )
@@ -144,7 +168,7 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
       inégales, le flex les tassait à gauche en laissant un vide à droite, et
       la bande ne se calait plus sur les colonnes du dessus. Des colonnes
       égales suffisent à la remettre d'aplomb. */}
-  <div class="border-t border-ardoise-700">
+  <div class="border-t border-sur-marque/25">
     <div
       class:list={[
         'container-page grid gap-y-7 py-8 sm:gap-x-8',
@@ -153,14 +177,20 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
     >
       {
         rgeEnCours && (
-          <a class={entreeBandeau} href={rge.attestation}>
-            <span class="shrink-0 rounded-md bg-white p-1.5">
+          <a class={entreeBandeau} href={lien('/rge-qualibat')}>
+            {/* Filet sur la pastille : le fond blanc qu'impose la charte
+                Qualibat ne donne que 1,88:1 sur l'aplat de la piste Ciel, la
+                plaque s'y évanouit. Le logo lui-même reste lisible (il est sur
+                blanc) et les logos échappent aux seuils de contraste, mais un
+                cerne suffit à ce que la plaque se lise comme un choix. */}
+            <span class="shrink-0 rounded-md border border-encre/10 bg-white p-1.5">
               <Image src={logoRge} alt="" width={44} densities={[1, 2]} class="w-11" />
             </span>
             {/* Titre court : sur une colonne au tiers de la largeur,
                 « Reconnu Garant de l'Environnement » passait à la ligne et
                 déséquilibrait la rangée. L'intitulé complet est sur la page
-                Métiers et aux mentions légales. */}
+                dédiée, où mène ce lien — il visait auparavant le PDF de
+                l'attestation, qui se téléchargeait sans prévenir. */}
             <span class="text-xs leading-relaxed">
               <span class={titreBandeau}>Qualification RGE</span>
               <span class={lienBandeau}>{rge.certificat}</span>
@@ -198,8 +228,8 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
     </div>
   </div>
 
-  <div class="border-t border-ardoise-700">
-    <div class="container-page py-6 text-center text-xs text-ardoise-300">
+  <div class="border-t border-sur-marque/25">
+    <div class="container-page py-6 text-center text-xs">
       <p>© {annee} {site.nom}. Tous droits réservés.</p>
     </div>
   </div>

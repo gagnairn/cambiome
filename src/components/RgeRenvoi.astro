@@ -1,0 +1,39 @@
+---
+/**
+ * Renvoi vers la page « Entreprise RGE Qualibat ».
+ *
+ * Posé sur le métier Rénovation thermique, parce que c'est le seul endroit où
+ * l'information a une conséquence pour le lecteur : sans entreprise RGE, pas
+ * de MaPrimeRénov' ni de CEE, donc un reste à charge entier.
+ *
+ * Deux lignes et un lien, là où l'encadré développait auparavant les aides,
+ * les quatre domaines qualifiés et le numéro de certificat au beau milieu de
+ * la page Métiers. Tout cela vit désormais sur sa propre page, où il ne coupe
+ * plus la lecture des savoir-faire et où il y a la place de l'expliquer.
+ *
+ * Ne rend rien si la qualification est expirée — l'afficher au-delà de sa date
+ * de fin serait une allégation trompeuse au sens du code de la consommation.
+ */
+import { rge, rgeEnCours } from '~/data/site';
+import { lien } from '~/lib/base';
+---
+
+{
+  rgeEnCours && (
+    <a
+      href={lien('/rge-qualibat')}
+      class="group mt-10 block rounded-lg border border-ardoise-200 bg-ardoise-50 p-5 transition-colors hover:border-ardoise-300"
+    >
+      <span class="block font-display text-sm tracking-[0.18em] text-ardoise-700 uppercase">
+        Entreprise RGE {rge.organisme}
+      </span>
+      <span class="mt-2 block text-sm leading-relaxed text-encre/75">
+        Nos chantiers d'isolation ouvrent droit à MaPrimeRénov' et aux
+        certificats d'économies d'énergie.{' '}
+        <span class="text-ardoise-700 underline-offset-4 group-hover:underline">
+          Voir la qualification →
+        </span>
+      </span>
+    </a>
+  )
+}

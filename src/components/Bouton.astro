@@ -1,17 +1,42 @@
 ---
+/**
+ * Les variantes se lisent par le fond sur lequel le bouton est posé, pas par
+ * son apparence — c'est ce qui décide de sa couleur de texte :
+ *
+ *  - sur le fond de page  : `plein`, `contour`
+ *  - sur une photo        : `clair`
+ *  - sur un aplat de marque : `sur-marque`, `contour-sur-marque`
+ *
+ * Les deux dernières sont nécessaires parce que `clair` (blanc sur photo) ne
+ * convient pas à un aplat de marque clair : un bouton blanc sur #9dc3d4 donne
+ * 1,88:1, il disparaît. Elles s'expriment donc en `sur-marque`, qui vaut du
+ * blanc sous Ardoise et de l'encre sous Terracotta et Ciel.
+ *
+ * Variantes plutôt que surcharges via `class` : deux utilitaires Tailwind
+ * visant la même propriété sont départagés par leur ordre dans la feuille
+ * produite, pas par l'ordre dans l'attribut. Une surcharge y marche par
+ * chance.
+ */
 interface Props {
   href: string;
-  variante?: 'plein' | 'contour' | 'clair';
+  variante?: 'plein' | 'contour' | 'clair' | 'sur-marque' | 'contour-sur-marque';
   class?: string;
 }
 
 const { href, variante = 'plein', class: classe = '' } = Astro.props;
 
 const styles = {
-  plein: 'bg-ardoise-700 text-white hover:bg-ardoise-800',
+  plein:
+    'border border-marque-bord bg-marque text-sur-marque hover:bg-marque-survol',
   contour:
     'border border-ardoise-400 text-ardoise-700 hover:border-ardoise-600 hover:bg-ardoise-50',
   clair: 'bg-white/95 text-encre hover:bg-white',
+  'sur-marque': 'bg-sur-marque text-marque hover:bg-sur-marque/90',
+  // 75 % et pas moins : le contour est la seule limite visible de ce bouton, il
+  // lui faut 3:1 sur l'aplat (WCAG 1.4.11). À 40 % il tombait à 1,87:1 sous
+  // Terracotta ; à 75 % la piste la plus serrée donne 3,36:1.
+  'contour-sur-marque':
+    'border border-sur-marque/75 text-sur-marque hover:border-sur-marque hover:bg-sur-marque/10',
 } as const;
 ---
 

@@ -3,6 +3,7 @@ import Base from '~/layouts/Base.astro';
 import Bouton from '~/components/Bouton.astro';
 import { contact } from '~/data/site';
 import { base } from '~/lib/base';
+import { telephoneInsecable } from '~/lib/texte';
 
 // Page d'arrivée après un envoi du formulaire sans JavaScript : Web3Forms y
 // renvoie via le champ `redirect`. Avec JavaScript, la confirmation s'affiche
@@ -34,7 +35,7 @@ import { base } from '~/lib/base';
       {
         contact.telephone && (
           <Bouton href={`tel:${contact.telephone.replace(/\s/g, '')}`} variante="contour">
-            {contact.telephone}
+            {telephoneInsecable(contact.telephone)}
           </Bouton>
         )
       }

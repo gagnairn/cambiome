@@ -2,6 +2,7 @@
 import Base from '~/layouts/Base.astro';
 import TitreSection from '~/components/TitreSection.astro';
 import { site, contact, hebergeur, rge, rgeEnCours } from '~/data/site';
+import { telephoneInsecable } from '~/lib/texte';
 
 const aRemplir = (v: string) => v || '⚠ à compléter';
 
@@ -30,7 +31,7 @@ const formeEtCapital = contact.capital
   description={`Mentions légales du site ${site.nom}.`}
 >
   <section class="container-page pt-16 pb-8">
-    <TitreSection surtitre="Informations" titre="Mentions légales" />
+    <TitreSection niveau={1} surtitre="Informations" titre="Mentions légales" />
 
     <div class="mt-12 max-w-2xl space-y-10 text-sm leading-relaxed text-encre/75">
       {
@@ -55,7 +56,7 @@ const formeEtCapital = contact.capital
           <li>SIRET : {aRemplir(contact.siret)}</li>
           <li>Immatriculation : {aRemplir(contact.rcs)}</li>
           <li>TVA intracommunautaire : {aRemplir(contact.tva)}</li>
-          <li>Téléphone : {aRemplir(contact.telephone)}</li>
+          <li>Téléphone : {aRemplir(telephoneInsecable(contact.telephone))}</li>
           <li>Email : {aRemplir(contact.email)}</li>
           <li>
             Directeur de la publication : {aRemplir(contact.directeurPublication)}
@@ -118,7 +119,7 @@ const formeEtCapital = contact.capital
           uniquement pour répondre à votre demande et ne font l'objet d'aucune
           cession à des tiers. Conformément au RGPD, vous disposez d'un droit
           d'accès, de rectification et de suppression de vos données, en nous
-          contactant {contact.email ? `à ${contact.email}` : `au ${aRemplir(contact.telephone)}`}.
+          contactant {contact.email ? `à ${contact.email}` : `au ${aRemplir(telephoneInsecable(contact.telephone))}`}.
         </p>
         {
           contact.web3formsCle && (

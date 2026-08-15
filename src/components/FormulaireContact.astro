@@ -1,6 +1,7 @@
 ---
 import { contact, site } from '~/data/site';
 import { base } from '~/lib/base';
+import { telephoneInsecable } from '~/lib/texte';
 
 /**
  * Formulaire de contact.
@@ -22,7 +23,7 @@ const urlMerci = new URL(`${base}/merci`, Astro.site).href;
 const messageErreur = contact.email
   ? `L'envoi a échoué. Réessayez dans un instant, ou écrivez-nous directement à ${contact.email}.`
   : contact.telephone
-    ? `L'envoi a échoué. Réessayez dans un instant, ou appelez-nous au ${contact.telephone}.`
+    ? `L'envoi a échoué. Réessayez dans un instant, ou appelez-nous au ${telephoneInsecable(contact.telephone)}.`
     : "L'envoi a échoué. Réessayez dans un instant.";
 
 const champ =
@@ -179,7 +180,7 @@ const label = 'block text-sm text-encre/80';
 
         <button
           type="submit"
-          class="mt-8 inline-flex rounded-full bg-ardoise-700 px-8 py-3 text-sm tracking-wide text-white transition-colors hover:bg-ardoise-800 disabled:cursor-not-allowed disabled:opacity-60"
+          class="mt-8 inline-flex rounded-full border border-marque-bord bg-marque px-8 py-3 text-sm tracking-wide text-sur-marque transition-colors hover:bg-marque-survol disabled:cursor-not-allowed disabled:opacity-60"
         >
           Envoyer
         </button>

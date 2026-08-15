@@ -45,6 +45,29 @@
 
   --color-encre: #1a1d1f;
 
+  /* --- Surfaces de marque -------------------------------------------------
+     Les grandes aplats colorés — boutons, bloc d'appel, pied de page — ne
+     pointent pas un cran de la rampe mais ces quatre variables. Raison : la
+     couleur relevée sur le logo n'occupe pas le même rôle d'une piste à
+     l'autre. #41738d accepte du texte blanc (5,17:1), #ad7b7a ne l'accepte pas
+     (3,56:1) et réclame de l'encre (4,75:1). Écrire `bg-ardoise-700
+     text-white` dans les composants figerait ce choix pour toutes les pistes ;
+     `bg-marque text-sur-marque` le laisse au thème, et le couple s'inverse
+     tout seul.
+
+     Les valeurs ci-dessous sont celles d'Ardoise : le thème par défaut n'a pas
+     de bloc à lui, il EST le @theme. Voir themes.css pour les deux autres.
+
+     `marque-bord` : un fond de marque doit se détacher du fond de page à 3:1
+     (WCAG 1.4.11, contour des composants d'interface). Terracotta au survol
+     tombe à 2,48:1 et Ciel à 1,80:1. Plutôt qu'un contour qui n'apparaîtrait
+     que sur certaines pistes ou certains états, tous les boutons en portent
+     un, en permanence. */
+  --color-marque: #41738d;
+  --color-marque-survol: #386478;
+  --color-marque-bord: #386478;
+  --color-sur-marque: #ffffff;
+
   --font-display: 'Jost Variable', 'Jost', ui-sans-serif, system-ui, sans-serif;
   --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
 }

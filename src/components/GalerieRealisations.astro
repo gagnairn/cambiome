@@ -4,9 +4,18 @@ import type { Realisation } from '~/data/realisations';
 
 interface Props {
   items: Realisation[];
+  /**
+   * Niveau des titres de chantier. Il dépend du titre qui précède la galerie :
+   * sur l'accueil elle suit un h2 (« Quelques réalisations ») et ses items
+   * sont donc des h3 ; sur la page Réalisations elle suit le h1 de la page et
+   * ils remontent en h2. Sans ce réglage, la seconde sauterait un niveau.
+   */
+  niveau?: 2 | 3;
 }
 
-const { items } = Astro.props;
+const { items, niveau = 3 } = Astro.props;
+
+const Titre = `h${niveau}` as 'h2' | 'h3';
 ---
 
 <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -28,7 +37,7 @@ const { items } = Astro.props;
             <p class="font-display text-[0.62rem] tracking-[0.28em] text-ardoise-600 uppercase">
               {r.metier}
             </p>
-            <h3 class="mt-2 text-lg leading-snug">{r.titre}</h3>
+            <Titre class="mt-2 text-lg leading-snug">{r.titre}</Titre>
             <p class="mt-2 text-sm leading-relaxed text-encre/70">{r.legende}</p>
           </figcaption>
         </figure>

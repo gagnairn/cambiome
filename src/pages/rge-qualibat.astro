@@ -1,0 +1,189 @@
+---
+/**
+ * Page dédiée à la qualification RGE.
+ *
+ * Le sujet tenait auparavant dans un encadré au milieu de la page Métiers, où
+ * il coupait la lecture des quatre savoir-faire tout en restant trop court pour
+ * répondre à la seule question qui compte pour le lecteur : à quelles aides ces
+ * travaux donnent-ils droit, et sur quels travaux exactement.
+ *
+ * Comme les autres emplacements, la page se vide d'elle-même passée `rge.fin` :
+ * afficher une qualification expirée serait une allégation trompeuse. Elle
+ * quitte alors aussi le sitemap (voir `filter` dans astro.config.mjs) et passe
+ * en noindex — restent quelques lignes qui disent honnêtement l'échéance,
+ * plutôt qu'une page blanche pour les liens déjà indexés.
+ */
+import { Image } from 'astro:assets';
+import Base from '~/layouts/Base.astro';
+import TitreSection from '~/components/TitreSection.astro';
+import AppelContact from '~/components/AppelContact.astro';
+import logoRge from '~/assets/logos/rge-qualibat.png';
+import { site, rge, rgeEnCours } from '~/data/site';
+import { lien } from '~/lib/base';
+
+const enFrancais = (iso: string) =>
+  new Date(iso).toLocaleDateString('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+
+// Deux dispositifs distincts, cumulables, souvent confondus. Aucun montant
+// n'est donné : les barèmes changent d'une année sur l'autre et une page
+// statique qui les affiche devient fausse sans prévenir.
+const aides = [
+  {
+    titre: "MaPrimeRénov'",
+    texte:
+      "Aide de l'État distribuée par l'Anah, calculée d'après vos revenus et le gain énergétique des travaux. Elle est versée après réalisation, sur présentation de la facture.",
+  },
+  {
+    titre: "Certificats d'économies d'énergie",
+    texte:
+      "Primes financées par les fournisseurs d'énergie, tenus par la loi de faire réaliser des économies d'énergie. Elles se cumulent avec MaPrimeRénov' et se demandent avant la signature du devis.",
+  },
+];
+---
+
+<Base
+  titre="Entreprise RGE Qualibat"
+  description={`${site.nom} est qualifiée RGE Qualibat pour l'isolation des murs, toitures et rampants : une qualification qui ouvre droit à MaPrimeRénov' et aux certificats d'économies d'énergie.`}
+  noindex={!rgeEnCours}
+>
+  <section class="container-page pt-16">
+    <div class="flex flex-wrap items-start gap-x-10 gap-y-8">
+      <div class="min-w-0 flex-1">
+        <TitreSection niveau={1} surtitre="Qualification" titre="Entreprise RGE Qualibat">
+          {
+            rgeEnCours ? (
+              <p>
+                {site.nom} est qualifiée RGE — « Reconnu Garant de
+                l'Environnement » — par {rge.organisme} pour ses travaux
+                d'isolation. C'est cette qualification qui rend le chantier
+                éligible aux aides publiques à la rénovation énergétique : sans
+                elle, quelle que soit la qualité de l'ouvrage, aucune aide n'est
+                versée.
+              </p>
+            ) : (
+              <p>
+                La qualification RGE de {site.nom} est arrivée à échéance le{' '}
+                {enFrancais(rge.fin)}. Tant qu'elle n'est pas renouvelée, nos
+                chantiers d'isolation n'ouvrent pas droit à MaPrimeRénov' ni aux
+                certificats d'économies d'énergie. Nos{' '}
+                <a
+                  class="underline underline-offset-4 hover:text-ardoise-700"
+                  href={lien('/metiers')}
+                >
+                  quatre métiers
+                </a>{' '}
+                restent inchangés.
+              </p>
+            )
+          }
+        </TitreSection>
+      </div>
+
+      {/* Pastille blanche : la charte Qualibat impose le fond clair, et le
+          fichier est lui-même sur fond blanc. Affiché à 96 px pour une source
+          de 144 px de large — l'écran haute densité y trouve son compte sans
+          qu'on agrandisse une image qui n'existe pas plus grande. */}
+      {
+        rgeEnCours && (
+          <span class="shrink-0 rounded-lg border border-sable-200 bg-white p-4">
+            <Image src={logoRge} alt="" width={144} class="w-24" />
+          </span>
+        )
+      }
+    </div>
+  </section>
+
+  {
+    rgeEnCours && (
+      <Fragment>
+        <section class="container-page mt-20">
+          <h2 class="text-2xl leading-snug sm:text-3xl">
+            Les aides que la qualification ouvre
+          </h2>
+          <div class="mt-8 grid gap-8 sm:grid-cols-2">
+            {aides.map((aide) => (
+              <div class="border-t border-sable-300 pt-6">
+                <h3 class="font-display text-lg leading-snug">{aide.titre}</h3>
+                <p class="mt-3 leading-relaxed text-encre/75">{aide.texte}</p>
+              </div>
+            ))}
+          </div>
+          {/* Le site ne promet pas un service d'ingénierie financière qu'il ne
+              rend pas : il dit ce qu'il faut fournir, et où le trouver. */}
+          <p class="mt-8 max-w-2xl text-sm leading-relaxed text-encre/65">
+            Les conditions d'attribution et les montants sont fixés par les
+            barèmes en vigueur, qui évoluent chaque année. Dans les deux cas, le
+            dossier réclame l'attestation de qualification de l'entreprise :
+            elle est téléchargeable plus bas.
+          </p>
+        </section>
+
+        <section class="mt-20 bg-sable-100 py-16">
+          <div class="container-page">
+            <h2 class="text-2xl leading-snug sm:text-3xl">Domaines qualifiés</h2>
+            {/* Une colonne, pas deux : les quatre intitulés sont ceux du
+                registre ADEME, longs et de longueurs très inégales. Sur deux
+                colonnes, « Fenêtres de toit » laissait un blanc en face d'un
+                libellé de trois lignes, et l'œil lisait un tableau plutôt
+                qu'une énumération. */}
+            <ul class="mt-8 max-w-3xl space-y-3">
+              {rge.domaines.map((d) => (
+                <li class="flex gap-3 leading-relaxed text-encre/80">
+                  <svg
+                    class="mt-1.5 h-4 w-4 shrink-0 text-ardoise-500"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="m5 12.5 4.5 4.5L19 7"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  <span>{d}</span>
+                </li>
+              ))}
+            </ul>
+            {/* Dire ce que la qualification ne couvre pas vaut mieux que de
+                laisser un client découvrir au moment du dossier que sa toiture
+                n'y ouvrait pas droit. */}
+            <p class="mt-8 max-w-2xl text-sm leading-relaxed text-encre/65">
+              La qualification ne porte que sur ces quatre domaines. Nos autres
+              métiers — charpente, couverture et zinguerie, menuiserie —
+              n'ouvrent pas droit à ces aides, même réalisés au cours du même
+              chantier.
+            </p>
+          </div>
+        </section>
+
+        <section class="container-page mt-20">
+          <h2 class="text-2xl leading-snug sm:text-3xl">L'attestation</h2>
+          {/* Le seul renseignement à donner ici est le numéro : l'organisme
+              est déjà dans le titre de la page, et les dates de validité
+              figurent sur l'attestation elle-même. */}
+          <p class="mt-8 font-display text-xl">{rge.certificat}</p>
+          <p class="mt-5 max-w-2xl leading-relaxed text-encre/75">
+            <a
+              class="underline underline-offset-4 hover:text-ardoise-700"
+              href={rge.attestation}
+              rel="noopener"
+            >
+              Consulter l'attestation
+            </a>{' '}
+            (PDF). La qualification est également vérifiable indépendamment de
+            nous, sur le registre public des entreprises RGE tenu par l'ADEME.
+          </p>
+        </section>
+      </Fragment>
+    )
+  }
+
+  <AppelContact />
+</Base>

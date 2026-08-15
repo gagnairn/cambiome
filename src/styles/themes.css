@@ -61,23 +61,91 @@ html[data-theme='terracotta'] {
   --color-terre-700: #b91c1c;
   --color-terre-800: #991b1b;
   --color-terre-900: #7f1d1d;
+
+  /* Surfaces de marque. #ad7b7a est la teinte relevée sur bloc-terracotta.png
+     (93,9 % des pixels), posée telle quelle. Elle ne porte pas de blanc
+     (3,56:1) mais porte l'encre à 4,75:1 — le couple s'inverse donc.
+     Le survol ÉCLAIRCIT au lieu d'assombrir : sous de l'encre, #ad7b7a est
+     déjà au bord du seuil, un cran plus sombre le ferait tomber à 3,40:1. */
+  --color-marque: #ad7b7a;
+  --color-marque-survol: #c09796;
+  --color-marque-bord: #96625f;
+  --color-sur-marque: #1a1d1f;
 }
 
-/* Ciel — ancrée sur #9dc3d4. Très clair (1,88:1 sur blanc) : la teinte ne
-   peut porter ni texte ni bouton et tient le cran 300 — là où le pied de page
-   va justement chercher son texte secondaire, à 5,69:1 sur le fond sombre.
-   Les crans bas sont nettement plus cyan et plus saturés que l'ardoise, sans
-   quoi le thème se lirait comme « le même bleu, en un peu différent ».
-   (500 : 4,96:1, 600 : 6,56:1, 700 sur blanc : 8,66:1.) */
+/* Ciel — ancrée sur #9dc3d4, mais pas prolongée dans sa teinte.
+   ------------------------------------------------------------------------
+   Piège de cette piste : #9dc3d4 est à 199° de teinte, l'ardoise #41738d à
+   201°. La couleur demandée n'est pas un autre bleu, c'est le bleu de la
+   charte éclairci — elle est à ΔE 2,2 de `ardoise-300`, donc déjà dans le
+   site. Une première version prolongeait la rampe « fidèlement » autour
+   d'elle : elle tombait à ΔE 3,5–5 de l'ardoise sur les crans porteurs, soit
+   à peine le seuil de perception. Ce n'était pas une piste, c'était la même.
+
+   D'où le parti pris : #9dc3d4 est conservé tel quel au cran 300 — c'est la
+   teinte validée, elle ne bouge pas — et tout le reste de la rampe vire au
+   turquoise franc (190°) à 85 % de saturation, contre 32 % pour l'ardoise.
+   C'est la saturation qui fait le gros du travail perceptif : boutons et pied
+   de page se lisent turquoise vif là où l'ardoise reste un bleu éteint.
+
+   Conséquence assumée : le cran 300 est le seul de sa propre rampe à ne pas
+   en suivre la teinte (199° contre 190°). Sur le fond sombre du pied de page
+   il passe pour un tint clair, l'écart ne se voit pas.
+
+   Contrastes vérifiés : 500 sur sable-50 4,61:1 · 600 6,14:1 · blanc sur 700
+   8,41:1 · #9dc3d4 sur le pied de page 5,97:1. Tous au-dessus de AA. */
 html[data-theme='ciel'] {
-  --color-ardoise-50: #f2f9fc;
-  --color-ardoise-100: #e2f0f6;
-  --color-ardoise-200: #c4e1ec;
+  --color-ardoise-50: #f0fafc;
+  --color-ardoise-100: #dbf0f5;
+  --color-ardoise-200: #b5e0e9;
   --color-ardoise-300: #9dc3d4;
-  --color-ardoise-400: #62a5c1;
-  --color-ardoise-500: #2c7691;
-  --color-ardoise-600: #226275;
-  --color-ardoise-700: #1d515f;
-  --color-ardoise-800: #1b4350;
-  --color-ardoise-900: #17323c;
+  --color-ardoise-400: #34a8bf;
+  --color-ardoise-500: #0c7d93;
+  --color-ardoise-600: #0a687b;
+  --color-ardoise-700: #085565;
+  --color-ardoise-800: #06414e;
+  --color-ardoise-900: #05323c;
+
+  /* Surfaces de marque : #9dc3d4 lui-même, la teinte qui nomme la piste.
+     Très clair, il porte l'encre confortablement (9,03:1) — mais il ne se
+     détache pas du fond de page (1,80:1), d'où un contour franchement plus
+     soutenu que sur les deux autres pistes. */
+  --color-marque: #9dc3d4;
+  --color-marque-survol: #86b4c8;
+  --color-marque-bord: #0c7d93;
+  --color-sur-marque: #1a1d1f;
+}
+
+/* Le logo du pied de page suit `sur-marque` : la marque blanche disparaîtrait
+   sur les fonds clairs de Terracotta et Ciel (1,88:1 sur #9dc3d4). Les deux
+   versions sont rendues, le thème en masque une. Un `filter: invert()` aurait
+   évité le second fichier, mais inverser un logo est le genre de raccourci qui
+   survit à la phase de choix et finit en production. */
+.logo-sur-marque-sombre {
+  display: none;
+}
+html[data-theme='terracotta'] .logo-sur-marque-clair,
+html[data-theme='ciel'] .logo-sur-marque-clair {
+  display: none;
+}
+html[data-theme='terracotta'] .logo-sur-marque-sombre,
+html[data-theme='ciel'] .logo-sur-marque-sombre {
+  display: block;
+}
+
+/* Pastilles du sélecteur — la teinte d'ancrage de chaque piste, celle qui la
+   nomme. Elles vivent ici et non dans SelecteurTheme.astro parce qu'un
+   `style=` en ligne serait bloqué par la CSP (style-src sans 'unsafe-inline'),
+   et parce qu'une couleur de piste n'a qu'un seul domicile : ce fichier.
+
+   Volontairement figées, sans var() : chaque bouton doit montrer la couleur
+   de SA piste, y compris celles qui ne sont pas actives. */
+#selecteur-theme [data-theme-id=''] .pastille {
+  background-color: #41738d;
+}
+#selecteur-theme [data-theme-id='terracotta'] .pastille {
+  background-color: #ad7b7a;
+}
+#selecteur-theme [data-theme-id='ciel'] .pastille {
+  background-color: #9dc3d4;
 }

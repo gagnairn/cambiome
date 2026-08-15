@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
 import TitreSection from '~/components/TitreSection.astro';
 import AppelContact from '~/components/AppelContact.astro';
-import Rge from '~/components/Rge.astro';
+import RgeRenvoi from '~/components/RgeRenvoi.astro';
 import { metiers } from '~/data/site';
 import { realisations } from '~/data/realisations';
 
@@ -17,7 +17,7 @@ const illustrations = new Map(
   description="Charpente et ossature bois, rénovation thermique, couverture et zinguerie, structure bois et menuiserie : les quatre savoir-faire de CAMBIOME."
 >
   <section class="container-page pt-16">
-    <TitreSection surtitre="Savoir-faire" titre="Nos réalisations par métiers">
+    <TitreSection niveau={1} surtitre="Savoir-faire" titre="Nos réalisations par métiers">
       <p>
         Quatre familles de chantiers, menées par des équipes formées à
         l'éco-construction et au bâti ancien.
@@ -105,8 +105,9 @@ const illustrations = new Map(
               </ul>
 
               {/* Le RGE ne concerne que l'isolation : il n'a rien à faire sous
-                  la charpente ou la zinguerie, où il n'ouvre aucun droit. */}
-              {m.slug === 'renovation-thermique' && <Rge />}
+                  la charpente ou la zinguerie, où il n'ouvre aucun droit. Un
+                  simple renvoi ici, le détail sur /rge-qualibat. */}
+              {m.slug === 'renovation-thermique' && <RgeRenvoi />}
             </div>
           </div>
         </section>

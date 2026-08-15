@@ -59,6 +59,12 @@ une image de 44 px les rendait illisibles et rognait la marque de moitié.
 
 ## Où modifier quoi
 
+Côté client, il y a un guide séparé : [GUIDE-MODIFICATION.md](GUIDE-MODIFICATION.md)
+décrit les modifications courantes (coordonnées, textes des métiers, légendes,
+date du RGE) depuis l'éditeur web de GitHub, sans installation ni ligne de
+commande. Il suppose que le compte GitHub de l'entreprise a été ajouté aux
+collaborateurs du dépôt. Ce qui suit s'adresse à qui reprend le code.
+
 ```
 src/
 ├── data/
@@ -69,6 +75,7 @@ src/
 │   └── realisations/     ← photos optimisées (2400 px, JPEG q82)
 ├── components/           ← Header, Footer, cartes, galerie…
 ├── layouts/Base.astro    ← <head>, métadonnées, structure de page
+├── lib/                  ← helpers : chemins (base.ts), typographie (texte.ts)
 ├── pages/                ← une page = un fichier
 └── styles/
     ├── global.css        ← charte : couleurs, polices, utilitaires
@@ -108,6 +115,42 @@ d'ajouter une piste, détaillées en tête de `src/styles/themes.css` :
 - les blocs sont hors de tout `@layer`, et ne sont pas écrits en `@theme` —
   Tailwind élague les variables de thème inutilisées.
 
+### Les grands aplats : quatre variables à part
+
+Boutons, bloc d'appel, panneau de cernes et pied de page ne visent pas un cran
+de la rampe mais quatre variables sémantiques, déclarées dans le `@theme` de
+`global.css` et redéfinies par chaque piste :
+
+| Variable | Rôle | Ardoise | Terracotta | Ciel |
+| --- | --- | --- | --- | --- |
+| `--color-marque` | l'aplat | `#41738d` | `#ad7b7a` | `#9dc3d4` |
+| `--color-marque-survol` | l'aplat au survol | `#386478` | `#c09796` | `#86b4c8` |
+| `--color-marque-bord` | contour du bouton | `#386478` | `#96625f` | `#0c7d93` |
+| `--color-sur-marque` | tout ce qui est posé dessus | `#ffffff` | `#1a1d1f` | `#1a1d1f` |
+
+La raison de ce détour : la teinte relevée sur le logo n'occupe pas le même
+rôle d'une piste à l'autre. `#41738d` porte du texte blanc (5,17:1), `#ad7b7a`
+ne le porte pas (3,56:1) et réclame de l'encre (4,75:1), `#9dc3d4` porte
+l'encre confortablement (9,03:1). Écrire `bg-ardoise-700 text-white` dans les
+composants figerait ce choix pour toutes les pistes ; `bg-marque
+text-sur-marque` le laisse au thème, et le couple s'inverse tout seul.
+
+Trois conséquences qui se voient dans le code :
+
+- **contour permanent sur les boutons.** Un aplat de marque doit se détacher du
+  fond de page à 3:1 (WCAG 1.4.11). Terracotta au survol tombe à 2,48:1 et Ciel
+  à 1,80:1. Plutôt qu'un contour n'apparaissant que sur certaines pistes,
+  `marque-bord` en donne un à tous, en permanence ;
+- **plus de second ton de texte** dans le pied de page ni dans le bloc d'appel.
+  Sur un fond à mi-tons il ne reste pas 4,5:1 de marge pour un ton secondaire
+  (×1,15 sous Ardoise, ×1,06 sous Terracotta). La hiérarchie y passe par la
+  casse, l'interlettrage et la taille ;
+- **les deux marques sont rendues** dans le pied de page, et le thème en masque
+  une (règles en fin de `themes.css`). La marque blanche donne 1,88:1 sur
+  l'aplat clair de la piste Ciel : elle y serait invisible. Un `filter: invert()`
+  aurait suffi à l'écran, mais c'est le genre de raccourci qui survit en
+  production.
+
 **Ce que le sélecteur ne change pas.** Les logos suivent déjà : l'en-tête et le
 pied de page affichent la marque en monochrome. Mais le favicon, l'image de
 partage et `theme-color` restent bleus pendant la démonstration — ils sont
@@ -120,17 +163,55 @@ générés, et ne se régénèrent qu'une fois le choix fait.
    `src/lib/theme-script.ts`, l'entrée `themes` de `src/data/site.ts`, et dans
    `astro.config.mjs` la constante `HACHAGE_SCRIPT_THEME` avec son
    `scriptDirective`. Le site retrouve son unique script (le formulaire).
-2. Si ce n'est plus l'ardoise : mettre à jour `ARDOISE` dans
+2. Reporter aussi les quatre variables `marque` / `sur-marque` de la piste
+   retenue dans le `@theme` — elles y sont déjà, aux valeurs de l'ardoise.
+   Puis, si `sur-marque` vaut du blanc (cas de l'ardoise seule), retirer du
+   pied de page la seconde `<Image>` et les classes `logo-sur-marque-*`, et de
+   `Bouton.astro` les variantes `sur-marque` / `contour-sur-marque` si elles
+   redeviennent équivalentes à `clair` et à `contour`. Sinon les garder :
+   elles portent l'inversion du texte, pas une préférence.
+3. Si ce n'est plus l'ardoise : mettre à jour `ARDOISE` dans
    `scripts/generer-images.mjs`, la meta `theme-color` de `Base.astro`,
    `theme_color` dans `src/pages/site.webmanifest.ts`, le tableau de charte
    ci-dessus, puis relancer `npm run images`.
-3. Renommer `ardoise-*` d'après la nouvelle teinte — un `sed` sur ~120
+4. Renommer `ardoise-*` d'après la nouvelle teinte — un `sed` sur ~120
    occurrences. **Pas avant** : tant que l'ardoise est le défaut le nom reste
    exact, et renommer pendant la phase de choix ferait bouger tous les
    composants pour une décision qui peut encore changer.
 
 `themes.selecteur = false` dans `src/data/site.ts` éteint tout sans rien
 supprimer — utile pour voir le site tel qu'il sera livré.
+
+## Conformité HTML / CSS
+
+Vérifié le 15 août 2026 sur `dist/`, avec `html-validate` (presets `standard`,
+`recommended`, `a11y`, `document`) et la grammaire CSS de `css-tree`.
+
+- **HTML** : aucun écart, presets `standard`, `recommended` et `a11y` compris.
+  Chaque page a un `<h1>` et un seul, et aucun niveau de titre n'est sauté —
+  d'où les props `niveau` de `TitreSection` et de `GalerieRealisations`, qui
+  existent pour ça et pas pour régler une taille de texte.
+- **CSS** : aucune déclaration refusée par la grammaire, hors celles que
+  l'outil ne sait pas vérifier (celles qui passent par `var()`, et les
+  descripteurs `@property` / `@font-face`).
+
+Deux réserves à connaître avant de relancer une vérification :
+
+- **le validateur officiel du W3C n'a pas été utilisé.** Le Nu Html Checker
+  et Jigsaw sont des `.jar` et demandent Java. `html-validate` applique les
+  mêmes règles de spec, ce n'est pas le même binaire ;
+- **Jigsaw serait de toute façon trompeur sur ce site.** Il est resté sur un
+  profil ancien et signale comme erreurs `@property` (52 occurrences dans la
+  feuille produite), `color-mix()` (57) et `@layer` (5) — trois standards
+  W3C que Tailwind 4 émet normalement. Le faire passer au vert n'est pas
+  atteignable, et ne vaudrait rien.
+
+Une seule règle est délibérément non suivie : `require-sri`, qui réclame un
+attribut `integrity` sur le `<link>` de la feuille de style. SRI protège d'un
+CDN tiers compromis ; ici la feuille est de même origine et son nom porte déjà
+un hachage de contenu. Qui pourrait la modifier pourrait modifier le HTML et
+son `integrity` dans le même geste. Astro n'a pas d'option pour l'émettre, et
+l'ajouter à la main n'apporterait rien.
 
 ## À compléter avant mise en ligne
 
@@ -153,24 +234,33 @@ concernés plutôt que d'afficher de fausses informations.
 
 ## Qualification RGE
 
-La mention « RGE Qualibat » apparaît à trois endroits : la page Métiers (bloc
-Rénovation thermique), le bandeau du pied de page (logo et numéro de
-certificat) et les mentions légales. Les trois sont pilotés par `rge` dans
+Le sujet a sa page, `/rge-qualibat` : les aides ouvertes (MaPrimeRénov', CEE),
+les quatre domaines qualifiés, ce que la qualification ne couvre pas, et
+l'attestation. La mention apparaît en outre à trois endroits, qui y renvoient
+ou la reprennent en une ligne : la page Métiers (renvoi sous le bloc Rénovation
+thermique, `RgeRenvoi.astro`), le bandeau du pied de page (logo et numéro de
+certificat) et les mentions légales. Les quatre sont pilotés par `rge` dans
 `src/data/site.ts`, dont les valeurs proviennent du registre public de l'ADEME.
 
-Passée la date `rge.fin`, les trois emplacements se masquent d'eux-mêmes :
+Passée la date `rge.fin`, les quatre emplacements se masquent d'eux-mêmes :
 afficher une qualification expirée serait une allégation trompeuse. Mais le
 site est statique — **le retrait ne prend effet qu'au build suivant**. Un push
 quelconque après la date suffit à l'appliquer ; sans push, la mention resterait
 en ligne.
+
+La page `/rge-qualibat`, elle, continue d'exister : elle est déjà indexée et
+liée depuis l'extérieur, la faire disparaître donnerait un 404. Elle se réduit
+alors à quelques lignes qui annoncent l'échéance, passe en `noindex` et sort du
+sitemap (`filter` dans `astro.config.mjs`).
 
 Quand une nouvelle attestation est délivrée, mettre à jour `debut`, `fin`,
 `certificat` et `attestation`.
 
 Le logo `src/assets/logos/rge-qualibat.png` a été extrait de l'attestation
 Qualibat elle-même (`pdfimages`, puis normalisation du fond que la compression
-JPEG avait teinté). Il fait 144 × 175 px, ce qui suffit largement pour les
-44 px du pied de page, même en écran haute densité. La source officielle reste
+JPEG avait teinté). Il fait 144 × 175 px : largement de quoi servir les 44 px
+du pied de page en écran haute densité, et les 96 px de la page dédiée à 1,5×
+sans agrandissement. La source officielle reste
 le kit de communication de l'espace client Qualibat : s'il faut un jour
 l'afficher plus grand, c'est là qu'il faut le prendre. Le droit d'usage de la
 marque est attaché à la certification — il tombe avec elle, à la même date.
@@ -369,9 +459,19 @@ elles gardent le plafond de **1080 px** au lieu de 2400. Ce sont la couverture
 à tasseaux, la structure de lucarne, la soudure de chéneau, la pergola, les
 chevrons porteurs, les consoles de chêne, le bardage mélèze et le garde-corps.
 Elles suffisent à la galerie, qui ne demande jamais plus de 1200 px, mais un
-recadrage serré ou un tirage y perdrait — si les originaux ressortent du
-téléphone, il n'y a que les fichiers de `src/assets/realisations/` à réécrire,
-les noms et les légendes ne bougent pas.
+tirage y perdrait — si les originaux ressortent du téléphone, il n'y a que les
+fichiers de `src/assets/realisations/` à réécrire, les noms ne bougent pas.
+
+Ces huit-là sont aussi les seules à avoir été **recadrées**, serré sur
+l'ouvrage et au format 4/3 des vignettes : le carré d'Instagram y perdait un
+huitième en haut et en bas au rognage, ce qui coupait la rive du pan de zinc
+et le faîtage du pignon en mélèze, et le reste du cadre montrait surtout le
+chantier autour. Le recadrage est fait dans le fichier plutôt que par
+`object-position` en CSS, pour ne pas servir des octets qui ne s'affichent
+jamais ; le prix est qu'il n'y reste plus de marge. Les versions non recadrées
+sont récupérables dans l'historique git (`git log -- src/assets/realisations`).
+Attention en y touchant : les `legende` et les `alt` de `realisations.ts`
+décrivent le cadrage actuel, pas la photo publiée.
 
 `bloc-terracotta` est la variante secondaire du bloc : conservée parce qu'elle
 fait partie de la charte, mais référencée nulle part dans le site.

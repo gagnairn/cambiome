@@ -2,8 +2,16 @@
 interface Props {
   surtitre?: string;
   titre: string;
-  /** Niveau de titre HTML — par défaut h2 */
-  niveau?: 2 | 3;
+  /**
+   * Niveau de titre HTML — par défaut h2.
+   *
+   * `1` est réservé au titre principal d'une page : une page en compte un, et
+   * un seul. L'apparence ne suit pas le niveau (les classes de taille sont
+   * écrites ici, et `global.css` traite h1 à h4 pareillement) — c'est
+   * volontaire, la hiérarchie du document et l'échelle typographique n'ont pas
+   * à être le même réglage.
+   */
+  niveau?: 1 | 2 | 3;
   centre?: boolean;
   class?: string;
 }
@@ -16,7 +24,7 @@ const {
   class: classe = '',
 } = Astro.props;
 
-const Balise = `h${niveau}` as 'h2' | 'h3';
+const Balise = `h${niveau}` as 'h1' | 'h2' | 'h3';
 ---
 
 <div class:list={[centre && 'text-center', classe]}>

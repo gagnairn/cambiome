@@ -181,16 +181,20 @@ export const hebergeur = {
  * sans sélecteur ni script. Une fois la direction arrêtée, voir la section
  * « Thèmes » du README pour le nettoyage définitif.
  *
- * Les rampes complètes sont dans src/styles/themes.css ; `teinte` ci-dessous
- * n'est que la pastille du sélecteur. Le thème par défaut a un `id` vide :
- * c'est le `@theme` de global.css, sans attribut sur <html>.
+ * Aucune couleur ici : les rampes ET la pastille de chaque piste sont dans
+ * src/styles/themes.css, seul endroit où la charte alternative est écrite. Un
+ * `style=` en ligne serait de toute façon bloqué par la CSP du site.
+ *
+ * Le thème par défaut a un `id` vide : c'est le `@theme` de global.css, sans
+ * attribut sur <html>. Ajouter une piste = une entrée ici, une rampe et une
+ * pastille dans themes.css.
  */
 export const themes = {
   selecteur: true,
   liste: [
-    { id: '', nom: 'Ardoise', teinte: '#41738D' },
-    { id: 'terracotta', nom: 'Terracotta', teinte: '#AD7B7A' },
-    { id: 'ciel', nom: 'Ciel', teinte: '#9DC3D4' },
+    { id: '', nom: 'Ardoise' },
+    { id: 'terracotta', nom: 'Terracotta' },
+    { id: 'ciel', nom: 'Ciel' },
   ],
 } as const;
 
