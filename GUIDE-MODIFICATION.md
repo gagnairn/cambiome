@@ -249,12 +249,20 @@ métier. Pour ajouter ou retirer un paragraphe ou une puce, utilisez
 Ne touchez pas au champ **Identifiant** : c'est l'adresse web du métier, la
 changer casserait les liens du menu et les résultats Google.
 
-### Activer le formulaire de contact
+### L'adresse qui reçoit les messages du formulaire
 
-Tant que **L'entreprise → Formulaire de contact → Clé Web3Forms** est vide, la
-page Contact n'affiche que le téléphone et l'e-mail, sans formulaire. Pour
-l'activer, obtenez une clé gratuite sur [web3forms.com](https://web3forms.com) en
-y saisissant l'adresse qui recevra les messages, et collez-la dans ce champ.
+Le formulaire de la page Contact est **en service**. Les messages arrivent à
+l'adresse indiquée au moment où la clé a été créée, sur web3forms.com.
+
+Pour recevoir les messages **ailleurs**, il ne suffit pas de changer l'e-mail
+de contact du site : demandez une nouvelle clé gratuite sur
+[web3forms.com](https://web3forms.com) en y saisissant la nouvelle adresse, puis
+collez-la dans **L'entreprise → Formulaire de contact → Clé Web3Forms**.
+
+Vider ce champ **retire le formulaire** de la page Contact, qui n'affiche alors
+plus que le téléphone et l'e-mail. C'est le repli prévu si le service devait
+s'interrompre : la page reste utile, et personne ne se retrouve devant un
+formulaire qui n'envoie rien.
 
 Cette clé est publique par conception : elle apparaît dans le code de la page, il
 n'y a rien à cacher.
@@ -393,6 +401,27 @@ dans la précipitation.
    nouvelle publication part.
 3. Si le message ne vous parle pas, **envoyez-nous le lien de la page en échec** :
    c'est tout ce dont nous avons besoin.
+
+---
+
+## Le site n'apparaît pas encore dans Google
+
+C'est voulu. Chercher « cambiome » sur Google ne donnera rien pour l'instant, et
+il n'y a là aucun problème à signaler.
+
+L'adresse actuelle, `gagnairn.github.io/cambiome`, est une adresse de travail :
+elle n'appartient pas à l'entreprise. Si Google référençait les pages sous ce
+nom, elles y resteraient — et le jour de la bascule vers `www.cambiome.fr`, le
+site existerait à deux adresses à la fois, sans que Google sache laquelle
+proposer. Chaque page demande donc, pour le moment, à ne pas être répertoriée.
+
+Cela ne limite rien d'autre : le site est public, il fonctionne entièrement, et
+vous pouvez le consulter, le montrer et en envoyer le lien à qui vous voulez. Il
+n'est simplement pas *trouvable par une recherche*.
+
+Le référencement démarre le jour où le site passe sur `www.cambiome.fr` : c'est
+la même opération, il n'y a rien à demander en plus. Comptez ensuite quelques
+semaines pour que Google ait parcouru l'ensemble des pages.
 
 ---
 

@@ -129,7 +129,7 @@ Charte relevée sur les logos du brief :
 |---|---|
 | Bleu ardoise (primaire) | `#41738D` |
 | Terracotta (secondaire) | `#AD7B7A` |
-| Neutres chauds « sable » | `#FBFAF8` → `#B3A996` |
+| Neutres chauds « sable » | `#FBFAF8` → `#B3A996` (+ un `500` hors charte, voir « Accessibilité ») |
 | Encre | `#1A1D1F` |
 
 ## Le CMS
@@ -366,25 +366,118 @@ un hachage de contenu. Qui pourrait la modifier pourrait modifier le HTML et
 son `integrity` dans le même geste. Astro n'a pas d'option pour l'émettre, et
 l'ajouter à la main n'apporterait rien.
 
+## Accessibilité
+
+Vérifié le 15 août 2026 sur le site construit, dans Chrome piloté par
+Playwright : axe-core sur les **neuf pages en deux formats** (mobile 390 px,
+bureau 1440 px), puis Lighthouse en émulation mobile.
+
+- **axe-core : aucune règle en échec**, sur les dix-huit passages.
+- **Lighthouse** sur accueil / métiers / réalisations / contact :
+  accessibilité **100**, bonnes pratiques **100**, performance 91 · 100 · 99 ·
+  100, décalage cumulé **0** partout.
+
+Ce que la machine ne voit pas a été repris à la main. Quatre points en sont
+sortis, et expliquent du code qui paraîtrait sinon arbitraire.
+
+**L'anneau de focus passe par une variable.** `:focus-visible` trace
+`var(--anneau-focus, var(--color-ardoise-500))`. Un anneau unique ne pouvait
+pas convenir : `ardoise-500` *est* la couleur de `bg-marque`, il y était donc
+invisible — tout le pied de page et tous les blocs d'appel, sur les neuf pages.
+Les deux surfaces sombres du site, `.surface-marque` et `.surface-sombre`,
+redéclarent la variable ; elle est héritée, donc tout ce qui est posé dessus
+est couvert sans avoir à y penser composant par composant. La règle est portée
+par la **surface** et non par la classe qui donne le fond, parce que
+`outline-offset` trace l'anneau 2 px *en dehors* de l'élément, donc sur ce
+qu'il y a derrière lui. Le détail est en commentaire dans `global.css`.
+
+**Un cran de plus dans la rampe sable.** `--color-sable-500` (`#8F846C`) n'est
+pas dans la charte, qui s'arrête au 400. Il ne sert qu'aux bordures des champs
+de saisie : le 300 ne donnait que 1,60:1 sur blanc et le 400 que 2,32:1, quand
+WCAG 1.4.11 exige 3:1 du contour qui identifie une commande. Celui-ci donne
+3,69:1.
+
+**La colonne de lecture** — `mesure-lecture`, 57ch et non `max-w-prose` ;
+le calcul est dans la note « Polices » plus haut.
+
+**Trois cibles restent sous 24 px, et c'est conforme** : chacune relève d'une
+exception de WCAG 2.5.8. « Aller au contenu » mesure 1×1 hors focus (`sr-only`)
+et reprend sa taille dès qu'on l'atteint ; la case à cocher du formulaire fait
+16 px, mais la cible réelle est son libellé de trois lignes, associé par `for`
+et cliquable ; « Mentions légales » est un lien *au fil du texte*, dont la
+hauteur est celle de l'interligne — exception « Inline », explicite dans la
+règle.
+
+Deux pièges pour qui relance un audit :
+
+- **le sélecteur de thème fausse le relevé.** Ses trois pastilles sont à 2 px
+  l'une de l'autre et ressortent sur chaque page. C'est le dispositif
+  temporaire décrit plus haut, il disparaît avec le choix de la piste ;
+- **estimer une longueur de ligne en `fontSize × 0,5` ne marche pas ici.**
+  Cela mesure la largeur du bloc et non celle du texte : 181 signes annoncés
+  sur des surtitres qui en font 17. Il faut mesurer l'avance réelle.
+
+Reste non vérifié : les états *envoyé* et *en erreur* du formulaire, qui
+n'apparaissent qu'après une soumission réelle.
+
+## Référencement
+
+- **Titres et descriptions** viennent du CMS, un couple par page
+  (`titreOnglet` / `description` dans `src/content/pages/`). `Base.astro`
+  compose « *titre* — CAMBIOME », l'accueil prenant l'accroche à la place.
+- **Canonique** dérivée de `site` et du chemin, **absente des pages
+  `noindex`** : une page qui ne demande pas à être indexée n'a pas d'adresse de
+  référence à désigner. Sur la 404 la balise était même fausse — elle pointait
+  vers `/404/`, qui n'existe pas.
+- **`sitemap.xml`** par `@astrojs/sitemap`, avec deux filtres dans
+  `astro.config.mjs` : la page de confirmation d'envoi n'y figure pas, et la
+  page RGE en sort d'elle-même le jour où la qualification expire.
+- **`robots.txt`** généré depuis `site` (`src/pages/robots.txt.ts`) : il
+  autorise l'exploration et renvoie au sitemap. Le refus d'indexation se pose
+  par balise et non ici — voir « L'indexation suit le même interrupteur ».
+- **JSON-LD `LocalBusiness`** dans `DonneesStructurees.astro`, alimenté par
+  `entreprise.yaml` : les coordonnées y sont les mêmes que celles du pied de
+  page et des mentions légales, il n'y a qu'une source à corriger.
+- **Partage social** : `og:*` et `twitter:card`, image 1200×630 produite par
+  `npm run images`.
+
+**Lighthouse annonce 66 en référencement, et c'est normal en préversion.** Un
+seul des onze contrôles échoue, `is-crawlable` : la page est délibérément en
+`noindex`. Le score repasse à 100 au passage en `production` — vérifié en
+basculant l'interrupteur.
+
+Une réserve de contenu, qui appartient au client : les titres d'onglet
+occupent 18 à 34 signes sur la soixantaine que Google affiche, et aucun ne
+nomme la zone d'intervention. « Contact — CAMBIOME » plutôt que
+« Contact — charpentier à Grenoble | CAMBIOME » laisse de côté la requête qui
+amène vraiment quelqu'un. Ils sont tous dans le CMS, un par page.
+
 ## À compléter avant mise en ligne
 
 Ces éléments manquent au brief. Tant qu'ils sont vides, le site masque les blocs
 concernés plutôt que d'afficher de fausses informations.
 
-- [ ] `src/content/entreprise.yaml` → `formulaire.web3formsCle` (CMS :
-      « L'entreprise → Formulaire de contact ») : clé obtenue sur
-      [web3forms.com](https://web3forms.com) (saisir l'adresse de réception,
-      valider le mail de confirmation, aucun compte à créer) — sans elle le
-      formulaire de contact n'est pas affiché
 - [ ] Basculer l'hébergement vers OVH — les mentions légales le désignent
       **déjà** comme hébergeur, ce qui ne sera exact qu'une fois la bascule
       faite (voir « Migrer vers un hébergeur »). Tant qu'elle ne l'est pas, la
       page nomme un hébergeur qui ne sert pas le site.
+- [ ] **Médiateur de la consommation** : les mentions légales n'en désignent
+      aucun. L'article L616-1 du code de la consommation impose à tout
+      professionnel travaillant pour des particuliers d'en nommer un, avec son
+      adresse et son site, sur son propre site. Le bandeau « page à compléter »
+      ne le détecte pas : il ne surveille que les champs existants, et
+      celui-ci n'a pas encore de champ. À adhérer d'abord (un médiateur du
+      bâtiment, payant), puis à ajouter au CMS.
 - [ ] Photos supplémentaires dans la galerie — les quatre métiers y sont
       représentés, mais la rénovation thermique n'a qu'une seule photo alors
       que c'est le métier mis en avant par la qualification RGE
-- [ ] `astro.config.mjs` → `site` / `base`, au moment de la bascule vers
-      `www.cambiome.fr` (voir « Passer à un domaine propre »)
+- [ ] `astro.config.mjs` → passer `HEBERGEMENT` à `'production'` au moment de
+      la bascule vers `www.cambiome.fr`. Un seul mot, qui commande `site`,
+      `base` et l'indexation (voir « Passer à un domaine propre »)
+- [ ] Une fois en ligne, hors du dépôt : créer la fiche **Google Business
+      Profile** — sur des requêtes de ce type, l'établissement local pèse plus
+      lourd que tout le référencement technique décrit plus haut — et déposer
+      le sitemap dans la **Search Console**
 
 ## Qualification RGE
 
@@ -548,7 +641,8 @@ place.
 Le site est entièrement statique : déployer, c'est téléverser le contenu de
 `dist/`. Rien à installer côté serveur, ni Node ni base de données.
 
-1. `astro.config.mjs` : `site: 'https://www.cambiome.fr'`, supprimer `base`.
+1. `astro.config.mjs` : passer `HEBERGEMENT` à `'production'` — c'est le même
+   interrupteur qu'à la section précédente, et il n'y en a pas d'autre.
 2. Rien à faire pour `robots.txt` ni le manifeste : ils sont générés depuis
    `site` et `base` (`src/pages/robots.txt.ts`, `src/pages/site.webmanifest.ts`).
 3. `src/content/entreprise.yaml` → `hebergeur` (CMS : « L'entreprise →
