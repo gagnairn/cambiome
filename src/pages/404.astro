@@ -1,7 +1,7 @@
 ---
 import Base from '~/layouts/Base.astro';
 import Bouton from '~/components/Bouton.astro';
-import { base } from '~/lib/base';
+import { lien } from '~/lib/base';
 ---
 
 <Base titre="Page introuvable" description="La page demandée n'existe pas.">
@@ -14,8 +14,8 @@ import { base } from '~/lib/base';
       Le lien est peut-être obsolète, ou l'adresse comporte une faute de frappe.
     </p>
     <div class="mt-9 flex flex-wrap gap-3">
-      <Bouton href={`${base}/`}>Retour à l'accueil</Bouton>
-      <Bouton href={`${base}/realisations`} variante="contour">Voir les réalisations</Bouton>
+      <Bouton href={lien('/')}>Retour à l'accueil</Bouton>
+      <Bouton href={lien('/realisations')} variante="contour">Voir les réalisations</Bouton>
     </div>
   </section>
 </Base>

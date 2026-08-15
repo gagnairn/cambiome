@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 
-import { base } from '~/lib/base';
+import { lien } from '~/lib/base';
 import { site } from '~/data/site';
 
 /**
@@ -17,16 +17,16 @@ export const GET: APIRoute = () => {
     short_name: site.nom,
     description: site.description,
     lang: 'fr',
-    start_url: `${base}/`,
-    scope: `${base}/`,
+    start_url: lien('/'),
+    scope: lien('/'),
     display: 'browser',
     theme_color: '#41738D',
     background_color: '#FBFAF8', // --color-sable-50, le fond du site
     icons: [
-      { src: `${base}/icon-192.png`, sizes: '192x192', type: 'image/png' },
-      { src: `${base}/icon-512.png`, sizes: '512x512', type: 'image/png' },
+      { src: lien('/icon-192.png'), sizes: '192x192', type: 'image/png' },
+      { src: lien('/icon-512.png'), sizes: '512x512', type: 'image/png' },
       {
-        src: `${base}/icon-maskable-512.png`,
+        src: lien('/icon-maskable-512.png'),
         sizes: '512x512',
         type: 'image/png',
         purpose: 'maskable',

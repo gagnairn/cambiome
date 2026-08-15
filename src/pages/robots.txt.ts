@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 
-import { base } from '~/lib/base';
+import { lien } from '~/lib/base';
 
 /**
  * Généré plutôt que déposé dans `public/` : l'URL du sitemap suit ainsi
@@ -8,7 +8,7 @@ import { base } from '~/lib/base';
  * domaine est acheté, il n'y a qu'un seul endroit à modifier.
  */
 export const GET: APIRoute = ({ site }) => {
-  const sitemap = new URL(`${base}/sitemap-index.xml`, site);
+  const sitemap = new URL(lien('/sitemap-index.xml'), site);
 
   return new Response(
     `User-agent: *

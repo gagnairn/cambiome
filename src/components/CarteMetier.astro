@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import MotifCernes from '~/components/MotifCernes.astro';
 import type { Metier } from '~/data/site';
 import { realisations } from '~/data/realisations';
-import { base } from '~/lib/base';
+import { lien } from '~/lib/base';
 
 interface Props {
   metier: Metier;
@@ -16,7 +16,7 @@ const illustration = realisations.find((r) => r.metierSlug === metier.slug);
 ---
 
 <a
-  href={`${base}/metiers#${metier.slug}`}
+  href={`${lien('/metiers')}#${metier.slug}`}
   class="group flex flex-col overflow-hidden rounded-lg border border-sable-200 bg-white transition-shadow hover:shadow-lg hover:shadow-ardoise-900/5"
 >
   {

@@ -9,7 +9,7 @@ import AppelContact from '~/components/AppelContact.astro';
 import { site, metiers, demarche } from '~/data/site';
 import { realisations } from '~/data/realisations';
 import hero from '~/assets/realisations/comble-charpente-chantier.jpg';
-import { base } from '~/lib/base';
+import { lien } from '~/lib/base';
 
 const apercu = realisations.slice(0, 3);
 ---
@@ -65,9 +65,9 @@ const apercu = realisations.slice(0, 3);
         bio-sourcés.
       </p>
       <div class="mt-10 flex flex-wrap gap-3">
-        <Bouton href={`${base}/metiers`} variante="clair">Découvrir nos métiers</Bouton>
+        <Bouton href={lien('/metiers')} variante="clair">Découvrir nos métiers</Bouton>
         <Bouton
-          href={`${base}/contact`}
+          href={lien('/contact')}
           variante="contour"
           class="border-white/50 text-white hover:border-white hover:bg-white/10"
         >
@@ -120,7 +120,7 @@ const apercu = realisations.slice(0, 3);
       </dl>
 
       <div class="mt-12">
-        <Bouton href={`${base}/demarche`} variante="contour">
+        <Bouton href={lien('/demarche')} variante="contour">
           En savoir plus sur notre démarche
         </Bouton>
       </div>
@@ -134,7 +134,7 @@ const apercu = realisations.slice(0, 3);
       <GalerieRealisations items={apercu} />
     </div>
     <div class="mt-10">
-      <Bouton href={`${base}/realisations`} variante="contour">
+      <Bouton href={lien('/realisations')} variante="contour">
         Voir toutes les réalisations
       </Bouton>
     </div>

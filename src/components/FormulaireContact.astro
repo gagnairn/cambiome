@@ -1,6 +1,6 @@
 ---
 import { contact, site } from '~/data/site';
-import { base } from '~/lib/base';
+import { lien } from '~/lib/base';
 import { telephoneInsecable } from '~/lib/texte';
 
 /**
@@ -16,7 +16,7 @@ import { telephoneInsecable } from '~/lib/texte';
  */
 const ENDPOINT = 'https://api.web3forms.com/submit';
 
-const urlMerci = new URL(`${base}/merci`, Astro.site).href;
+const urlMerci = new URL(lien('/merci'), Astro.site).href;
 
 // Message d'échec : on n'oriente vers un moyen de contact direct que s'il est
 // effectivement renseigné dans `site.ts`.
@@ -171,7 +171,7 @@ const label = 'block text-sm text-encre/80';
             J'accepte que ces informations soient transmises à CAMBIOME pour
             répondre à ma demande. Elles ne sont ni cédées ni utilisées à des
             fins commerciales —{' '}
-            <a class="underline underline-offset-2" href={`${base}/mentions-legales`}>
+            <a class="underline underline-offset-2" href={lien('/mentions-legales')}>
               en savoir plus
             </a>
             . <span aria-hidden="true">*</span>

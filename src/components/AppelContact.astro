@@ -1,7 +1,7 @@
 ---
 import Bouton from '~/components/Bouton.astro';
 import { contact } from '~/data/site';
-import { base } from '~/lib/base';
+import { lien } from '~/lib/base';
 import { telephoneInsecable } from '~/lib/texte';
 ---
 
@@ -18,7 +18,7 @@ import { telephoneInsecable } from '~/lib/texte';
       chantier avant tout chiffrage.
     </p>
     <div class="mt-9 flex flex-wrap justify-center gap-3">
-      <Bouton href={`${base}/contact`} variante="sur-marque">Nous contacter</Bouton>
+      <Bouton href={lien('/contact')} variante="sur-marque">Nous contacter</Bouton>
       {
         contact.telephone && (
           <Bouton
