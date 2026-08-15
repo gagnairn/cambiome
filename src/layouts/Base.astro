@@ -1,10 +1,10 @@
 ---
 import '~/styles/global.css';
-import Header from '~/components/Header.astro';
-import Footer from '~/components/Footer.astro';
+import EnTete from '~/components/EnTete.astro';
+import PiedDePage from '~/components/PiedDePage.astro';
 import SelecteurTheme from '~/components/SelecteurTheme.astro';
 import { site, themes } from '~/data/site';
-import { base } from '~/lib/base';
+import { lien } from '~/lib/base';
 import { SCRIPT_THEME } from '~/lib/theme-script';
 
 interface Props {
@@ -32,7 +32,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 
 // Les réseaux sociaux exigent une URL absolue : un chemin relatif est ignoré
 // et la carte de partage reste vide.
-const ogImage = new URL(`${base}/og-image.jpg`, Astro.site);
+const ogImage = new URL(lien('/og-image.jpg'), Astro.site);
 ---
 
 <!doctype html>
@@ -58,9 +58,9 @@ const ogImage = new URL(`${base}/og-image.jpg`, Astro.site);
         l'ajout à l'écran d'accueil iOS, le manifeste Android. Pas de favicon
         SVG : le logo n'existe qu'en raster, un SVG serait un redessin qui ne
         correspondrait plus à la marque. Générés par `npm run images`. */}
-    <link rel="icon" href={`${base}/favicon.ico`} sizes="16x16 32x32 48x48" />
-    <link rel="apple-touch-icon" href={`${base}/apple-touch-icon.png`} />
-    <link rel="manifest" href={`${base}/site.webmanifest`} />
+    <link rel="icon" href={lien('/favicon.ico')} sizes="16x16 32x32 48x48" />
+    <link rel="apple-touch-icon" href={lien('/apple-touch-icon.png')} />
+    <link rel="manifest" href={lien('/site.webmanifest')} />
     <meta name="theme-color" content="#41738D" />
 
     <meta property="og:type" content="website" />
@@ -87,13 +87,13 @@ const ogImage = new URL(`${base}/og-image.jpg`, Astro.site);
       Aller au contenu
     </a>
 
-    <Header />
+    <EnTete />
 
     <main id="contenu" class={`flex-1 ${mainClass}`}>
       <slot />
     </main>
 
-    <Footer />
+    <PiedDePage />
 
     {themes.selecteur && <SelecteurTheme />}
   </body>

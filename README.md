@@ -73,7 +73,7 @@ src/
 ├── assets/
 │   ├── logos/            ← logos fournis ; les `marque-*` sont générés
 │   └── realisations/     ← photos optimisées (2400 px, JPEG q82)
-├── components/           ← Header, Footer, cartes, galerie…
+├── components/           ← en-tête, pied de page, cartes, galerie…
 ├── layouts/Base.astro    ← <head>, métadonnées, structure de page
 ├── lib/                  ← helpers : chemins (base.ts), typographie (texte.ts)
 ├── pages/                ← une page = un fichier

@@ -4,7 +4,7 @@
 //
 // ⚠ À COMPLÉTER : les champs marqués TODO sont des valeurs d'attente.
 // Tant qu'ils ne sont pas renseignés, le bloc correspondant est masqué à
-// l'affichage (voir Footer.astro / contact.astro) plutôt que d'exposer un
+// l'affichage (voir PiedDePage.astro / contact.astro) plutôt que d'exposer un
 // faux numéro ou une fausse adresse.
 
 export const site = {

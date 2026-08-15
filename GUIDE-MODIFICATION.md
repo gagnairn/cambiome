@@ -153,8 +153,8 @@ les messages. Collez-la entre les apostrophes.
 
 ### L'année du copyright
 
-Fichier [`src/components/Footer.astro`](https://github.com/gagnairn/cambiome/edit/main/src/components/Footer.astro),
-ligne 9 : `const annee = 2026;`. À changer une fois par an.
+Fichier [`src/components/PiedDePage.astro`](https://github.com/gagnairn/cambiome/edit/main/src/components/PiedDePage.astro),
+ligne 10 : `const annee = 2026;`. À changer une fois par an.
 
 ---
 
