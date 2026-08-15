@@ -7,8 +7,8 @@
 @theme {
   /* --- Charte CAMBIOME ---------------------------------------------------
      Bleu ardoise #41738D et terracotta #AD7B7A relevés directement sur les
-     logos fournis dans docs/brief. Les neutres sont volontairement chauds
-     (pierre / bois) plutôt que gris purs. */
+     logos fournis, versionnés dans src/assets/logos/. Les neutres sont
+     volontairement chauds (pierre / bois) plutôt que gris purs. */
 
   --color-ardoise-50: #f3f7f9;
   --color-ardoise-100: #e3ecf1;

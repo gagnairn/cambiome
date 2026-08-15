@@ -1,5 +1,6 @@
 // Source unique de vérité pour le contenu éditorial du site.
-// Les textes des métiers proviennent du brief `docs/brief/`.
+// Les textes des métiers proviennent du brief remis par CAMBIOME, qui n'est
+// plus versionné ici (voir la section « Sources » du README).
 //
 // ⚠ À COMPLÉTER : les champs marqués TODO sont des valeurs d'attente.
 // Tant qu'ils ne sont pas renseignés, le bloc correspondant est masqué à

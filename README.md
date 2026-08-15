@@ -293,6 +293,20 @@ Un rapport complet est disponible sur
 
 ## Sources
 
-`docs/brief/` contient le mémo d'origine et les fichiers image livrés par
-CAMBIOME (logos et photos en pleine résolution). C'est la référence : les
-fichiers de `src/assets/` en sont des versions optimisées pour le web.
+Le brief remis par CAMBIOME — mémo éditorial et images en pleine résolution —
+**n'est plus dans le dépôt** : il pesait 45 Mo sur 52, pour des fichiers dont
+le site n'a pas besoin au build. Il est archivé hors dépôt, dans
+`cambiome-brief-archive-2026-08-14.tar.gz`. C'est désormais la seule copie :
+l'historique git en a été purgé, elle ne se récupère pas par `git checkout`.
+
+Ce qu'il reste dans `src/assets/` couvre tout ce dont le site se sert :
+
+- **les logos** (`bloc-bleu`, `logo-noir`, `logo-blanc`, `titre-horizontal`,
+  `bloc-terracotta`) sont les fichiers livrés **tels quels**, à l'octet près.
+  Rien de plus défini n'existait dans le brief : c'était déjà le même fichier ;
+- **les photos** sont des versions allégées (2400 px, JPEG q82). Les originaux,
+  eux, ne sont plus que dans l'archive — pour un recadrage large ou un tirage,
+  c'est là qu'il faut aller les chercher.
+
+`bloc-terracotta` est la variante secondaire du bloc : conservée parce qu'elle
+fait partie de la charte, mais référencée nulle part dans le site.
