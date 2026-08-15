@@ -66,7 +66,11 @@ const SchemaEntreprise = z.object({
    * donnée juridique, pas un choix de rédaction : les mentions légales
    * doivent le publier, et lui seul. Il n'a pas à être l'endroit où l'on
    * travaille, ni celui où l'on reçoit — voir le bloc `atelier`, qui porte
-   * l'établissement réel et s'affiche partout ailleurs.
+   * l'établissement réel.
+   *
+   * Les deux paraissent côte à côte sur la page Contact, nommés par leur
+   * usage : « Atelier » pour venir, « Courrier » pour écrire. C'est bien au
+   * siège qu'aboutit un recommandé, la société y étant domiciliée.
    */
   coordonnees: z.object({
     email: z

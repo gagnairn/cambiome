@@ -8,8 +8,32 @@ import { telephoneInsecable } from '~/lib/texte';
 import { heureFrancaise, libelleJours } from '~/lib/horaires';
 
 const aDesCoordonnees = Boolean(
-  contact.telephone || contact.email || contact.adresseVisible
+  contact.telephone || contact.email || contact.adresseVisible || contact.instagram
 );
+
+/**
+ * L'adresse d'expédition, destinataire compris — une adresse sans nom ne
+ * s'affranchit pas. Composée ici plutôt que dans le balisage : trois
+ * expressions collées entre deux balises pour insérer un simple retour à la
+ * ligne, c'est illisible, et le parseur de `astro check` s'y perd.
+ *
+ * Vide dès que le siège est déjà l'adresse affichée plus haut, auquel cas la
+ * ligne répéterait la précédente sous un second intitulé.
+ */
+const courrier =
+  contact.adresseEstAtelier && contact.adresse
+    ? `${site.nom}\n${contact.adresse.replace(/,\s*/, ',\n')}`
+    : '';
+
+/**
+ * `https://instagram.com/cambiome_charpente` -> `@cambiome_charpente`.
+ * On affiche le pseudonyme et non l'URL : c'est sous cette forme qu'on le
+ * cherche dans l'application, et une URL complète dans une colonne étroite se
+ * coupe n'importe où. Le lien, lui, garde l'adresse entière.
+ */
+const pseudoInstagram = contact.instagram
+  ? `@${contact.instagram.replace(/\/+$/, '').split('/').pop()}`
+  : '';
 ---
 
 <Base titre={pageContact.titreOnglet} description={pageContact.description}>
@@ -63,11 +87,13 @@ const aDesCoordonnees = Boolean(
               )}
               {contact.adresseVisible && (
                 <li>
-                  {/* L'atelier, pas le siège : c'est l'adresse qui répond à la
-                      question que se pose le visiteur. Le siège reste publié
-                      aux mentions légales, où la loi l'attend — l'afficher ici
-                      en plus donnerait deux adresses à une entreprise qui n'en
-                      a qu'une d'utile, et enverrait un client à la mauvaise. */}
+                  {/* Deux adresses sur la même page, et c'est voulu : elles ne
+                      servent pas à la même chose. Ce qui rend la chose sûre,
+                      c'est que chacune est nommée par son usage — « Atelier »
+                      pour venir, « Courrier » pour écrire — et non par sa
+                      nature juridique, que le visiteur n'a pas à démêler. Sans
+                      ces libellés, deux adresses côte à côte enverraient une
+                      partie des gens à la mauvaise. */}
                   <span class="block text-encre/65">
                     {contact.adresseEstAtelier ? 'Atelier' : 'Adresse postale'}
                   </span>
@@ -93,6 +119,40 @@ const aDesCoordonnees = Boolean(
                       ))}
                     </span>
                   )}
+                </li>
+              )}
+              {/* Le courrier va au siège, pas à l'atelier — et la raison n'a
+                  rien d'évident pour qui écrit : c'est là qu'est domiciliée la
+                  société, donc là qu'aboutit un recommandé. La ligne ne
+                  s'affiche que si le siège est bien une AUTRE adresse que
+                  celle donnée plus haut ; sinon elle répéterait mot pour mot
+                  la précédente sous un second intitulé.
+
+                  Le nom de la société est repris au-dessus de la voie parce
+                  qu'une enveloppe le demande — une adresse sans destinataire
+                  ne s'affranchit pas. */}
+              {courrier && (
+                <li>
+                  <span class="block text-encre/65">Courrier</span>
+                  <span class="block whitespace-pre-line text-encre">{courrier}</span>
+                </li>
+              )}
+              {/* Instagram figure déjà au pied de page, mais sous l'angle du
+                  portfolio — « Nos chantiers sur Instagram ». Ici c'est une
+                  voie pour joindre l'entreprise, au même titre que le
+                  téléphone : d'où le pseudonyme plutôt qu'une invitation à
+                  regarder. `rel="me"` déclare le compte comme appartenant à
+                  l'entreprise, `noopener` va avec tout lien sortant. */}
+              {contact.instagram && (
+                <li>
+                  <span class="block text-encre/65">Instagram</span>
+                  <a
+                    class="text-encre underline-offset-4 hover:underline"
+                    href={contact.instagram}
+                    rel="me noopener"
+                  >
+                    {pseudoInstagram}
+                  </a>
                 </li>
               )}
             </ul>

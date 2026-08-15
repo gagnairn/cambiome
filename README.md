@@ -529,23 +529,31 @@ n'apparaissent qu'après une soumission réelle.
 L'entreprise en a deux, et la distinction n'est pas cosmétique — elle est
 juridique d'un côté, elle décide du référencement local de l'autre.
 
-| champ CMS | valeur | où elle paraît |
-|---|---|---|
-| **Coordonnées → Siège social** | 36 avenue Jean Jaurès, 38600 Fontaine | mentions légales, et rien d'autre |
-| **Atelier → Adresse** | 19 bis rue de la Liberté, 38600 Fontaine | pied de page, page Contact, JSON-LD |
+| champ CMS | valeur | où elle paraît | dans le JSON-LD |
+|---|---|---|---|
+| **Coordonnées → Siège social** | 36 avenue Jean Jaurès, 38600 Fontaine | mentions légales, page Contact (« Courrier ») | non |
+| **Atelier → Adresse** | 19 bis rue de la Liberté, 38600 Fontaine | pied de page, page Contact (« Atelier »), JSON-LD | oui |
 
 Le siège est immatriculé au RCS : c'est une donnée d'état civil de la société,
 que les mentions légales doivent publier et que le site ne peut pas choisir.
-L'atelier est l'établissement réel, celui qui a une porte — c'est l'adresse
-qu'un visiteur cherche, et la seule qui ait un sens sur une fiche Google.
+C'est aussi là qu'aboutit un recommandé, la société y étant domiciliée — d'où
+la ligne « Courrier » sur la page Contact. L'atelier est l'établissement réel,
+celui qui a une porte : l'adresse qu'un visiteur cherche, et la seule qui ait
+un sens sur une fiche Google.
+
+Les deux paraissent donc côte à côte sur la page Contact, et ce qui rend la
+chose sûre est qu'elles y sont **nommées par leur usage** — « Atelier » pour
+venir, « Courrier » pour écrire — et non par leur nature juridique, que le
+visiteur n'a pas à démêler. Sans ces intitulés, deux adresses voisines
+enverraient une partie des gens à la mauvaise.
 
 `site.ts` dérive `contact.adresseVisible` (l'atelier, le siège à défaut) pour
 que le pied de page, la page Contact et le balisage ne puissent pas diverger.
-Les mentions légales sont la seule page à lire `contact.adresse` directement.
-Cette séparation est le point à ne pas défaire : **trois adresses différentes
-pour une même entreprise, et le rapprochement entre la fiche Google et le site
-ne se fait plus** — les moteurs l'établissent par concordance du nom, de
-l'adresse et du téléphone.
+Les pages qui publient le siège lisent `contact.adresse` directement : il
+paraît donc en clair sur le site sans jamais entrer dans le balisage. C'est le
+point à ne pas défaire — **une seule adresse est déclarée aux moteurs, celle
+de la fiche Google**, les moteurs rapprochant fiche et site par concordance du
+nom, de l'adresse et du téléphone.
 
 Le code postal est **38600**. Fontaine (Isère) n'en a pas d'autre pour une
 adresse de voirie ; un 386xx en est un CEDEX, réservé aux gros comptes. Le
