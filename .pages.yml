@@ -891,7 +891,8 @@ content:
           dans les mentions légales à la fois : il n'y a qu'un endroit à
           corriger. Un champ laissé vide fait disparaître la ligne du site,
           plutôt que d'afficher un blanc — mieux vaut ne rien annoncer qu'un
-          numéro qui ne répond plus.
+          numéro qui ne répond plus. Seule exception, les deux adresses : le
+          siège ne sert qu'aux mentions légales, l'atelier à tout le reste.
         fields:
           - name: email
             label: E-mail
@@ -900,7 +901,22 @@ content:
             label: Téléphone
             type: string
           - name: adresse
-            label: Adresse postale
+            label: Siège social
+            description: >-
+              L'adresse immatriculée au RCS. Elle n'apparaît QUE dans les
+              mentions légales, où la loi l'exige. Ne pas y mettre l'atelier :
+              le siège est une donnée juridique, il ne se corrige pas ici mais
+              au greffe.
+            type: string
+          - name: atelier
+            label: Atelier
+            description: >-
+              L'adresse où l'on travaille, celle qui a une porte. C'est elle
+              qui s'affiche au pied de page et sur la page Contact, et elle
+              qu'annonce le balisage lu par Google. Doit être identique, au
+              signe près, à celle de la fiche Google Business Profile — c'est
+              sur cette concordance que le moteur rapproche la fiche du site.
+              Laissée vide, c'est le siège qui s'affiche partout.
             type: string
           - name: instagram
             label: Lien Instagram

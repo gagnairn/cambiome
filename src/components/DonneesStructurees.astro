@@ -8,19 +8,30 @@
  * est d'être trouvée localement, c'est le balisage qui compte le plus après le
  * titre.
  *
+ * L'adresse déclarée est `contact.adresseVisible`, c'est-à-dire l'atelier et
+ * non le siège. C'est un point qui décide du référencement local : les moteurs
+ * rapprochent une fiche d'établissement du site par concordance du nom, de
+ * l'adresse et du téléphone. Deux adresses valables mais différentes entre le
+ * balisage et la fiche Google, et le rapprochement ne se fait pas — la fiche
+ * perd l'appui du site. Le siège continue d'être publié aux mentions légales,
+ * qui lisent `contact.adresse` directement : c'est le seul endroit où la loi
+ * réclame le siège, et le seul où il figure.
+ *
  * ⚠ Le type est `Organization`, et non `HomeAndConstructionBusiness` comme on
  * l'attendrait d'une entreprise du bâtiment. Ce dernier descend de
  * `LocalBusiness`, donc de `Place` : il décrit un établissement où l'on se
  * rend, et Google en tire une fiche avec itinéraire et horaires. CAMBIOME va
- * sur les chantiers, elle ne reçoit personne au 36 avenue Jean Jaurès — cette
- * adresse est celle du siège. Envoyer un client devant une porte qui ne
- * s'ouvre pas coûte plus cher que le gain de référencement.
+ * sur les chantiers ; annoncer « venez ici » suppose que quelqu'un ouvre la
+ * porte aux horaires annoncés, et envoyer un client devant une porte fermée
+ * coûte plus cher que le gain de référencement.
  *
- * Ce qui porte l'ancrage local ici, c'est `areaServed` : la zone d'intervention
- * déclarée, qui est la forme juste pour une entreprise itinérante. L'adresse
- * reste dans la fiche — elle identifie la société, et elle est de toute façon
- * publiée aux mentions légales — mais sans `geo`, `hasMap` ni `openingHours`,
- * qui sont les propriétés par lesquelles un moteur comprend « venez ici ».
+ * L'atelier rend ce choix révisable — il a une porte, là où le siège n'en
+ * avait pas. Passer en `HomeAndConstructionBusiness` demanderait d'ajouter
+ * `openingHours`, et `geo` ou `hasMap` ; c'est ce qui déclenche l'itinéraire.
+ * À ne faire que si l'atelier accueille effectivement du public à des horaires
+ * tenus. Tant que ce n'est pas établi, `areaServed` porte seul l'ancrage
+ * local : la zone d'intervention déclarée, qui est la forme juste pour une
+ * entreprise itinérante.
  *
  * Le bloc est posé dans le <head> de chaque page avec le même `@id` : les
  * moteurs y voient une seule et même entité décrite plusieurs fois, pas neuf
@@ -36,11 +47,11 @@ import { lien } from '~/lib/base';
 const racine = new URL(lien('/'), Astro.site).href;
 
 /**
- * `36 avenue Jean Jaurès, 38600 Fontaine` -> rue / code postal / commune.
+ * `19 bis rue de la Liberté, 38600 Fontaine` -> rue / code postal / commune.
  * Si la saisie ne suit pas cette forme, tout part dans `streetAddress` : une
  * adresse d'un seul tenant reste juste, une adresse mal découpée ne l'est pas.
  */
-const decoupee = contact.adresse.match(/^(.*?),\s*(\d{5})\s+(.+)$/);
+const decoupee = contact.adresseVisible.match(/^(.*?),\s*(\d{5})\s+(.+)$/);
 
 /**
  * `06 27 80 42 38` -> `+33627804238`. schema.org demande la forme
@@ -52,10 +63,10 @@ const telephone = contact.telephone
   ? contact.telephone.replace(/[\s.-]/g, '').replace(/^0/, '+33')
   : '';
 
-const adresse = contact.adresse
+const adresse = contact.adresseVisible
   ? {
       '@type': 'PostalAddress',
-      streetAddress: decoupee ? decoupee[1] : contact.adresse,
+      streetAddress: decoupee ? decoupee[1] : contact.adresseVisible,
       ...(decoupee && { postalCode: decoupee[2], addressLocality: decoupee[3] }),
       addressCountry: 'FR',
     }

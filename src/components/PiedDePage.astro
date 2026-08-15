@@ -135,9 +135,9 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
             que de retomber au hasard de la largeur. La donnée reste sur une
             ligne — les mentions légales, elles, la veulent d'un tenant. */}
         {
-          contact.adresse && (
+          contact.adresseVisible && (
             <li class="whitespace-pre-line">
-              {contact.adresse.replace(/,\s*/, ',\n')}
+              {contact.adresseVisible.replace(/,\s*/, ',\n')}
             </li>
           )
         }

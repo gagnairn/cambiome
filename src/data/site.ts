@@ -48,6 +48,20 @@ const SchemaEntreprise = z.object({
    * d'afficher un blanc — mieux vaut ne rien annoncer qu'un numéro qui ne
    * répond plus. D'où `.default('')` plutôt qu'une chaîne obligatoire : le
    * vide est une valeur de saisie légitime, pas une erreur.
+   *
+   * Deux adresses, et il ne faut surtout pas les confondre :
+   *
+   * - `adresse` est le SIÈGE SOCIAL, celui immatriculé au RCS. C'est une
+   *   donnée juridique, pas un choix de rédaction : les mentions légales
+   *   doivent le publier, et lui seul. Il n'a pas à être l'endroit où l'on
+   *   travaille, ni celui où l'on reçoit.
+   * - `atelier` est l'établissement réel, celui qui a une porte. C'est lui
+   *   qu'un visiteur cherche, lui qui doit figurer sur la fiche Google, et
+   *   donc lui que le balisage structuré déclare.
+   *
+   * Tant que `atelier` est vide, le siège tient les deux rôles — c'était
+   * l'état du site avant qu'un atelier existe. Le remplir ne retire rien au
+   * siège : il reste aux mentions légales, où la loi l'attend.
    */
   coordonnees: z.object({
     email: z
@@ -55,6 +69,7 @@ const SchemaEntreprise = z.object({
       .default(''),
     telephone: z.string().default(''),
     adresse: z.string().default(''),
+    atelier: z.string().default(''),
     instagram: z
       .union([z.literal(''), z.url('Le lien Instagram est invalide.')])
       .default(''),
@@ -264,6 +279,20 @@ export const contact = {
   ...entreprise.identiteLegale,
   assurance: entreprise.assurance,
   web3formsCle: entreprise.formulaire.web3formsCle,
+  /**
+   * L'adresse à MONTRER : l'atelier s'il existe, le siège sinon. Dérivée ici
+   * et pas recopiée dans chaque page, pour que le pied de page, la page
+   * Contact et le balisage structuré ne puissent pas diverger — trois
+   * adresses différentes pour une même entreprise, c'est exactement ce qui
+   * fait échouer le rapprochement avec une fiche Google.
+   *
+   * Les mentions légales, elles, ne passent pas par ici : elles lisent
+   * `adresse` directement, parce qu'elles doivent publier le siège même
+   * lorsqu'un atelier le masque partout ailleurs.
+   */
+  adresseVisible: entreprise.coordonnees.atelier || entreprise.coordonnees.adresse,
+  /** Vrai quand l'adresse affichée est l'atelier, qui se nomme autrement. */
+  adresseEstAtelier: Boolean(entreprise.coordonnees.atelier),
 };
 
 export const hebergeur = entreprise.hebergeur;

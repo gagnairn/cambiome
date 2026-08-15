@@ -517,11 +517,49 @@ n'apparaissent qu'après une soumission réelle.
 - **`robots.txt`** généré depuis `site` (`src/pages/robots.txt.ts`) : il
   autorise l'exploration et renvoie au sitemap. Le refus d'indexation se pose
   par balise et non ici — voir « L'indexation suit le même interrupteur ».
-- **JSON-LD `LocalBusiness`** dans `DonneesStructurees.astro`, alimenté par
+- **JSON-LD `Organization`** dans `DonneesStructurees.astro`, alimenté par
   `entreprise.yaml` : les coordonnées y sont les mêmes que celles du pied de
-  page et des mentions légales, il n'y a qu'une source à corriger.
+  page, il n'y a qu'une source à corriger. Le type n'est délibérément **pas**
+  `LocalBusiness` — le fichier en donne la raison en tête, et « Les deux
+  adresses » ci-dessous dit à quelle condition en changer.
 - **Partage social** : `og:*` et `twitter:card`, image 1200×630 produite par
   `npm run images`.
+
+### Les deux adresses
+
+L'entreprise en a deux, et la distinction n'est pas cosmétique — elle est
+juridique d'un côté, elle décide du référencement local de l'autre.
+
+| champ CMS | valeur | où elle paraît |
+|---|---|---|
+| **Siège social** (`adresse`) | 36 avenue Jean Jaurès, 38600 Fontaine | mentions légales, et rien d'autre |
+| **Atelier** (`atelier`) | 19 bis rue de la Liberté, 38600 Fontaine | pied de page, page Contact, JSON-LD |
+
+Le siège est immatriculé au RCS : c'est une donnée d'état civil de la société,
+que les mentions légales doivent publier et que le site ne peut pas choisir.
+L'atelier est l'établissement réel, celui qui a une porte — c'est l'adresse
+qu'un visiteur cherche, et la seule qui ait un sens sur une fiche Google.
+
+`site.ts` dérive `contact.adresseVisible` (l'atelier, le siège à défaut) pour
+que le pied de page, la page Contact et le balisage ne puissent pas diverger.
+Les mentions légales sont la seule page à lire `contact.adresse` directement.
+Cette séparation est le point à ne pas défaire : **trois adresses différentes
+pour une même entreprise, et le rapprochement entre la fiche Google et le site
+ne se fait plus** — les moteurs l'établissent par concordance du nom, de
+l'adresse et du téléphone.
+
+Le code postal est **38600**. Fontaine (Isère) n'en a pas d'autre pour une
+adresse de voirie ; un 386xx en est un CEDEX, réservé aux gros comptes. Le
+numéro et la voie ont été vérifiés dans la Base Adresse Nationale
+(`api-adresse.data.gouv.fr`) — utile avant toute saisie destinée au balisage
+structuré, où une adresse fausse coûte plus qu'une adresse absente.
+
+**Ce qui reste ouvert** : le balisage annonce `Organization` + `areaServed`,
+soit « nous intervenons dans cette zone », et non `HomeAndConstructionBusiness`
++ `openingHours` + `geo`, soit « venez ici ». Le second vaut mieux en
+référencement local, mais suppose que l'atelier reçoive du public à des
+horaires tenus. À trancher avec le client ; tant que ce n'est pas établi, le
+premier est le seul honnête.
 
 **Lighthouse annonce 66 en référencement, et c'est normal en préversion.** Un
 seul des onze contrôles échoue, `is-crawlable` : la page est délibérément en
@@ -559,7 +597,10 @@ concernés plutôt que d'afficher de fausses informations.
 - [ ] Une fois en ligne, hors du dépôt : créer la fiche **Google Business
       Profile** — sur des requêtes de ce type, l'établissement local pèse plus
       lourd que tout le référencement technique décrit plus haut — et déposer
-      le sitemap dans la **Search Console**
+      le sitemap dans la **Search Console**. Y déclarer l'**atelier**,
+      `19 bis rue de la Liberté, 38600 Fontaine`, écrit exactement comme dans
+      le CMS : c'est sur cette concordance que Google rapproche la fiche du
+      site (voir « Les deux adresses »)
 
 ## Qualification RGE
 

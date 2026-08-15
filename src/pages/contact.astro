@@ -7,7 +7,7 @@ import { pageContact } from '~/data/pages';
 import { telephoneInsecable } from '~/lib/texte';
 
 const aDesCoordonnees = Boolean(
-  contact.telephone || contact.email || contact.adresse
+  contact.telephone || contact.email || contact.adresseVisible
 );
 ---
 
@@ -60,14 +60,21 @@ const aDesCoordonnees = Boolean(
                   </a>
                 </li>
               )}
-              {contact.adresse && (
+              {contact.adresseVisible && (
                 <li>
-                  <span class="block text-encre/65">Adresse postale</span>
+                  {/* L'atelier, pas le siège : c'est l'adresse qui répond à la
+                      question que se pose le visiteur. Le siège reste publié
+                      aux mentions légales, où la loi l'attend — l'afficher ici
+                      en plus donnerait deux adresses à une entreprise qui n'en
+                      a qu'une d'utile, et enverrait un client à la mauvaise. */}
+                  <span class="block text-encre/65">
+                    {contact.adresseEstAtelier ? 'Atelier' : 'Adresse postale'}
+                  </span>
                   {/* Coupée après la voie, comme au pied de page. La donnée
                       reste sur une ligne : les mentions légales la veulent
                       d'un tenant. */}
                   <span class="block whitespace-pre-line text-encre">
-                    {contact.adresse.replace(/,\s*/, ',\n')}
+                    {contact.adresseVisible.replace(/,\s*/, ',\n')}
                   </span>
                 </li>
               )}
