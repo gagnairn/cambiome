@@ -1,5 +1,5 @@
 ---
-import { Picture } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
 import Bouton from '~/components/Bouton.astro';
 import TitreSection from '~/components/TitreSection.astro';
@@ -13,6 +13,28 @@ import hero from '~/assets/realisations/comble-charpente-chantier.jpg';
 import { lien } from '~/lib/base';
 
 const apercu = realisations.slice(0, 3);
+
+/* Paliers du hero, chacun avec sa propre qualité — voir le commentaire dans
+   le balisage. `<Picture>` n'accepte qu'un `quality` pour tout le srcset ;
+   c'est la seule raison pour laquelle la balise est écrite à la main ici. */
+const PALIERS_HERO = [
+  { width: 640, quality: 50 },
+  { width: 900, quality: 50 },
+  { width: 1200, quality: 55 },
+  { width: 1542, quality: 68 },
+];
+
+const heroAvif = await Promise.all(
+  PALIERS_HERO.map((p) => getImage({ src: hero, format: 'avif', ...p })),
+);
+const heroSrcset = heroAvif.map((img, i) => `${img.src} ${PALIERS_HERO[i].width}w`).join(', ');
+
+/* Repli pour Safari d'avant 16.4, qui ignore l'AVIF. Une seule largeur : ces
+   navigateurs sont résiduels, et leur servir un srcset complet ferait produire
+   quatre fichiers de plus pour presque personne. */
+const heroRepli = await getImage({ src: hero, format: 'webp', width: 1200, quality: 60 });
+
+const heroTailles = '(max-width: 767px) 85vw, 100vw';
 ---
 
 <Base titre="accueil">
@@ -46,11 +68,28 @@ const apercu = realisations.slice(0, 3);
         deux lignes de balisage pour ne pas servir un hero vide à qui n'a pas
         mis son iPhone à jour.
 
-        La qualité n'est pas comparable d'un format à l'autre : `quality` est
-        une échelle propre à chaque encodeur. 50 en AVIF a été retenu en
-        comparant les images sous le voile, pas leurs numéros — à 42 la sciure
-        et le fil du bois se lissent visiblement, à 50 rien ne se distingue de
-        l'original.
+La qualité monte avec la largeur — 50, 50, 55, 68 — et c'est
+        l'inverse de ce qu'on ferait par réflexe. La raison tient à la densité
+        d'affichage : la source ne fait que 1542 px de large, si bien qu'un
+        téléphone reçoit la 900w pour une boîte de 390 px, soit plus de deux
+        pixels d'image par pixel d'écran — l'œil ne peut pas y voir un défaut
+        d'encodage. Un écran Retina de bureau, lui, réclame 2880 px pour la
+        même boîte : il reçoit la 1542w et l'AGRANDIT deux fois. Là, tout se
+        voit.
+
+        Un `quality` unique ne peut pas servir les deux, et c'est pour cela
+        seulement que la balise `<picture>` est écrite à la main plutôt que
+        confiée à `<Picture>`, qui n'accepte qu'une valeur pour tout le
+        srcset. À 900w, passer de 50 à 65 coûterait 76 Ko sans rien apporter
+        à l'écran ; à 1542w, rester à 50 lisse visiblement la sciure et le fil
+        du bois une fois l'image agrandie.
+
+        Les chiffres eux-mêmes sortent d'une comparaison à l'échelle réelle,
+        pas d'une échelle d'encodeur : `quality` n'est comparable ni d'un
+        format à l'autre, ni d'une largeur à l'autre. Un premier arbitrage
+        avait retenu 50 partout, en jugeant les rognages à 900w au ratio 1:1 —
+        c'est-à-dire dans le seul cas mobile. Le défaut ne s'était vu que sur
+        un vrai écran de bureau.
 
         `sizes` annonce 85vw sous 768 px alors que l'image en occupe 100. Ce
         n'est pas une erreur, c'est un plafond de densité, et il faut le lire
@@ -70,18 +109,18 @@ const apercu = realisations.slice(0, 3);
         Au-dessus de 768 px, `100vw` reprend : un grand écran en densité 1 a
         besoin de toute la largeur, et n'a pas le même problème de débit.
       -->
-      <Picture
-        src={hero}
-        alt=""
-        formats={['avif']}
-        fallbackFormat="webp"
-        widths={[640, 900, 1200, 1542]}
-        sizes="(max-width: 767px) 85vw, 100vw"
-        quality={50}
-        loading="eager"
-        fetchpriority="high"
-        class="h-full w-full object-cover object-[50%_68%]"
-      />
+      <picture>
+        <source type="image/avif" srcset={heroSrcset} sizes={heroTailles} />
+        <img
+          src={heroRepli.src}
+          alt=""
+          width={1542}
+          height={2048}
+          loading="eager"
+          fetchpriority="high"
+          class="h-full w-full object-cover object-[50%_68%]"
+        />
+      </picture>
       {/* Le voile reste le plus épais en haut et au milieu, là où se posent le
           titre et le paragraphe ; il s'allège en bas pour laisser lire les
           tréteaux, sans descendre au point de fragiliser le bouton en contour. */}
