@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
 import TitreSection from '~/components/TitreSection.astro';
 import AppelContact from '~/components/AppelContact.astro';
@@ -58,9 +58,17 @@ const illustrations = new Map(
           >
             {illu && (
               <div class:list={['overflow-hidden rounded-lg bg-sable-200', inverse && 'lg:order-2']}>
-                <Image
+                {/* AVIF avec repli WebP, et `width` pour que le repli `src` se
+                    pose sur la plus grande variante déclarée plutôt que sur la
+                    photo pleine taille. Réglé comme la galerie, qui porte le
+                    raisonnement : voir GalerieRealisations.astro. */}
+                <Picture
                   src={illu.image}
                   alt={illu.alt}
+                  formats={['avif']}
+                  fallbackFormat="webp"
+                  quality={60}
+                  width={1400}
                   widths={[600, 900, 1400]}
                   sizes="(min-width: 1024px) 560px, 92vw"
                   loading={i === 0 ? 'eager' : 'lazy'}

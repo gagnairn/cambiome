@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import MotifCernes from '~/components/MotifCernes.astro';
 import type { Metier } from '~/data/site';
 import { realisations, type Realisation } from '~/data/realisations';
@@ -33,17 +33,27 @@ const illustration = siens.find((r) => !evite.includes(r)) ?? siens[0];
   {
     illustration ? (
       <div class="aspect-4/3 overflow-hidden bg-sable-100">
-        {/* `widths` : les mêmes que GalerieRealisations. `evite` écarte le plus
-            souvent la photo déjà en galerie, mais pas dans le cas de repli
-            ci-dessus ; avec deux jeux de largeurs, le navigateur la
-            téléchargerait alors deux fois.
+        {/* `widths`, `formats` et `quality` : les mêmes que
+            GalerieRealisations, qui porte le raisonnement sur le format. C'est
+            ce qui fait que les deux composants demandent le même fichier :
+            `evite` écarte le plus souvent la photo déjà en galerie, mais pas
+            dans le cas de repli ci-dessus, et un seul réglage qui diverge la
+            ferait télécharger deux fois.
 
             `loading` : toutes en `lazy`, les cartes étant sous la ligne de
             flottaison y compris sur grand écran. Les deux premières étaient
-            chargées d'avance et prenaient la bande passante du hero. */}
-        <Image
+            chargées d'avance et prenaient la bande passante du hero.
+
+            `width` : fixe le repli `src` sur la plus grande variante déclarée,
+            au lieu de la photo à sa taille d'origine — voir
+            GalerieRealisations.astro. */}
+        <Picture
           src={illustration.image}
           alt=""
+          formats={['avif']}
+          fallbackFormat="webp"
+          quality={60}
+          width={1200}
           widths={[500, 800, 1200]}
           sizes="(min-width: 1024px) 300px, (min-width: 640px) 45vw, 90vw"
           loading="lazy"

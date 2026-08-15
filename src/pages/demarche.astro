@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
 import TitreSection from '~/components/TitreSection.astro';
 import AppelContact from '~/components/AppelContact.astro';
@@ -33,9 +33,17 @@ import chene from '~/assets/realisations/charpente-chene.jpg';
       </ol>
 
       <div class="hidden w-72 shrink-0 lg:block">
-        <Image
+        {/* AVIF avec repli WebP, et `width` pour que le repli `src` se pose sur
+            la plus grande variante déclarée plutôt que sur la photo pleine
+            taille. Réglé comme la galerie, qui porte le raisonnement : voir
+            GalerieRealisations.astro. */}
+        <Picture
           src={solivage}
           alt="Comble ancien aux murs de pierre, solives neuves en bois clair posées sous une charpente d'origine."
+          formats={['avif']}
+          fallbackFormat="webp"
+          quality={60}
+          width={600}
           widths={[300, 600]}
           sizes="288px"
           loading="lazy"
@@ -108,9 +116,17 @@ import chene from '~/assets/realisations/charpente-chene.jpg';
   <section class="mt-24 bg-sable-100 py-24">
     <div class="container-page grid items-center gap-12 lg:grid-cols-2">
       <div class="overflow-hidden rounded-lg bg-sable-200">
-        <Image
+        {/* AVIF avec repli WebP, et `width` pour que le repli `src` se pose sur
+            la plus grande variante déclarée plutôt que sur la photo pleine
+            taille. Réglé comme la galerie, qui porte le raisonnement : voir
+            GalerieRealisations.astro. */}
+        <Picture
           src={chene}
           alt="Deux tasses à café émaillées posées sur une poutre de chêne fraîchement taillée."
+          formats={['avif']}
+          fallbackFormat="webp"
+          quality={60}
+          width={1400}
           widths={[600, 900, 1400]}
           sizes="(min-width: 1024px) 560px, 92vw"
           loading="lazy"
