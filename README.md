@@ -494,17 +494,43 @@ URL par défaut : `https://gagnairn.github.io/cambiome/`
 
 Domaine prévu : **`https://www.cambiome.fr`**.
 
-1. `astro.config.mjs` : `site: 'https://www.cambiome.fr'`, supprimer `base`.
+1. `astro.config.mjs` : passer `HEBERGEMENT` de `'preversion'` à
+   `'production'`. **C'est le seul interrupteur** — il commande `site`, `base`
+   et l'indexation d'un coup.
 2. Rien à faire pour `robots.txt` ni le manifeste : ils sont générés depuis
    `site` et `base` (`src/pages/robots.txt.ts`, `src/pages/site.webmanifest.ts`).
 3. Ajouter `public/CNAME` contenant `www.cambiome.fr` — utile seulement tant
    que l'hébergement reste GitHub Pages.
 4. Renseigner le domaine dans **Settings → Pages → Custom domain**.
 
-Ces deux modifications sont **solidaires** : dès que `base` disparaît, tous les
-liens du site pointent sur la racine du domaine. Tant que les pages sont
-servies depuis `gagnairn.github.io/cambiome/`, elles répondraient toutes en
-404. Il faut donc les pousser au moment de la bascule, pas avant.
+#### Pourquoi un seul interrupteur
+
+`site` et `base` sont **solidaires**, et ne peuvent pas anticiper le domaine.
+Dès que `base` disparaît, tous les liens visent la racine ; tant que les pages
+sont servies depuis `gagnairn.github.io/cambiome/`, elles répondent toutes en
+404. `site` ne sert pas non plus qu'aux balises : il construit l'adresse de
+retour du formulaire quand JavaScript n'est pas disponible
+(`FormulaireContact.astro`). Déclarer le domaine avant qu'il ne serve le site
+casserait donc la navigation *et* le formulaire.
+
+#### L'indexation suit le même interrupteur
+
+Tant que `HEBERGEMENT` vaut `preversion`, chaque page porte
+`<meta name="robots" content="noindex, follow">`. C'est délibéré : le site est
+servi à une adresse qui n'est pas la sienne, et la laisser indexer coûterait
+cher à la bascule — les pages de la marque installées sous un sous-domaine
+personnel, puis deux adresses servant le même contenu, sans possibilité de
+rediriger, GitHub Pages ne sachant pas émettre de 301.
+
+La balise est **déduite du nom d'hôte** (`src/layouts/Base.astro`) et non d'un
+drapeau à part : elle disparaît d'elle-même au passage en `production`. Rien à
+penser à retirer, donc rien à oublier.
+
+Et c'est bien un `noindex`, pas un `Disallow` dans `robots.txt` : interdire
+l'exploration empêcherait justement les moteurs de *lire* la balise, et
+l'adresse pourrait ressortir malgré tout dans les résultats, sans description.
+Laisser explorer et demander à ne pas indexer est la seule combinaison qui
+tient.
 
 #### www ou domaine nu ?
 
