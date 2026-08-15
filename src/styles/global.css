@@ -4,6 +4,11 @@
 @import '@fontsource-variable/jost';
 @import '@fontsource-variable/inter';
 
+/* Pistes chromatiques proposées au client — redéfinit les variables du
+   `@theme` ci-dessous sous `html[data-theme=…]`. Fichier temporaire : il
+   disparaît une fois la direction arrêtée. */
+@import './themes.css';
+
 @theme {
   /* --- Charte CAMBIOME ---------------------------------------------------
      Bleu ardoise #41738D et terracotta #AD7B7A relevés directement sur les

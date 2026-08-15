@@ -8,6 +8,11 @@ Statique, sans cookie ni traceur. Le seul JavaScript côté client est l'envoi d
 formulaire de contact, et il n'est pas nécessaire : sans lui, le formulaire est
 posté nativement par le navigateur.
 
+*Pendant la phase de choix des couleurs*, un second script accompagne le
+sélecteur de thème et retient la teinte choisie en `localStorage` — une
+préférence locale, jamais transmise. Il disparaît avec le sélecteur (voir
+« Thèmes »).
+
 ## Stack
 
 | | |
@@ -65,7 +70,9 @@ src/
 ├── components/           ← Header, Footer, cartes, galerie…
 ├── layouts/Base.astro    ← <head>, métadonnées, structure de page
 ├── pages/                ← une page = un fichier
-└── styles/global.css     ← charte : couleurs, polices, utilitaires
+└── styles/
+    ├── global.css        ← charte : couleurs, polices, utilitaires
+    └── themes.css        ← pistes chromatiques alternatives (temporaire)
 ```
 
 Charte relevée sur les logos du brief :
@@ -76,6 +83,54 @@ Charte relevée sur les logos du brief :
 | Terracotta (secondaire) | `#AD7B7A` |
 | Neutres chauds « sable » | `#FBFAF8` → `#B3A996` |
 | Encre | `#1A1D1F` |
+
+## Thèmes — trois pistes soumises au client
+
+**Dispositif temporaire**, le temps du choix de la direction couleur. Une carte
+flottante en bas à droite permet de parcourir le vrai site dans trois teintes
+plutôt que de les juger sur un nuancier. Le choix suit d'une page à l'autre.
+
+| Piste | Ancrage | Où vit la couleur |
+| --- | --- | --- |
+| **Ardoise** (défaut) | `#41738D` | le `@theme` de `global.css` |
+| **Terracotta** | `#AD7B7A` — logo `bloc-terracotta.png` | `themes.css` |
+| **Ciel** | `#9DC3D4` | `themes.css` |
+
+Aucun composant n'est concerné : ils écrivent `bg-ardoise-700`, que Tailwind
+compile en `var(--color-ardoise-700)`. Un thème ne fait que redéfinir ces
+variables sous `html[data-theme=…]`. Deux contraintes à connaître avant
+d'ajouter une piste, détaillées en tête de `src/styles/themes.css` :
+
+- les crans ont un emploi imposé — `700` porte du texte blanc, `600` et `500`
+  du petit texte sur fond clair, `800` est le fond du pied de page. Une teinte
+  de marque trop claire ne peut donc pas occuper le cran 500 : c'est le cas
+  des deux pistes alternatives, dont l'ancrage descend au 400 ou au 300 ;
+- les blocs sont hors de tout `@layer`, et ne sont pas écrits en `@theme` —
+  Tailwind élague les variables de thème inutilisées.
+
+**Ce que le sélecteur ne change pas.** Les logos suivent déjà : l'en-tête et le
+pied de page affichent la marque en monochrome. Mais le favicon, l'image de
+partage et `theme-color` restent bleus pendant la démonstration — ils sont
+générés, et ne se régénèrent qu'une fois le choix fait.
+
+### Une fois la direction arrêtée
+
+1. Reporter la rampe retenue dans le `@theme` de `global.css`, puis supprimer
+   `src/styles/themes.css` et son `@import`, `src/components/SelecteurTheme.astro`,
+   `src/lib/theme-script.ts`, l'entrée `themes` de `src/data/site.ts`, et dans
+   `astro.config.mjs` la constante `HACHAGE_SCRIPT_THEME` avec son
+   `scriptDirective`. Le site retrouve son unique script (le formulaire).
+2. Si ce n'est plus l'ardoise : mettre à jour `ARDOISE` dans
+   `scripts/generer-images.mjs`, la meta `theme-color` de `Base.astro`,
+   `theme_color` dans `src/pages/site.webmanifest.ts`, le tableau de charte
+   ci-dessus, puis relancer `npm run images`.
+3. Renommer `ardoise-*` d'après la nouvelle teinte — un `sed` sur ~120
+   occurrences. **Pas avant** : tant que l'ardoise est le défaut le nom reste
+   exact, et renommer pendant la phase de choix ferait bouger tous les
+   composants pour une décision qui peut encore changer.
+
+`themes.selecteur = false` dans `src/data/site.ts` éteint tout sans rien
+supprimer — utile pour voir le site tel qu'il sera livré.
 
 ## À compléter avant mise en ligne
 
@@ -234,7 +289,9 @@ Ce qui est en place :
 - **CSP** générée par Astro (`security.csp` dans `astro.config.mjs`) et injectée
   en `<meta>` avec le hachage de chaque script inline. Aucun `unsafe-inline`.
   Les seules destinations externes autorisées sont celles du formulaire de
-  contact (`api.web3forms.com`).
+  contact (`api.web3forms.com`). Astro ne hache que les scripts qu'il groupe :
+  le script `is:inline` du sélecteur de thème déclare le sien, dérivé de la
+  chaîne elle-même dans `astro.config.mjs` pour que les deux ne divergent pas.
 - **Actions GitHub épinglées sur un SHA de commit** plutôt que sur un tag
   mutable, pour qu'un tag repointé ne puisse pas exécuter de code arbitraire
   dans le workflow.

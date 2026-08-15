@@ -1,0 +1,97 @@
+---
+/**
+ * Sélecteur de piste chromatique — DISPOSITIF TEMPORAIRE.
+ *
+ * Sert à faire choisir une direction couleur au client sur le vrai site
+ * plutôt que sur un nuancier : il navigue les pages et bascule d'une teinte à
+ * l'autre. Rendu uniquement si `themes.selecteur` vaut true (src/data/site.ts).
+ *
+ * Il ne fait qu'écrire `data-theme` sur <html> ; tout le reste se joue dans
+ * src/styles/themes.css. Le choix est mémorisé en localStorage pour tenir
+ * d'une page à l'autre — la restauration avant premier rendu est dans
+ * Base.astro, en tête de <head>.
+ *
+ * Sans JavaScript, la carte reste affichée mais inerte : c'est un outil de
+ * présentation interne, pas une fonctionnalité du site, et le contenu ne
+ * dépend en rien du thème.
+ */
+import { themes } from '~/data/site';
+---
+
+{/* `print:hidden` : le client imprimera peut-être une page pour l'annoter. */}
+<aside
+  id="selecteur-theme"
+  class="fixed right-4 bottom-4 z-40 rounded-lg border border-sable-300 bg-white/95 p-3 shadow-lg shadow-black/10 backdrop-blur-sm print:hidden"
+  aria-label="Choix de la piste chromatique"
+>
+  {/* Volontairement en couleurs neutres, hors palette de thème : cette carte
+      doit rester lisible à l'identique dans les trois teintes, et ne pas se
+      faire passer pour un élément du site. */}
+  <p class="font-display text-[0.6rem] tracking-[0.22em] text-encre/50 uppercase">
+    Piste chromatique
+  </p>
+
+  <div class="mt-2 flex flex-col gap-0.5">
+    {
+      themes.liste.map((theme) => (
+        <button
+          type="button"
+          data-theme-id={theme.id}
+          aria-pressed="false"
+          class="flex items-center gap-2.5 rounded px-2 py-1.5 text-left text-xs text-encre/70 transition-colors hover:bg-sable-100 aria-pressed:bg-sable-100 aria-pressed:font-medium aria-pressed:text-encre"
+        >
+          <span
+            class="size-3.5 shrink-0 rounded-full border border-black/15"
+            style={`background-color:${theme.teinte}`}
+          />
+          {theme.nom}
+        </button>
+      ))
+    }
+  </div>
+</aside>
+
+<script>
+  // La clé est partagée avec le script de restauration de Base.astro : la
+  // changer ici seulement remettrait tous les visiteurs sur l'ardoise.
+  const CLE = 'cambiome-theme';
+
+  const boutons = document.querySelectorAll<HTMLButtonElement>(
+    '#selecteur-theme [data-theme-id]',
+  );
+
+  const refleter = (actif: string) => {
+    for (const bouton of boutons) {
+      bouton.setAttribute(
+        'aria-pressed',
+        String((bouton.dataset.themeId ?? '') === actif),
+      );
+    }
+  };
+
+  // L'état actif ne peut pas être rendu au build : le site est statique et
+  // servi tel quel à tout le monde. C'est donc au chargement qu'on le pose,
+  // d'après ce que le script de tête a déjà appliqué.
+  refleter(document.documentElement.dataset.theme ?? '');
+
+  for (const bouton of boutons) {
+    bouton.addEventListener('click', () => {
+      const choisi = bouton.dataset.themeId ?? '';
+
+      // Chaîne vide = thème par défaut : on retire l'attribut plutôt que de
+      // le mettre à vide, pour que le sélecteur CSS ne matche rien du tout.
+      if (choisi) document.documentElement.dataset.theme = choisi;
+      else delete document.documentElement.dataset.theme;
+
+      refleter(choisi);
+
+      // En navigation privée stricte, l'écriture jette. Le thème doit quand
+      // même s'appliquer sur la page courante.
+      try {
+        localStorage.setItem(CLE, choisi);
+      } catch {
+        /* pas de mémorisation, tant pis */
+      }
+    });
+  }
+</script>

@@ -1,0 +1,83 @@
+/* --- Pistes chromatiques ------------------------------------------------
+   Trois directions proposées au client. Le thème par défaut (« Ardoise »)
+   est le `@theme` de global.css ; les deux autres se contentent de
+   redéfinir les mêmes variables sous un attribut posé sur <html>.
+
+   Aucun composant n'est concerné : ils écrivent `bg-ardoise-700`, que
+   Tailwind compile en `var(--color-ardoise-700)`. Changer la variable
+   change le site entier.
+
+   Deux règles de fabrication, à respecter si une quatrième piste s'ajoute :
+
+   1. Ces blocs sont volontairement HORS de tout `@layer`. Tailwind émet son
+      `@theme` dans `@layer theme`, et en CSS une règle non calquée l'emporte
+      sur n'importe quelle règle calquée, quel que soit l'ordre du fichier.
+      Les mettre dans un `@layer` rouvrirait une bataille de spécificité.
+      C'est aussi pour cela qu'ils ne sont pas écrits en `@theme` : Tailwind
+      élague les variables de thème inutilisées, et les crans d'une palette
+      inactive seraient supprimés du CSS produit.
+
+   2. Les crans ne sont pas décoratifs, ils ont chacun un emploi imposé par
+      les composants :
+        700  fond de bouton et du bloc d'appel, sous du texte blanc  -> ≥ 4,5:1
+        600  petit texte sur fond sable-50                            -> ≥ 4,5:1
+        500  petit texte également (surtitres des pages Métiers…)     -> ≥ 4,5:1
+        800  fond du pied de page
+        300  texte secondaire DANS le pied de page
+      Une teinte de marque trop claire ne peut donc pas occuper le cran 500 :
+      elle descend au 400, purement décoratif, et la rampe se prolonge en
+      dessous. C'est le cas des deux thèmes ci-dessous.
+
+   Le sélecteur qui pose l'attribut est `SelecteurTheme.astro`, affiché tant
+   que `themes.selecteur` vaut true dans src/data/site.ts. */
+
+/* Terracotta — ancrée sur #AD7B7A, la couleur du logo `bloc-terracotta.png`.
+   Sur fond sable, ce hex ne donne que 3,47:1 : il tient le cran 400 et la
+   rampe se prolonge en dessous (500 : 4,79:1, 600 : 6,47:1, 700 sur blanc :
+   8,77:1, 300 sur le pied de page : 5,58:1). */
+html[data-theme='terracotta'] {
+  --color-ardoise-50: #fbf6f5;
+  --color-ardoise-100: #f5e9e8;
+  --color-ardoise-200: #ebd4d2;
+  --color-ardoise-300: #d9b3b1;
+  --color-ardoise-400: #ad7b7a;
+  --color-ardoise-500: #96625f;
+  --color-ardoise-600: #7e4f4d;
+  --color-ardoise-700: #683f3e;
+  --color-ardoise-800: #563636;
+  --color-ardoise-900: #482f2f;
+
+  /* `terre-*` est la couleur des erreurs (message du formulaire, bandeau des
+     mentions légales). Sous ce thème elle *est* la couleur de marque : une
+     erreur se lirait comme un accent graphique. Elle repasse donc en rouge
+     franc, le temps de la démonstration. */
+  --color-terre-50: #fef2f2;
+  --color-terre-100: #fee2e2;
+  --color-terre-200: #fecaca;
+  --color-terre-300: #fca5a5;
+  --color-terre-400: #f87171;
+  --color-terre-500: #ef4444;
+  --color-terre-600: #dc2626;
+  --color-terre-700: #b91c1c;
+  --color-terre-800: #991b1b;
+  --color-terre-900: #7f1d1d;
+}
+
+/* Ciel — ancrée sur #9dc3d4. Très clair (1,88:1 sur blanc) : la teinte ne
+   peut porter ni texte ni bouton et tient le cran 300 — là où le pied de page
+   va justement chercher son texte secondaire, à 5,69:1 sur le fond sombre.
+   Les crans bas sont nettement plus cyan et plus saturés que l'ardoise, sans
+   quoi le thème se lirait comme « le même bleu, en un peu différent ».
+   (500 : 4,96:1, 600 : 6,56:1, 700 sur blanc : 8,66:1.) */
+html[data-theme='ciel'] {
+  --color-ardoise-50: #f2f9fc;
+  --color-ardoise-100: #e2f0f6;
+  --color-ardoise-200: #c4e1ec;
+  --color-ardoise-300: #9dc3d4;
+  --color-ardoise-400: #62a5c1;
+  --color-ardoise-500: #2c7691;
+  --color-ardoise-600: #226275;
+  --color-ardoise-700: #1d515f;
+  --color-ardoise-800: #1b4350;
+  --color-ardoise-900: #17323c;
+}

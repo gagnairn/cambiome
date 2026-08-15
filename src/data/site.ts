@@ -164,6 +164,28 @@ export const hebergeur = {
   telephone: '1007',
 } as const;
 
+/**
+ * Pistes chromatiques soumises au client. Dispositif TEMPORAIRE : le temps du
+ * choix, un sélecteur flottant permet de voir le vrai site dans les trois
+ * teintes plutôt que de les décrire sur un nuancier.
+ *
+ * `selecteur: false` suffit à tout éteindre — le site retombe sur l'ardoise,
+ * sans sélecteur ni script. Une fois la direction arrêtée, voir la section
+ * « Thèmes » du README pour le nettoyage définitif.
+ *
+ * Les rampes complètes sont dans src/styles/themes.css ; `teinte` ci-dessous
+ * n'est que la pastille du sélecteur. Le thème par défaut a un `id` vide :
+ * c'est le `@theme` de global.css, sans attribut sur <html>.
+ */
+export const themes = {
+  selecteur: true,
+  liste: [
+    { id: '', nom: 'Ardoise', teinte: '#41738D' },
+    { id: 'terracotta', nom: 'Terracotta', teinte: '#AD7B7A' },
+    { id: 'ciel', nom: 'Ciel', teinte: '#9DC3D4' },
+  ],
+} as const;
+
 export type Metier = {
   slug: string;
   titre: string;

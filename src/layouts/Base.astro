@@ -2,8 +2,10 @@
 import '~/styles/global.css';
 import Header from '~/components/Header.astro';
 import Footer from '~/components/Footer.astro';
-import { site } from '~/data/site';
+import SelecteurTheme from '~/components/SelecteurTheme.astro';
+import { site, themes } from '~/data/site';
 import { base } from '~/lib/base';
+import { SCRIPT_THEME } from '~/lib/theme-script';
 
 interface Props {
   titre: string;
@@ -38,6 +40,16 @@ const ogImage = new URL(`${base}/og-image.jpg`, Astro.site);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {
+      /* Restauration de la piste chromatique choisie — DISPOSITIF TEMPORAIRE,
+         voir `themes` dans src/data/site.ts. En tête de <head> et `is:inline`
+         à dessein : un script groupé est différé, la page s'afficherait donc
+         en ardoise avant de virer, à chaque navigation. `set:html` plutôt que
+         du texte entre balises : dans un script `is:inline`, Astro n'évalue
+         pas les accolades et écrirait l'expression telle quelle. Le hachage
+         CSP est dérivé de la même chaîne dans astro.config.mjs. */
+      themes.selecteur && <script is:inline set:html={SCRIPT_THEME} />
+    }
     <title>{titreComplet}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -82,5 +94,7 @@ const ogImage = new URL(`${base}/og-image.jpg`, Astro.site);
     </main>
 
     <Footer />
+
+    {themes.selecteur && <SelecteurTheme />}
   </body>
 </html>

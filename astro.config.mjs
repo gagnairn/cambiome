@@ -1,7 +1,16 @@
 // @ts-check
+import { createHash } from 'node:crypto';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import { SCRIPT_THEME } from './src/lib/theme-script.ts';
+
+// Hachage du seul script `is:inline` du site, celui qui restaure la piste
+// chromatique choisie. Astro hache tout seul les scripts qu'il groupe, mais
+// pas les `is:inline` — il faut donc le lui donner, sinon la CSP le bloque.
+// Calculé à partir de la chaîne elle-même : les deux ne peuvent pas diverger.
+// À SUPPRIMER avec le reste du dispositif de thèmes.
+const HACHAGE_SCRIPT_THEME = `sha256-${createHash('sha256').update(SCRIPT_THEME).digest('base64')}`;
 
 // Adapter `site` et `base` au moment de la mise en ligne :
 //  - GitHub Pages projet  -> site: 'https://gagnairn.github.io', base: '/cambiome'  (état actuel)
@@ -26,6 +35,7 @@ export default defineConfig({
   // pas servir.
   security: {
     csp: {
+      scriptDirective: { hashes: [HACHAGE_SCRIPT_THEME] },
       directives: [
         "default-src 'self'",
         // Le formulaire de contact poste vers Web3Forms, en fetch (connect-src)
