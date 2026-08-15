@@ -28,16 +28,35 @@ const rgeEnCours = estEnCours(rge.fin);
 // À SUPPRIMER avec le reste du dispositif de thèmes.
 const HACHAGE_SCRIPT_THEME = `sha256-${createHash('sha256').update(SCRIPT_THEME).digest('base64')}`;
 
-// Adapter `site` et `base` au moment de la mise en ligne :
-//  - GitHub Pages projet  -> site: 'https://gagnairn.github.io', base: '/cambiome'  (état actuel)
-//  - domaine propre       -> site: 'https://www.cambiome.fr', supprimer `base`
-//
-// Les deux lignes changent ensemble : sans `base`, tous les liens visent la
-// racine du domaine et retournent 404 sur gagnairn.github.io/cambiome/. À ne
-// modifier qu'au moment de la bascule DNS, pas en préparation.
+/**
+ * Où le site est servi. **C'est le seul interrupteur de la mise en ligne** :
+ * `preversion` aujourd'hui, `production` au premier dépôt chez l'hébergeur.
+ *
+ * `site` et `base` ne peuvent pas être dissociés, et ne peuvent pas non plus
+ * anticiper le domaine. Ils ne servent pas qu'aux balises : `base` préfixe
+ * TOUS les liens internes, et `site` construit l'adresse de retour du
+ * formulaire sans JavaScript (`FormulaireContact.astro`). Les déclarer sur
+ * www.cambiome.fr pendant que le site est servi depuis GitHub Pages donnerait
+ * des liens en 404 et renverrait les envois de formulaire sur une adresse qui
+ * ne sert pas encore le site.
+ *
+ * Le nom d'hôte commande aussi l'indexation : voir `src/layouts/Base.astro`,
+ * qui pose `noindex` tant qu'on est sur github.io. Un seul mot à changer ici
+ * lève donc la préversion en entier — impossible de mettre en ligne en
+ * oubliant d'enlever le `noindex`, ou l'inverse.
+ */
+const HEBERGEMENT = 'preversion';
+
+const ADRESSES = {
+  // Projet GitHub Pages : le site vit dans un sous-dossier, d'où `base`.
+  preversion: { site: 'https://gagnairn.github.io', base: '/cambiome' },
+  // Domaine propre chez OVH : racine du domaine, pas de préfixe. À la bascule,
+  // suivre la marche à suivre du README (CNAME, .htaccess, images à regénérer).
+  production: { site: 'https://www.cambiome.fr' },
+};
+
 export default defineConfig({
-  site: 'https://gagnairn.github.io',
-  base: '/cambiome',
+  ...ADRESSES[HEBERGEMENT],
   // La page de confirmation d'envoi n'a rien à faire dans l'index. La page de
   // qualification en sort le jour où la qualification expire : elle ne dit
   // alors plus que son échéance, ce n'est pas ce qu'on propose aux moteurs.

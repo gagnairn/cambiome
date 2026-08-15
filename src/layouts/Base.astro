@@ -39,6 +39,25 @@ const titreComplet =
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
+/**
+ * Préversion : le site est servi depuis GitHub Pages, à une adresse qui n'est
+ * pas la sienne. La laisser indexer coûterait cher au moment de la bascule —
+ * les pages de la marque installées sous un sous-domaine personnel, puis deux
+ * adresses servant le même contenu, sans possibilité de rediriger : GitHub
+ * Pages est un hébergeur statique, il ne sait pas émettre de 301.
+ *
+ * Déduit du nom d'hôte et non d'un drapeau à part : la balise disparaît d'elle-
+ * même le jour où `HEBERGEMENT` passe en production dans astro.config.mjs. Il
+ * n'y a rien à penser à retirer, donc rien à oublier.
+ *
+ * `noindex` plutôt qu'un `Disallow` dans robots.txt : interdire l'exploration
+ * empêcherait justement de lire cette balise, et l'adresse pourrait malgré
+ * tout ressortir dans les résultats, sans description. Ici on laisse explorer
+ * et on demande à ne pas indexer, ce qui est la seule combinaison qui tient.
+ */
+const preversion = Astro.site?.hostname.endsWith('github.io') ?? false;
+const horsIndex = noindex || preversion;
+
 // Les réseaux sociaux exigent une URL absolue : un chemin relatif est ignoré
 // et la carte de partage reste vide.
 const ogImage = new URL(lien('/og-image.jpg'), Astro.site);
@@ -73,13 +92,16 @@ const ogImage = new URL(lien('/og-image.jpg'), Astro.site);
     <title>{titreComplet}</title>
     <meta name="description" content={description} />
     <DonneesStructurees />
-    {/* Pas de canonique sur une page en `noindex` : elle ne demande pas à être
-        indexée, l'adresse de référence n'a donc rien à désigner. Sur la 404 la
-        balise était même fausse — elle pointait vers /404/, qui n'existe pas.
-        `og:url` la garde : les réseaux sociaux s'en servent pour identifier ce
-        qui est partagé, indépendamment de l'indexation. */}
+    {/* Pas de canonique sur une page volontairement hors index : elle ne
+        demande pas à être indexée, l'adresse de référence n'a donc rien à
+        désigner. Sur la 404 la balise était même fausse — elle pointait vers
+        /404/, qui n'existe pas. La canonique reste en revanche en préversion :
+        elle désigne alors l'adresse réellement servie, et sera juste telle
+        quelle une fois le domaine posé. `og:url` la garde de toute façon : les
+        réseaux sociaux s'en servent pour identifier ce qui est partagé,
+        indépendamment de l'indexation. */}
     {!noindex && <link rel="canonical" href={canonical} />}
-    {noindex && <meta name="robots" content="noindex, follow" />}
+    {horsIndex && <meta name="robots" content="noindex, follow" />}
     {/* Icônes : le .ico couvre les onglets (16/32/48), l'apple-touch-icon
         l'ajout à l'écran d'accueil iOS, le manifeste Android. Pas de favicon
         SVG : le logo n'existe qu'en raster, un SVG serait un redessin qui ne
