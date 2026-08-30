@@ -37,16 +37,17 @@ metiers:
       - Accompagnement à l'auto-rénovation
   - slug: couverture-zinguerie
     titre: Couverture et zinguerie
-    chapo: La rénovation des toitures du bâti ancien, jusqu’à la finition.
+    chapo: La rénovation des toitures de bâti ancien et un traitement soigné des
+      finitions.
     texte:
       - Une grande partie de l'activité de CAMBIOME consiste en la rénovation
         des toitures des bâtis anciens.
-      - Une attention particulière est donnée à la finition des sous-faces en
-        lambris et aux travaux de zinguerie.
+      - Une attention particulière est donnée à la finition des parements
+        extérieurs et aux travaux de zinguerie.
     points:
       - Rénovation de toiture du bâti ancien
-      - Sous-faces en lambris
-      - Zinguerie façonnée à l’atelier
+      - Parements extérieurs soignés
+      - "Zinguerie : abergement façonnage maison sur-mesure"
       - Habillage d’acrotères, noues et rives
   - slug: structure-bois-menuiserie
     titre: Structure bois, terrasses et menuiserie
