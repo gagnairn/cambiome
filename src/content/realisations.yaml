@@ -33,15 +33,14 @@ chantiers:
       frein-vapeur continu du sol au plafond : une étanchéité à l'air
       performante nécessite une attention particulière des détails et raccords."
     image: isolation-fibre-de-bois.jpg
-  - titre: Pignon de grange en mélèze
+  - titre: Pignon claire-voie et bardage épaufré
     metier: Menuiserie
     metierSlug: structure-bois-menuiserie
-    legende: Pignon de grange fermé en bardage mélèze, alternant lames épaufrées et
-      claire-voie sous la pergola. Le mélèze grise sans traitement et tient dans
-      le temps.
+    legende: Pignon de grange recevant un bardage mélèze, alternant lames épaufrées
+      et claire-voie sous la pergola.
     alt: "Pignon d'une grange rénovée vu depuis la terrasse couverte : charpente
-      apparente en bois clair sous le faîtage, lames de mélèze en triangle et
-      bandeau de tasseaux verticaux en claire-voie."
+      apparente en bois clair sous le faîtage, lames de bardage mélèze et
+      claire-voie."
     image: bardage-meleze-pignon.jpg
   - titre: Structure de lucarne
     metier: Charpente
