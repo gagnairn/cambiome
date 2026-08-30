@@ -28,10 +28,10 @@ chantiers:
   - titre: Création d'une salle de réunion
     metier: Rénovation thermique
     metierSlug: renovation-thermique
-    legende: Création d'une salle de réunion en murs ossature bois en zone non chauffée.
-    alt: "Doublage intérieur en panneaux de fibre de bois entre montants ossature,
-      frein-vapeur continu du sol au plafond : une étanchéité à l'air
+    legende: "Doublage intérieur en panneaux de fibre de bois entre montants
+      ossature, frein-vapeur continu du sol au plafond : une étanchéité à l'air
       performante nécessite une attention particulière des détails et raccords."
+    alt: Création d'une salle de réunion en murs ossature bois en zone non chauffée.
     image: isolation-fibre-de-bois.jpg
   - titre: Pignon claire-voie et bardage épaufré
     metier: Menuiserie
