@@ -1,14 +1,11 @@
 appelContact:
   titre: Un projet en tête ?
-  texte: >-
-    Rénovation de toiture, extension bois, isolation performante ou simple
-    conseil sur votre bâti : parlons-en. Nous nous déplaçons pour évaluer le
-    chantier avant tout chiffrage.
+  texte: "Rénovation de toiture, extension ossature bois, isolation performante ou
+    simple conseil sur votre bâti : parlons-en. Nous nous déplaçons pour évaluer
+    le chantier avant tout chiffrage."
   bouton: Nous contacter
-
 renvoiRge:
   surtitre: Entreprise RGE {organisme}
-  texte: >-
-    Nos chantiers d'isolation ouvrent droit à MaPrimeRénov' et aux certificats
-    d'économies d'énergie.
+  texte: Nos chantiers d'isolation ouvrent droit à MaPrimeRénov' et aux
+    certificats d'économies d'énergie.
   lien: Voir la qualification →
