@@ -675,15 +675,46 @@ le kit de communication de l'espace client Qualibat : s'il faut un jour
 l'afficher plus grand, c'est là qu'il faut le prendre. Le droit d'usage de la
 marque est attaché à la certification — il tombe avec elle, à la même date.
 
-Il n'y a **pas** de logo en face pour « société à mission » : c'est une qualité
-juridique (art. L210-10 du code de commerce), pas un label, et l'État ne
-délivre aucun emblème. La mention du pied de page est donc typographique.
+Il n'y a **pas** de logo en face, du côté Pro-Paille : le RFCP délivre une
+attestation de réussite, pas une marque d'usage. La mention du pied de page est
+donc typographique — voir la section suivante.
 
 Pour revérifier la qualification à la source :
 
 ```sh
 curl -s "https://data.ademe.fr/data-fair/api/v1/datasets/liste-des-entreprises-rge-2/lines?siret_eq=93322608600017"
 ```
+
+## Certification Pro-Paille
+
+Deuxième entrée du bandeau de pied de page, à la place de la mention « société
+à mission » qui s'y trouvait. La mention légale, elle, n'a pas bougé : elle
+reste aux mentions légales (`mentions-legales.yaml`, champ `statut`, exigée par
+l'art. L210-10 du code de commerce dès lors que la société se déclare telle) et
+la mission statutaire garde sa section entière sur `/demarche#mission`.
+
+Pro-Paille est la formation aux **règles professionnelles de construction en
+paille CP 2012**. Elle est dispensée par des formateurs agréés par le
+[RFCP](https://www.rfcp.fr/propaille/) — Réseau français de la construction
+paille — et sanctionnée par un examen, qui donne une attestation de réussite.
+
+Deux différences avec la qualification RGE, à garder en tête :
+
+| | RGE Qualibat | Pro-Paille |
+| --- | --- | --- |
+| Porte sur | l'entreprise | une personne formée |
+| Expire | oui, `rge.fin` | non |
+| Pilotée par | `src/content/rge.yaml` (CMS) | écrite en dur dans `PiedDePage.astro` |
+| Renvoie à | `/rge-qualibat` | `rfcp.fr/propaille/` |
+| Dans le JSON-LD | oui, `hasCredential` | non |
+
+Le lien sort vers le RFCP faute de mieux : c'est la seule preuve consultable
+tant que l'attestation n'est pas au dépôt. **Si l'attestation existe en PDF**,
+la bonne suite est de la traiter comme le RGE — un `propaille.yaml` avec le nom
+du titulaire, la date et le fichier, un renvoi depuis le bandeau vers une page
+ou vers le PDF, et une entrée `hasCredential` de plus dans le JSON-LD. Une
+certification adossée à sa pièce vaut nettement mieux, en référencement comme
+en crédibilité, qu'un intitulé qui renvoie au site de l'organisme.
 
 ## Déploiement
 

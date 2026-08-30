@@ -156,15 +156,14 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
 
   {/* Bandeau des qualifications, à la place de la liste des métiers qui
       recopiait la colonne juste au-dessus. Deux mentions vérifiables, chacune
-      renvoyant à sa preuve : l'attestation Qualibat et la mission statutaire.
+      renvoyant à sa preuve : l'attestation Qualibat et la formation Pro-Paille.
 
       Le logo RGE Qualibat est posé sur une pastille blanche — sa charte
       l'impose sur fond clair, et il est lui-même sur fond blanc. Il n'a pas
-      d'équivalent en face : « société à mission » est une qualité juridique
-      (art. L210-10 du code de commerce), pas un label, et l'État ne délivre
-      aucun emblème. La mention reste donc typographique plutôt que d'imiter
-      une marque officielle qui n'existe pas. Le filet vertical apparie les
-      deux entrées à défaut d'un second logo.
+      d'équivalent en face : le RFCP délivre une attestation de réussite, pas
+      une marque d'usage, et fabriquer un emblème qui n'existe pas donnerait à
+      la mention une autorité qu'elle n'a pas. Elle reste donc typographique.
+      Le filet vertical apparie les deux entrées à défaut d'un second logo.
 
       Grille plutôt que rangée flex : à trois entrées de largeurs très
       inégales, le flex les tassait à gauche en laissant un vide à droite, et
@@ -201,13 +200,23 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
         )
       }
 
+      {/* Pro-Paille n'a pas de page ici — le lien sort donc vers le RFCP, qui
+          décrit la formation et publie les règles. C'est la seule preuve
+          consultable tant que l'attestation n'est pas versée au dépôt : une
+          mention de certification sans destination vérifiable, à côté d'une
+          entrée RGE qui porte son numéro et sa date d'échéance, se lirait
+          comme une allégation. Le titre est court (« Certification » seul) :
+          « Certification Pro-Paille » en capitales interlettrées passe à la
+          ligne sur une colonne au tiers de la largeur, comme l'intitulé RGE
+          complet juste avant. */}
       <a
         class:list={[entreeBandeau, 'sm:justify-center sm:text-center']}
-        href={`${lien('/demarche')}#mission`}
+        href="https://www.rfcp.fr/propaille/"
+        rel="noopener"
       >
         <span class="text-xs leading-relaxed">
-          <span class={titreBandeau}>Société à mission</span>
-          <span class={lienBandeau}>Mission inscrite aux statuts</span>
+          <span class={titreBandeau}>Certification</span>
+          <span class={lienBandeau}>Pro-Paille, règles CP 2012</span>
         </span>
       </a>
 
