@@ -44,11 +44,8 @@ chantiers:
   - titre: Structure de lucarne
     metier: Charpente
     metierSlug: charpente-ossature-bois
-    legende: Structure d'une lucarne cintrée, levée sur une toiture en rénovation
-      complète.
-    alt: Structure de lucarne en bois neuf, aux montants cintrés en arc, posée sur
-      un toit en travaux dont le versant est couvert d'un écran de sous-toiture
-      et de liteaux ; ville et arbres en contrebas.
+    legende: Structure d'une lucarne jacobine 4 pans.
+    alt: Structure bois avec rupture de pente d'une jacobine sur Echirolles.
     image: lucarne-structure.jpg
   - titre: Charpente à chevrons porteurs
     metier: Charpente
