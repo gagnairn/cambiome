@@ -1,10 +1,11 @@
 metiers:
   - slug: charpente-ossature-bois
-    titre: Charpente et ossature bois
-    chapo: De la reprise ponctuelle d’une ferme ancienne au bâtiment neuf complet.
+    titre: Charpente et murs ossature bois
+    chapo: De la reprise une pièce de charpente à la réalisation d'un bâtiment neuf
+      complet.
     texte:
       - En étroite collaboration avec un bureau d'études, nous réalisons vos
-        projets de réanimation et de modification de charpente.
+        projets d'extension de maison et de restauration de charpente.
       - Que ce soit la réalisation d'extension en mur ossature bois, la
         fabrication de lucarnes, le changement de pièces de charpente ou la
         création d'un bâtiment complet, nos équipes sont formées à ce type de
@@ -16,7 +17,7 @@ metiers:
       - Bâtiment neuf complet
       - Travail avec bureau d'études structure
   - slug: renovation-thermique
-    titre: Rénovation thermique
+    titre: Rénovation thermique et pose de menuiseries
     chapo: Forte épaisseur, matériaux bio-sourcés et étanchéité à l'air maîtrisée.
     texte:
       - L'utilisation de matériaux bio-sourcés à faible impact environnemental,
