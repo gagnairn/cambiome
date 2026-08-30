@@ -61,10 +61,10 @@ chantiers:
   - titre: Soudure de chéneau
     metier: Zinguerie
     metierSlug: couverture-zinguerie
-    legende: Chéneau soudé à l'étain en fond de noue, paré pour la pluie.
-    alt: "Fond d'un chéneau de zinc neuf vu de près : un cordon de soudure à l'étain
-      le traverse en arc, ses ondulations régulières bien lisibles ; rive
-      d'ardoises à gauche, échafaudage et verdure à droite."
+    legende: Chéneau avec soudure côtelée à l'étain. On oublie pas les joints de
+      dilatation si nécessaire et on fait plaisir à nos clients avec de beaux
+      récupérateurs d'eau de pluie.
+    alt: Fond d'un chéneau de zinc neuf
     image: soudure-cheneau.jpg
   - titre: Pergola
     metier: Structure bois
