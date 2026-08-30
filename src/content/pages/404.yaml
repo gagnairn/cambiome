@@ -1,9 +1,7 @@
 titreOnglet: Page introuvable
 description: La page demandée n'existe pas.
-
-surtitre: Erreur 404
+surtitre: Erreur 404, le papier reste parfois plus fiable :-)
 titre: Cette page n'existe pas.
-texte: >-
-  Le lien est peut-être obsolète, ou l'adresse comporte une faute de frappe.
+texte: Le lien est peut-être obsolète, ou l'adresse comporte une faute de frappe.
 boutonAccueil: Retour à l'accueil
 boutonRealisations: Voir les réalisations
