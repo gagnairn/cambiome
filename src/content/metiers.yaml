@@ -20,11 +20,11 @@ metiers:
     titre: Rénovation thermique et pose de menuiseries
     chapo: Forte épaisseur, matériaux bio-sourcés et étanchéité à l'air maîtrisée.
     texte:
-      - L'utilisation de matériaux bio-sourcés à faible impact environnemental,
-        en forte épaisseur et forte densité, l'amélioration des performances des
-        fenêtres, la bonne mise en œuvre de l'étanchéité à l'air, la mise en
-        place de protections solaires, la ventilation des parois extérieures et
-        l'installation d'une ventilation double flux.
+      - L'utilisation de matériaux bio-sourcés à faible impact environnemental -
+        Une épaisseur importante et une forte densité - L'amélioration des
+        performances des fenêtres, la bonne mise en œuvre de l'étanchéité à
+        l'air - La mise en place de protections solaires, la ventilation des
+        parois extérieures et l'installation d'une ventilation double flux.
       - Autant d'aspects essentiels pour améliorer le confort du bâti existant
         et diminuer nos consommations d'énergie. Nous pouvons aussi vous
         proposer un accompagnement à l'auto-rénovation.
@@ -33,7 +33,7 @@ metiers:
       - Étanchéité à l'air du bâtiment
       - Ventilation double flux
       - Ventilation des parois extérieures
-      - Protections solaires et menuiseries
+      - Protections solaires et menuiseries performantes
       - Accompagnement à l'auto-rénovation
   - slug: couverture-zinguerie
     titre: Couverture et zinguerie
