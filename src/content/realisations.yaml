@@ -10,12 +10,12 @@ chantiers:
   - titre: Extension maison en poutres en I
     metier: Ossature bois
     metierSlug: charpente-ossature-bois
-    legende: Extension maison individuelle en murs ossature bois et charpente en
-      poutres en I.
-    alt: Intérieur d'une extension en cours de construction, plafond composé de
+    legende: "Intérieur d'une extension en cours de construction, plafond composé de
       poutres en I régulières et murs ossature bois avec panneaux de
       contreventement OSB. Les parois extérieures seront ventilées et recevrons
-      un enduit de finition sur Nergalto.
+      un enduit de finition sur Nergalto. "
+    alt: Extension maison individuelle en murs ossature bois et charpente en poutres
+      en I.
     image: charpente-poutre-en-i.jpg
   - titre: Couverture à tasseaux d'une lucarne
     metier: Couverture
