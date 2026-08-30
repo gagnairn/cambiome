@@ -89,7 +89,9 @@ chantiers:
   - titre: Habillage d'acrotères
     metier: Zinguerie
     metierSlug: couverture-zinguerie
-    legende: Angle d'acrotère façonné à l'atelier, plis et soudures réalisés sur mesure.
+    legende: Habillage zinc d'acrotère façonnage maison sur-mesure. La résistance
+      aux intempéries de cet ouvrage est importante. Robuste, durable et
+      raffiné.
     alt: Pièce de zinc pliée en angle posée sur un établi d'atelier, plis nets et
       surface satinée.
     image: habillage-acroteres.jpg
