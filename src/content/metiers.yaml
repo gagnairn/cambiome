@@ -50,7 +50,7 @@ metiers:
       - "Zinguerie : abergement façonnage maison sur-mesure"
       - Habillage d’acrotères, noues et rives
   - slug: structure-bois-menuiserie
-    titre: Structure bois, terrasses et pergolat
+    titre: Structure bois, terrasses et pergola
     chapo: Le bois local, du mobilier à la terrasse.
     texte:
       - Notre entreprise propose la réalisation de mobilier et de structures
@@ -60,6 +60,7 @@ metiers:
         claustras."
     points:
       - Terrasse en bois local
+      - Pergola
       - Escaliers
       - Cuisine et mobilier sur mesure
       - Persiennes
