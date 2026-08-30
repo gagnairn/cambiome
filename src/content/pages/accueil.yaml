@@ -1,29 +1,24 @@
 hero:
-  titre: Construire et rénover avec des matériaux qui tiennent dans le temps.
-  texte: >-
-    CAMBIOME est une entreprise d'éco-construction : charpente et ossature bois,
-    couverture et zinguerie, rénovation thermique en matériaux bio-sourcés.
+  titre: Construire et rénover pour des habitats d'avenir durables
+  texte: "CAMBIOME est une entreprise d'éco-construction : charpente et ossature
+    bois, couverture et zinguerie, rénovation thermique en matériaux
+    bio-sourcés."
   boutonMetiers: Découvrir nos métiers
   boutonContact: Parler de votre projet
-
 metiers:
   surtitre: Nos réalisations par métiers
   titre: Quatre savoir-faire, un même bâtiment
-  texte: >-
-    Charpente, couverture, isolation et menuiserie sont traitées ensemble. C'est
-    la condition pour que l'enveloppe soit cohérente : pas de rupture
+  texte: "Charpente, couverture, isolation et menuiserie sont traitées ensemble.
+    C'est la condition pour que l'enveloppe soit cohérente : pas de rupture
     d'étanchéité à l'air entre deux corps de métier, pas de détail laissé au
-    suivant.
-
+    suivant."
 demarche:
   surtitre: Notre démarche
   titre: Le confort d'abord, la performance ensuite
-  texte: >-
-    Une isolation bio-sourcée dense pour le confort d'été, une étanchéité à l'air
-    maîtrisée, une ventilation double flux et des parois qui respirent. Ces
-    quatre points se tiennent : négliger l'un dégrade les trois autres.
+  texte: "Une isolation bio-sourcée dense pour le confort d'été, une étanchéité à
+    l'air maîtrisée, une ventilation double flux et des parois qui respirent.
+    Ces quatre points se tiennent : négliger l'un dégrade les trois autres."
   bouton: En savoir plus sur notre démarche
-
 realisations:
   surtitre: Chantiers
   titre: Quelques réalisations
