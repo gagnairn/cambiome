@@ -19,8 +19,8 @@ import { telephoneInsecable } from '~/lib/texte';
  * — les noms réservés (`access_key`, `subject`, `from_name`, `redirect`,
  *   `replyto`, `botcheck`) pilotent le service et ne ressortent pas dans le
  *   message ; tous les autres sont recopiés dans l'e-mail reçu, avec leur nom
- *   pour intitulé. D'où « Commune du chantier » plutôt que `commune` : c'est
- *   une étiquette lue par CAMBIOME, pas un identifiant de code ;
+ *   pour intitulé. D'où « Adresse postale du chantier » plutôt que `adresse` :
+ *   c'est une étiquette lue par CAMBIOME, pas un identifiant de code ;
  * — le champ nommé exactement `email` devient l'adresse de réponse. Répondre
  *   au message reçu écrit donc à la personne, sans copier-coller. C'est la
  *   raison pour laquelle celui-là seul garde un nom en minuscules.
@@ -77,7 +77,8 @@ const label = 'block text-sm text-encre/80';
         {/* Champs de service Web3Forms */}
         <input type="hidden" name="access_key" value={contact.web3formsCle} />
         {/* Sujet de repli, utilisé tel quel sans JavaScript. Avec JavaScript,
-            le script le complète du nom et de la commune : voir plus bas. */}
+            le script le complète du nom et du lieu du chantier : voir plus
+            bas. */}
         <input
           type="hidden"
           name="subject"
@@ -111,12 +112,12 @@ const label = 'block text-sm text-encre/80';
         <div class="grid gap-6 sm:grid-cols-2">
           <div>
             <label class={label} for="nom">
-              Nom <span aria-hidden="true">*</span>
+              Nom et prénom <span aria-hidden="true">*</span>
             </label>
             <input
               class={champ}
               id="nom"
-              name="Nom"
+              name="Nom et prénom"
               type="text"
               required
               autocomplete="name"
@@ -137,26 +138,33 @@ const label = 'block text-sm text-encre/80';
           </div>
           <div>
             <label class={label} for="telephone">
-              Téléphone
+              Téléphone <span aria-hidden="true">*</span>
             </label>
+            {/* Pas de `pattern` : la validation native se contenterait d'un
+                champ non vide, et une expression régulière refuserait des
+                numéros valides — indicatif international, points, tirets,
+                numéro étranger. Un faux négatif ici, c'est une demande de
+                devis perdue sans que personne le sache. CAMBIOME rappelle et
+                voit tout de suite si le numéro est bon. */}
             <input
               class={champ}
               id="telephone"
               name="Téléphone"
               type="tel"
+              required
               autocomplete="tel"
             />
           </div>
           <div>
-            <label class={label} for="commune">
-              Commune du chantier
+            <label class={label} for="adresse">
+              Adresse postale du chantier
             </label>
             <input
               class={champ}
-              id="commune"
-              name="Commune du chantier"
+              id="adresse"
+              name="Adresse postale du chantier"
               type="text"
-              autocomplete="address-level2"
+              autocomplete="street-address"
             />
           </div>
         </div>
@@ -294,10 +302,19 @@ const label = 'block text-sm text-encre/80';
      */
     const sujet = (donnees: Record<string, unknown>) => {
       const base = formulaire.dataset.sujet;
-      const qui = String(donnees['Nom'] ?? '').trim();
+      const qui = String(donnees['Nom et prénom'] ?? '').trim();
       if (!base || !qui) return donnees.subject;
 
-      const ou = String(donnees['Commune du chantier'] ?? '').trim();
+      // L'objet ne reprend pas l'adresse entière. « Demande de devis de Jean
+      // Dupont (Lieu-dit la Métairie, 12 route de Saint-Méen, 35290
+      // Saint-Méen-le-Grand) » passe les cent signes, quand les clients de
+      // messagerie en affichent une soixantaine dans la liste : la ligne se
+      // couperait au milieu de la voie, là où elle n'apprend rien. On ne garde
+      // donc que ce qui situe le chantier — à partir du code postal, ou à
+      // défaut le dernier segment séparé par une virgule. L'adresse complète
+      // est dans le corps de l'e-mail, intacte.
+      const adresse = String(donnees['Adresse postale du chantier'] ?? '').trim();
+      const ou = adresse.match(/\b\d{5}\b.*$/)?.[0] ?? adresse.split(',').at(-1)?.trim() ?? '';
       return `${base} de ${qui}${ou ? ` (${ou})` : ''}`;
     };
 
