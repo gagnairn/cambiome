@@ -654,9 +654,8 @@ le kit de communication de l'espace client Qualibat : s'il faut un jour
 l'afficher plus grand, c'est là qu'il faut le prendre. Le droit d'usage de la
 marque est attaché à la certification — il tombe avec elle, à la même date.
 
-Il n'y a **pas** de logo en face, du côté Pro-Paille : le RFCP délivre une
-attestation de réussite, pas une marque d'usage. La mention du pied de page est
-donc typographique — voir la section suivante.
+Le logo du RFCP lui fait face dans le bandeau, mais il n'a pas le même statut —
+voir la section suivante.
 
 Pour revérifier la qualification à la source :
 
@@ -683,6 +682,18 @@ Deux différences avec la qualification RGE, à garder en tête :
 | Pilotée par | `src/content/rge.yaml` (CMS) | écrite en dur dans `PiedDePage.astro` |
 | Renvoie à | `/rge-qualibat` | `rfcp.fr/propaille/` |
 | Dans le JSON-LD | oui, `hasCredential` | non |
+| Le logo est | la marque de certification | celle de l'organisme |
+
+Cette dernière ligne mérite un mot. `src/assets/logos/rge-qualibat.png` est une
+marque de certification : l'entreprise a le droit de l'afficher parce qu'elle
+est certifiée, et ce droit tombe avec la qualification.
+`src/assets/logos/rfcp.png` ne fonctionne pas ainsi — c'est le logo du réseau,
+pas un label décerné à l'entreprise. Il est donc porté par le lien qui mène au
+RFCP, où la formation est décrite : il désigne l'organisme, il ne prétend pas
+labelliser CAMBIOME. Fourni par le client, détouré et ramené à 176 px, il sert
+les 44 px du bandeau jusqu'en écran haute densité. Le RFCP n'ayant pas publié
+de conditions d'usage, la prudence veut qu'il reste à cette taille et à cet
+emplacement.
 
 Le lien sort vers le RFCP faute de mieux : c'est la seule preuve consultable
 tant que l'attestation n'est pas au dépôt. **Si l'attestation existe en PDF**,

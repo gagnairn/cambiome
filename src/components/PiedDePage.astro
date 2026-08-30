@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import marque from '~/assets/logos/marque-noire.png';
 import logoRge from '~/assets/logos/rge-qualibat.png';
+import logoRfcp from '~/assets/logos/rfcp.png';
 import { site, contact, metiers, rge, rgeEnCours } from '~/data/site';
 import { lien } from '~/lib/base';
 import { telephoneInsecable } from '~/lib/texte';
@@ -151,12 +152,11 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
       recopiait la colonne juste au-dessus. Deux mentions vérifiables, chacune
       renvoyant à sa preuve : l'attestation Qualibat et la formation Pro-Paille.
 
-      Le logo RGE Qualibat est posé sur une pastille blanche — sa charte
-      l'impose sur fond clair, et il est lui-même sur fond blanc. Il n'a pas
-      d'équivalent en face : le RFCP délivre une attestation de réussite, pas
-      une marque d'usage, et fabriquer un emblème qui n'existe pas donnerait à
-      la mention une autorité qu'elle n'a pas. Elle reste donc typographique.
-      Le filet vertical apparie les deux entrées à défaut d'un second logo.
+      Les deux logos sont posés sur la même pastille blanche à filet. Pour
+      Qualibat, sa charte l'impose sur fond clair et il est lui-même sur fond
+      blanc ; pour le RFCP, le disque orange ne donne que 1,21:1 sur l'aplat de
+      marque, son bord s'y évanouirait. Même remède, et les deux entrées se
+      répondent.
 
       Grille plutôt que rangée flex : à trois entrées de largeurs très
       inégales, le flex les tassait à gauche en laissant un vide à droite, et
@@ -207,6 +207,14 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
         href="https://www.rfcp.fr/propaille/"
         rel="noopener"
       >
+        {/* C'est le logo du réseau, pas une marque de certification : le RFCP
+            délivre une attestation de réussite à Pro-Paille, pas un droit
+            d'usage d'emblème. Il est donc porté par le lien qui mène au RFCP,
+            où la formation est décrite — il désigne l'organisme, il ne
+            prétend pas labelliser l'entreprise. */}
+        <span class="shrink-0 rounded-md border border-encre/10 bg-white p-1.5">
+          <Image src={logoRfcp} alt="" width={44} densities={[1, 2]} class="w-11" />
+        </span>
         <span class="text-xs leading-relaxed">
           <span class={titreBandeau}>Certification</span>
           <span class={lienBandeau}>Pro-Paille, règles CP 2012</span>
