@@ -326,43 +326,6 @@ content:
             label: Texte d'introduction
             type: text
             required: true
-          - name: mission
-            label: Section « société à mission »
-            type: object
-            description: >-
-              La mission elle-même se modifie dans « Mission de la société à
-              mission ». Ici, seule la façon de l'introduire.
-            fields:
-              - name: surtitre
-                label: Surtitre
-                type: string
-                required: true
-              - name: titre
-                label: Titre
-                type: string
-                required: true
-              - name: texte
-                label: Texte
-                type: text
-                required: true
-                description: '{nom} : le nom de l''entreprise.'
-              - name: avertissement
-                label: Avertissement
-                type: text
-                required: true
-                description: >-
-                  ⚠ Prévient que ce qui suit est repris des statuts sans
-                  reformulation. Retirer cette phrase laisserait croire que le
-                  texte est une présentation commerciale, alors qu'il engage la
-                  société.
-              - name: titrePromeut
-                label: Titre « ce que la société promeut »
-                type: string
-                required: true
-              - name: titreObjectifs
-                label: Titre « les objectifs »
-                type: string
-                required: true
           - name: collaboration
             label: Section « travailler ensemble »
             type: object
@@ -1165,49 +1128,6 @@ content:
           ⚠ À recopier du registre public de l'ADEME, à l'identique. Annoncer un
           domaine non couvert est une allégation trompeuse au sens du code de la
           consommation.
-
-  # ------------------------------------------------------------------ mission
-  - name: mission
-    label: Mission de la société à mission
-    type: file
-    path: src/content/mission.yaml
-    format: yaml
-    fields:
-      - name: promeut
-        label: Ce que la société promeut
-        type: text
-        required: true
-        list:
-          min: 1
-          collapsible: false
-        description: >-
-          ⚠ Repris mot pour mot de l'article 3 des statuts constitutifs du
-          11 septembre 2024. Ne reformulez pas : la mission d'une société à
-          mission est opposable (art. L210-10 du code de commerce), le site doit
-          dire ce que disent les statuts, pas une version arrangée. Si la mission
-          change, ce sont les statuts qui changent d'abord.
-      - name: objectifs
-        label: Objectifs statutaires
-        type: object
-        description: >-
-          ⚠ Même remarque : ces objectifs sont ceux des statuts, à la lettre.
-        list:
-          min: 1
-          collapsible:
-            collapsed: true
-            summary: '{fields.titre}'
-        fields:
-          - name: titre
-            label: Intitulé du groupe
-            type: string
-            required: true
-          - name: items
-            label: Objectifs
-            type: text
-            required: true
-            list:
-              min: 1
-              collapsible: false
 
 settings:
   content:

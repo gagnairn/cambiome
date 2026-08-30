@@ -82,10 +82,9 @@ src/
 │   ├── demarche.yaml     ← les quatre piliers (clé `piliers`)
 │   ├── realisations.yaml ← les chantiers (clé `chantiers`)
 │   ├── rge.yaml          ← la qualification RGE
-│   ├── mission.yaml      ← la mission statutaire
 │   └── pages/            ← la prose des pages, un fichier par page
 ├── data/                 ← lecture + validation zod du contenu ci-dessus
-│   ├── site.ts           ← entreprise, métiers, démarche, RGE, mission
+│   ├── site.ts           ← entreprise, métiers, démarche, RGE
 │   ├── realisations.ts   ← chantiers, et rattachement aux fichiers images
 │   └── pages.ts          ← prose des pages, jetons {…} substitués
 ├── assets/
@@ -688,10 +687,24 @@ curl -s "https://data.ademe.fr/data-fair/api/v1/datasets/liste-des-entreprises-r
 ## Certification Pro-Paille
 
 Deuxième entrée du bandeau de pied de page, à la place de la mention « société
-à mission » qui s'y trouvait. La mention légale, elle, n'a pas bougé : elle
-reste aux mentions légales (`mentions-legales.yaml`, champ `statut`, exigée par
-l'art. L210-10 du code de commerce dès lors que la société se déclare telle) et
-la mission statutaire garde sa section entière sur `/demarche#mission`.
+à mission » qui s'y trouvait.
+
+Le statut de société à mission a depuis été retiré du site éditorial : la
+section de `/demarche` qui reproduisait l'article 3 des statuts, son contenu
+(`mission.yaml`), son schéma et son entrée CMS ont tous été supprimés. Il n'en
+reste qu'**une ligne aux mentions légales** — `mentions-legales.yaml`, champ
+`statut`. Ce n'est pas un oubli, mais ce n'est pas non plus anodin : déclarer
+publiquement la qualité de société à mission fait entrer la société dans le
+régime de l'art. L210-10 (comité ou référent de mission, vérification par un
+organisme tiers indépendant). Retirer cette ligne, ou la garder, est une
+décision à prendre — pas un reliquat.
+
+Pour restaurer la section supprimée, tout est en un seul commit :
+
+```sh
+git log --oneline -S 'societeAMission' -- src/pages/demarche.astro
+git revert <commit>
+```
 
 Pro-Paille est la formation aux **règles professionnelles de construction en
 paille CP 2012**. Elle est dispensée par des formateurs agréés par le

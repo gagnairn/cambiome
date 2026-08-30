@@ -147,19 +147,11 @@ export const pageRealisations = charger(
   z.object({ ...enTete, texte: texte('Le texte') }),
 );
 
-const pageDemarcheBrute = charger(
+export const pageDemarche = charger(
   'pages/demarche',
   z.object({
     ...enTete,
     texte: texte('Le texte'),
-    mission: z.object({
-      surtitre: texte('Le surtitre'),
-      titre: texte('Le titre'),
-      texte: avecJetons(texte('Le texte'), 'Le texte de la mission', 'nom'),
-      avertissement: texte("L'avertissement"),
-      titrePromeut: texte('Le titre'),
-      titreObjectifs: texte('Le titre'),
-    }),
     collaboration: z.object({
       surtitre: texte('Le surtitre'),
       titre: texte('Le titre'),
@@ -167,14 +159,6 @@ const pageDemarcheBrute = charger(
     }),
   }),
 );
-
-export const pageDemarche = {
-  ...pageDemarcheBrute,
-  mission: {
-    ...pageDemarcheBrute.mission,
-    texte: remplir(pageDemarcheBrute.mission.texte, { nom: site.nom }),
-  },
-};
 
 const pageContactBrute = charger(
   'pages/contact',

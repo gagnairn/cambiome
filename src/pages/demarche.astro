@@ -3,7 +3,7 @@ import { Picture } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
 import TitreSection from '~/components/TitreSection.astro';
 import AppelContact from '~/components/AppelContact.astro';
-import { demarche, societeAMission } from '~/data/site';
+import { demarche } from '~/data/site';
 import { pageDemarche } from '~/data/pages';
 import solivage from '~/assets/realisations/solivage-queue-daronde.jpg';
 import chene from '~/assets/realisations/charpente-chene.jpg';
@@ -50,66 +50,6 @@ import chene from '~/assets/realisations/charpente-chene.jpg';
           class="sticky top-28 aspect-3/4 w-full rounded-lg object-cover"
         />
       </div>
-    </div>
-  </section>
-
-  {/* Tout ce qui touche au statut de société à mission tient dans cette seule
-      section : ce qu'est le statut, puis ce que disent les statuts. C'était
-      auparavant coupé en deux — un encadré en tête de page, qui citait déjà
-      l'article L210-10 et annonçait « les objectifs sociaux et
-      environnementaux », puis cette section qui reprenait les deux mots pour
-      mots. Le lecteur lisait la même phrase à deux endroits, et l'encadré
-      s'intercalait entre l'introduction et les étapes qu'elle annonce.
-
-      La mission elle-même est reproduite telle qu'elle figure aux statuts.
-      C'est le propre d'une société à mission : le texte engage, on ne le
-      réécrit pas pour le rendre plus vendeur. */}
-  <section id="mission" class="container-page mt-24 scroll-mt-24">
-    <TitreSection
-      surtitre={pageDemarche.mission.surtitre}
-      titre={pageDemarche.mission.titre}
-      niveau={2}
-    >
-      <p>{pageDemarche.mission.texte}</p>
-      <p class="mt-4">{pageDemarche.mission.avertissement}</p>
-    </TitreSection>
-
-    <h3 class="mt-12 font-display text-xl leading-snug">
-      {pageDemarche.mission.titrePromeut}
-    </h3>
-    <ul class="mt-6 mesure-lecture space-y-3">
-      {
-        societeAMission.promeut.map((p) => (
-          <li class="border-l-2 border-ardoise-300 pl-5 leading-relaxed text-encre/80">
-            {p}
-          </li>
-        ))
-      }
-    </ul>
-
-    <h3 class="mt-14 font-display text-xl leading-snug">
-      {pageDemarche.mission.titreObjectifs}
-    </h3>
-    <div class="mt-8 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-      {
-        societeAMission.objectifs.map((groupe) => (
-          <div class="border-t border-sable-300 pt-6">
-            {/* h4 et non h3 : ces trois familles sont subordonnées au titre
-                ci-dessus, la hiérarchie doit le dire. */}
-            <h4 class="font-display text-sm tracking-[0.16em] text-ardoise-700 uppercase">
-              {groupe.titre}
-            </h4>
-            <ul class="mt-4 space-y-2.5">
-              {groupe.items.map((item) => (
-                <li class="flex gap-2.5 text-sm leading-relaxed text-encre/75">
-                  <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ardoise-400" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))
-      }
     </div>
   </section>
 

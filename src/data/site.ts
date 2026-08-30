@@ -231,34 +231,6 @@ const SchemaRge = z
   });
 
 /**
- * Société à mission (art. L210-10 du code de commerce) : statut déclaré au
- * RNE, vérifiable sur annuaire-entreprises.data.gouv.fr. Ce n'est pas un label
- * marketing — il engage la société sur des objectifs inscrits aux statuts.
- *
- * ⚠ Le contenu de `mission.yaml` est repris mot pour mot de l'article 3 des
- * statuts constitutifs du 11 septembre 2024. Ne pas reformuler : la mission
- * d'une société à mission est opposable, le site doit dire ce que disent les
- * statuts, pas une version arrangée. Si la mission change, ce sont les statuts
- * qui changent d'abord. Le schéma ne peut pas vérifier une reformulation — il
- * garantit seulement qu'aucun engagement ne disparaît par inadvertance.
- */
-const SchemaMission = z.object({
-  promeut: z
-    .array(texte('Un engagement'))
-    .min(1, 'La mission statutaire ne peut pas être vide.'),
-  objectifs: z
-    .array(
-      z.object({
-        titre: texte("Le titre d'un groupe d'objectifs"),
-        items: z
-          .array(texte('Un objectif'))
-          .min(1, "Un groupe d'objectifs ne peut pas être vide."),
-      }),
-    )
-    .min(1, 'La mission statutaire ne peut pas être vide.'),
-});
-
-/**
  * Comme les chantiers, les métiers et les piliers vivent sous une clé de
  * premier niveau plutôt qu'à la racine du fichier : voir l'explication dans
  * `src/data/realisations.ts`. Résumé : sans cette clé, le CMS n'affiche pas de
@@ -367,8 +339,6 @@ export const rge = charger('rge', SchemaRge);
  * pas importer ce module : voir src/lib/echeance.ts.
  */
 export const rgeEnCours = estEnCours(rge.fin);
-
-export const societeAMission = charger('mission', SchemaMission);
 
 export type Metier = {
   slug: string;
