@@ -80,8 +80,7 @@ chantiers:
   - titre: Balcon suspendu
     metier: Structure bois
     metierSlug: structure-bois-menuiserie
-    legende: Balcon suspendu et bardage vertical, contreventés sur la structure
-      existante.
+    legende: "Réalisation d'un balcon suspendu sur pendillards. "
     alt: Balcon en bois suspendu à la façade d'une maison en bardage bois vertical,
       vu en contre-plongée sur ciel bleu.
     image: balcon-suspendu.jpg
