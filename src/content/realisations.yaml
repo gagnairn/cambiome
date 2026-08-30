@@ -48,13 +48,13 @@ chantiers:
     alt: Structure bois avec rupture de pente d'une jacobine sur Echirolles. La
       charpente recevra une couverture en zinc sur tasseaux.
     image: lucarne-structure.jpg
-  - titre: Charpente à chevrons porteurs
+  - titre: Charpente et chevrons porteurs
     metier: Charpente
     metierSlug: charpente-ossature-bois
     legende: "Charpente refaite à neuf en chevrons porteurs. La contrainte était de
-      conserver la hauteur de latis existante pour rester dans la continuité des
-      toitures mitoyennes : le chevron porteur réduit les chambrées sans
-      superposer les couches."
+      conserver la hauteur sous plafond et de rester dans la continuité des
+      toitures mitoyennes : le chevron porteur permet de ne pas avoir de
+      pannes."
     alt: Charpente neuve en bois clair vue de l'intérieur du comble, pannes et
       chevrons assemblés sur ferrures se découpant sur un ciel bleu.
     image: charpente-chevrons-porteurs.jpg
