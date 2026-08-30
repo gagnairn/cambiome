@@ -36,11 +36,10 @@ chantiers:
   - titre: Pignon claire-voie et bardage épaufré
     metier: Menuiserie
     metierSlug: structure-bois-menuiserie
-    legende: Pignon de grange recevant un bardage mélèze, alternant lames épaufrées
-      et claire-voie sous la pergola.
+    legende: Pignon de grange recevant deux types de  bardages mélèze.
     alt: "Pignon d'une grange rénovée vu depuis la terrasse couverte : charpente
-      apparente en bois clair sous le faîtage, lames de bardage mélèze et
-      claire-voie."
+      apparente lambris épicéa brossé sous le faîtage, lames de bardage épaufré
+      et carrelet claire-voie mélèze sous la pergolat."
     image: bardage-meleze-pignon.jpg
   - titre: Structure de lucarne
     metier: Charpente
