@@ -2,10 +2,10 @@ chantiers:
   - titre: Arêtier sur tasseau
     metier: Charpente
     metierSlug: charpente-ossature-bois
-    legende: Charpente neuve montée sur un bâti de village, arêtier et chevrons
-      posés avant couverture.
-    alt: Charpente en bois clair fraîchement montée sur un toit, vue depuis le
+    legende: Charpente en bois clair fraîchement montée sur un toit, vue depuis le
       faîtage ; toits de tuiles, clocher et falaise en arrière-plan.
+    alt: Charpente neuve montée sur un bâti de village, arêtier et chevrons posés
+      avant couverture.
     image: charpente-aretier.jpg
   - titre: Extension maison en poutres en I
     metier: Ossature bois
