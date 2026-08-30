@@ -271,7 +271,6 @@ const pageMentionsBrute = charger(
     ...enTete,
     description: avecJetons(description, 'La description', 'nom'),
     titreEditeur: texte('Le titre'),
-    statut: texte('La mention de statut'),
     titreQualification: texte('Le titre'),
     qualification: avecJetons(
       texte('Le texte'),

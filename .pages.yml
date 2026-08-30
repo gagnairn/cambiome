@@ -512,13 +512,6 @@ content:
             label: Titre « éditeur du site »
             type: string
             required: true
-          - name: statut
-            label: Ligne « statut »
-            type: string
-            required: true
-            description: >-
-              ⚠ La mention de société à mission est exigée de toute société qui
-              se déclare telle (art. L210-10 du code de commerce).
           - name: titreQualification
             label: Titre « qualification professionnelle »
             type: string

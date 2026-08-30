@@ -687,24 +687,7 @@ curl -s "https://data.ademe.fr/data-fair/api/v1/datasets/liste-des-entreprises-r
 ## Certification Pro-Paille
 
 Deuxième entrée du bandeau de pied de page, à la place de la mention « société
-à mission » qui s'y trouvait.
-
-Le statut de société à mission a depuis été retiré du site éditorial : la
-section de `/demarche` qui reproduisait l'article 3 des statuts, son contenu
-(`mission.yaml`), son schéma et son entrée CMS ont tous été supprimés. Il n'en
-reste qu'**une ligne aux mentions légales** — `mentions-legales.yaml`, champ
-`statut`. Ce n'est pas un oubli, mais ce n'est pas non plus anodin : déclarer
-publiquement la qualité de société à mission fait entrer la société dans le
-régime de l'art. L210-10 (comité ou référent de mission, vérification par un
-organisme tiers indépendant). Retirer cette ligne, ou la garder, est une
-décision à prendre — pas un reliquat.
-
-Pour restaurer la section supprimée, tout est en un seul commit :
-
-```sh
-git log --oneline -S 'societeAMission' -- src/pages/demarche.astro
-git revert <commit>
-```
+à mission » qui s'y trouvait (voir la section suivante).
 
 Pro-Paille est la formation aux **règles professionnelles de construction en
 paille CP 2012**. Elle est dispensée par des formateurs agréés par le
@@ -728,6 +711,37 @@ du titulaire, la date et le fichier, un renvoi depuis le bandeau vers une page
 ou vers le PDF, et une entrée `hasCredential` de plus dans le JSON-LD. Une
 certification adossée à sa pièce vaut nettement mieux, en référencement comme
 en crédibilité, qu'un intitulé qui renvoie au site de l'organisme.
+
+## Société à mission : retirée du site
+
+Le site ne se prévaut plus de cette qualité. Rien n'en subsiste : la section de
+`/demarche` qui reproduisait l'article 3 des statuts, son contenu
+(`mission.yaml`), ses schémas, ses deux entrées CMS, la mention du bandeau de
+pied de page, la ligne « Statut » des mentions légales et la description SEO de
+`/demarche` qui s'en réclamait.
+
+**Ce retrait est éditorial, pas juridique.** L'art. L210-10 du code de commerce
+ouvre une faculté — une société *peut* faire publiquement état de cette
+qualité — et n'impose aucun affichage : cesser de s'en prévaloir sur le site ne
+soulève donc aucune difficulté. Mais tant que les statuts portent la mission et
+que le RNE l'enregistre, **la société reste société à mission**, avec les
+obligations qui vont avec (comité ou référent de mission au sens du 3°,
+vérification par un organisme tiers indépendant). Y renoncer pour de bon passe
+par une modification des statuts puis la mise à jour du RNE, hors du dépôt.
+
+Deux vérifications à faire une fois cette formalité accomplie :
+
+- `annuaire-entreprises.data.gouv.fr` ne doit plus afficher la qualité
+- rien ne doit rester dans le dépôt :
+  `grep -rn 'L210-10\|société à mission' src .pages.yml README.md`
+
+Si la décision devait s'inverser, tout le dispositif éditorial revient d'un
+seul revert :
+
+```sh
+git log --oneline -S 'societeAMission' -- src/pages/demarche.astro
+git revert <commit>
+```
 
 ## Déploiement
 

@@ -9,7 +9,7 @@
  *
  * On garde donc la phrase entière modifiable, avec un jeton pour la valeur :
  *
- *   texte: "{nom} est enregistrée comme société à mission."
+ *   texte: "{nom} intervient sur {zone}."
  *
  * Ce n'est pas un moteur de gabarits, et ça ne doit pas le devenir : pas de
  * condition, pas de boucle, pas de mise en forme. Une clé entre accolades,
