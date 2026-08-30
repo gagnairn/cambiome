@@ -7,14 +7,15 @@ chantiers:
     alt: Charpente en bois clair fraîchement montée sur un toit, vue depuis le
       faîtage ; toits de tuiles, clocher et falaise en arrière-plan.
     image: charpente-aretier.jpg
-  - titre: Solivage en poutres en I
+  - titre: Extension maison en poutres en I
     metier: Ossature bois
     metierSlug: charpente-ossature-bois
-    legende: "Extension en ossature bois : solivage en poutres en I et
-      contreventement, avant fermeture de l'enveloppe."
+    legende: Extension maison individuelle en murs ossature bois et charpente en
+      poutres en I.
     alt: Intérieur d'une extension en cours de construction, plafond composé de
-      poutres en I régulières et murs en ossature bois avec panneaux de
-      contreventement.
+      poutres en I régulières et murs ossature bois avec panneaux de
+      contreventement OSB. Les parois extérieures seront ventilées et recevrons
+      un enduit de finition sur Nergalto.
     image: charpente-poutre-en-i.jpg
   - titre: Couverture à tasseaux
     metier: Couverture
