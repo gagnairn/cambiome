@@ -157,13 +157,20 @@ const label = 'block text-sm text-encre/80';
           </div>
           <div>
             <label class={label} for="adresse">
-              Adresse postale du chantier
+              Adresse postale du chantier <span aria-hidden="true">*</span>
             </label>
+            {/* Obligatoire au même titre que le téléphone, et pour la même
+                raison : sans le lieu, il n'y a ni déplacement à prévoir ni
+                devis à chiffrer, et l'objet de l'e-mail perd ce qui permet de
+                trier la boîte de réception. Pas de `pattern` ici non plus —
+                une adresse française s'écrit de trop de façons pour qu'une
+                expression régulière la valide sans en refuser de bonnes. */}
             <input
               class={champ}
               id="adresse"
               name="Adresse postale du chantier"
               type="text"
+              required
               autocomplete="street-address"
             />
           </div>
