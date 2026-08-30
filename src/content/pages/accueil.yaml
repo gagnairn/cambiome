@@ -1,8 +1,8 @@
 hero:
   titre: Construire et rénover pour des habitats d'avenir durables
-  texte: "CAMBIOME est une entreprise d'éco-construction : charpente et ossature
-    bois, couverture et zinguerie, rénovation thermique en matériaux
-    bio-sourcés."
+  texte: CAMBIOME est une entreprise d'éco-construction spécialisée en charpente,
+    ossature bois, couverture, zinguerie et rénovation thermique. L'enveloppe du
+    bâtiment est conçu et réalisée en interne avec des matériaux bio-sourcés.
   boutonMetiers: Découvrir nos métiers
   boutonContact: Parler de votre projet
 metiers:
