@@ -1,98 +1,122 @@
 chantiers:
-  - titre: Charpente à arêtier
+  - titre: Arêtier sur tasseau
     metier: Charpente
     metierSlug: charpente-ossature-bois
-    legende: Charpente neuve montée sur un bâti de village, arêtier et chevrons posés avant couverture.
-    alt: "Charpente en bois clair fraîchement montée sur un toit, vue depuis le faîtage ; toits de tuiles, clocher et falaise en arrière-plan."
+    legende: Charpente neuve montée sur un bâti de village, arêtier et chevrons
+      posés avant couverture.
+    alt: Charpente en bois clair fraîchement montée sur un toit, vue depuis le
+      faîtage ; toits de tuiles, clocher et falaise en arrière-plan.
     image: charpente-aretier.jpg
-
   - titre: Solivage en poutres en I
     metier: Ossature bois
     metierSlug: charpente-ossature-bois
-    legende: "Extension en ossature bois : solivage en poutres en I et contreventement, avant fermeture de l'enveloppe."
-    alt: "Intérieur d'une extension en cours de construction, plafond composé de poutres en I régulières et murs en ossature bois avec panneaux de contreventement."
+    legende: "Extension en ossature bois : solivage en poutres en I et
+      contreventement, avant fermeture de l'enveloppe."
+    alt: Intérieur d'une extension en cours de construction, plafond composé de
+      poutres en I régulières et murs en ossature bois avec panneaux de
+      contreventement.
     image: charpente-poutre-en-i.jpg
-
   - titre: Couverture à tasseaux
     metier: Couverture
     metierSlug: couverture-zinguerie
-    legende: "Lucarne reprise en couverture à tasseaux lors d'une réfection de toiture, à Échirolles."
-    alt: Pan de toiture neuf en zinc à tasseaux, ses baguettes régulières brillant au soleil, au milieu de toits de tuiles anciens.
+    legende: Lucarne reprise en couverture à tasseaux lors d'une réfection de
+      toiture, à Échirolles.
+    alt: Pan de toiture neuf en zinc à tasseaux, ses baguettes régulières brillant
+      au soleil, au milieu de toits de tuiles anciens.
     image: couverture-a-tasseaux.jpg
-
   - titre: Isolation en fibre de bois
     metier: Rénovation thermique
     metierSlug: renovation-thermique
-    legende: "Doublage intérieur en panneaux de fibre de bois entre montants, freine-vapeur continu au plafond et lés adhésivés : l'étanchéité à l'air se joue à ce stade."
-    alt: "Pièce en travaux dont les murs sont doublés de panneaux de fibre de bois entre montants de bois ; au plafond, un freine-vapeur clair aux lés adhésivés, au sol un plancher d'OSB et un panneau isolant posé à plat."
+    legende: "Doublage intérieur en panneaux de fibre de bois entre montants,
+      freine-vapeur continu au plafond et lés adhésivés : l'étanchéité à l'air
+      se joue à ce stade."
+    alt: Pièce en travaux dont les murs sont doublés de panneaux de fibre de bois
+      entre montants de bois ; au plafond, un freine-vapeur clair aux lés
+      adhésivés, au sol un plancher d'OSB et un panneau isolant posé à plat.
     image: isolation-fibre-de-bois.jpg
-
   - titre: Pignon de grange en mélèze
     metier: Menuiserie
     metierSlug: structure-bois-menuiserie
-    legende: Pignon de grange fermé en bardage mélèze, alternant lames épaufrées et claire-voie sous la pergola. Le mélèze grise sans traitement et tient dans le temps.
-    alt: "Pignon d'une grange rénovée vu depuis la terrasse couverte : charpente apparente en bois clair sous le faîtage, lames de mélèze en triangle et bandeau de tasseaux verticaux en claire-voie."
+    legende: Pignon de grange fermé en bardage mélèze, alternant lames épaufrées et
+      claire-voie sous la pergola. Le mélèze grise sans traitement et tient dans
+      le temps.
+    alt: "Pignon d'une grange rénovée vu depuis la terrasse couverte : charpente
+      apparente en bois clair sous le faîtage, lames de mélèze en triangle et
+      bandeau de tasseaux verticaux en claire-voie."
     image: bardage-meleze-pignon.jpg
-
   - titre: Structure de lucarne
     metier: Charpente
     metierSlug: charpente-ossature-bois
-    legende: "Structure d'une lucarne cintrée, levée sur une toiture en rénovation complète."
-    alt: "Structure de lucarne en bois neuf, aux montants cintrés en arc, posée sur un toit en travaux dont le versant est couvert d'un écran de sous-toiture et de liteaux ; ville et arbres en contrebas."
+    legende: Structure d'une lucarne cintrée, levée sur une toiture en rénovation
+      complète.
+    alt: Structure de lucarne en bois neuf, aux montants cintrés en arc, posée sur
+      un toit en travaux dont le versant est couvert d'un écran de sous-toiture
+      et de liteaux ; ville et arbres en contrebas.
     image: lucarne-structure.jpg
-
   - titre: Charpente à chevrons porteurs
     metier: Charpente
     metierSlug: charpente-ossature-bois
-    legende: "Charpente refaite à neuf en chevrons porteurs. La contrainte était de conserver la hauteur de latis existante pour rester dans la continuité des toitures mitoyennes : le chevron porteur réduit les chambrées sans superposer les couches."
-    alt: "Charpente neuve en bois clair vue de l'intérieur du comble, pannes et chevrons assemblés sur ferrures se découpant sur un ciel bleu."
+    legende: "Charpente refaite à neuf en chevrons porteurs. La contrainte était de
+      conserver la hauteur de latis existante pour rester dans la continuité des
+      toitures mitoyennes : le chevron porteur réduit les chambrées sans
+      superposer les couches."
+    alt: Charpente neuve en bois clair vue de l'intérieur du comble, pannes et
+      chevrons assemblés sur ferrures se découpant sur un ciel bleu.
     image: charpente-chevrons-porteurs.jpg
-
   - titre: Soudure de chéneau
     metier: Zinguerie
     metierSlug: couverture-zinguerie
-    legende: "Chéneau soudé à l'étain en fond de noue, paré pour la pluie."
-    alt: "Fond d'un chéneau de zinc neuf vu de près : un cordon de soudure à l'étain le traverse en arc, ses ondulations régulières bien lisibles ; rive d'ardoises à gauche, échafaudage et verdure à droite."
+    legende: Chéneau soudé à l'étain en fond de noue, paré pour la pluie.
+    alt: "Fond d'un chéneau de zinc neuf vu de près : un cordon de soudure à l'étain
+      le traverse en arc, ses ondulations régulières bien lisibles ; rive
+      d'ardoises à gauche, échafaudage et verdure à droite."
     image: soudure-cheneau.jpg
-
   - titre: Pergola
     metier: Structure bois
     metierSlug: structure-bois-menuiserie
-    legende: "Pergola adossée en façade sud : de l'ombre portée sur la terrasse et sur les baies aux heures les plus chaudes, sans rien changer au bâti."
-    alt: "Pergola en bois clair adossée à une maison blanche à volets rouges, ses chevrons se détachant sur un ciel nuageux ; rosier grimpant au premier plan."
+    legende: "Pergola adossée en façade sud : de l'ombre portée sur la terrasse et
+      sur les baies aux heures les plus chaudes, sans rien changer au bâti."
+    alt: Pergola en bois clair adossée à une maison blanche à volets rouges, ses
+      chevrons se détachant sur un ciel nuageux ; rosier grimpant au premier
+      plan.
     image: pergola-bioclimatique.jpg
-
   - titre: Balcon suspendu
     metier: Structure bois
     metierSlug: structure-bois-menuiserie
-    legende: Balcon suspendu et bardage vertical, contreventés sur la structure existante.
-    alt: "Balcon en bois suspendu à la façade d'une maison en bardage bois vertical, vu en contre-plongée sur ciel bleu."
+    legende: Balcon suspendu et bardage vertical, contreventés sur la structure
+      existante.
+    alt: Balcon en bois suspendu à la façade d'une maison en bardage bois vertical,
+      vu en contre-plongée sur ciel bleu.
     image: balcon-suspendu.jpg
-
   - titre: Habillage d'acrotères
     metier: Zinguerie
     metierSlug: couverture-zinguerie
-    legende: "Angle d'acrotère façonné à l'atelier, plis et soudures réalisés sur mesure."
-    alt: "Pièce de zinc pliée en angle posée sur un établi d'atelier, plis nets et surface satinée."
+    legende: Angle d'acrotère façonné à l'atelier, plis et soudures réalisés sur mesure.
+    alt: Pièce de zinc pliée en angle posée sur un établi d'atelier, plis nets et
+      surface satinée.
     image: habillage-acroteres.jpg
-
   - titre: Garde-corps en mélèze
     metier: Structure bois
     metierSlug: structure-bois-menuiserie
-    legende: "Terrasse de grange équipée d'un garde-corps en mélèze de pays, dans le massif de Belledonne."
-    alt: "Grange de pierre à flanc de pré, dont la terrasse sur pilotis de béton est bordée d'un garde-corps neuf en bois clair à barreaux verticaux ; montagne boisée à l'arrière-plan."
+    legende: Terrasse de grange équipée d'un garde-corps en mélèze de pays, dans le
+      massif de Belledonne.
+    alt: Grange de pierre à flanc de pré, dont la terrasse sur pilotis de béton est
+      bordée d'un garde-corps neuf en bois clair à barreaux verticaux ; montagne
+      boisée à l'arrière-plan.
     image: garde-corps-meleze.jpg
-
   - titre: Solivage en queue d'aronde
     metier: Charpente
     metierSlug: charpente-ossature-bois
-    legende: "Plancher neuf assemblé en queue d'aronde dans un comble ancien, sous charpente d'origine conservée."
-    alt: "Comble ancien aux murs de pierre, solives neuves en bois clair posées au sol sous une charpente ancienne en bois sombre."
+    legende: Plancher neuf assemblé en queue d'aronde dans un comble ancien, sous
+      charpente d'origine conservée.
+    alt: Comble ancien aux murs de pierre, solives neuves en bois clair posées au
+      sol sous une charpente ancienne en bois sombre.
     image: solivage-queue-daronde.jpg
-
   - titre: Consoles de dépassée
     metier: Charpente
     metierSlug: charpente-ossature-bois
     legende: Consoles de renfort de dépassée, taillées dans du chêne.
-    alt: "Vue en contre-plongée sous l'avancée d'un toit : une console de chêne clair fraîchement taillée soutient les chevrons anciens en bois sombre, contre un mur de pierres apparentes."
+    alt: "Vue en contre-plongée sous l'avancée d'un toit : une console de chêne
+      clair fraîchement taillée soutient les chevrons anciens en bois sombre,
+      contre un mur de pierres apparentes."
     image: consoles-chene.jpg
