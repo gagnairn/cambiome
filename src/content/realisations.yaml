@@ -44,9 +44,9 @@ chantiers:
   - titre: Structure de lucarne
     metier: Charpente
     metierSlug: charpente-ossature-bois
-    legende: Structure d'une lucarne jacobine 4 pans.
-    alt: Structure bois avec rupture de pente d'une jacobine sur Echirolles. La
+    legende: Structure bois avec rupture de pente d'une jacobine sur Echirolles. La
       charpente recevra une couverture en zinc sur tasseaux.
+    alt: Structure d'une lucarne jacobine 4 pans.
     image: lucarne-structure.jpg
   - titre: Charpente et chevrons porteurs
     metier: Charpente
