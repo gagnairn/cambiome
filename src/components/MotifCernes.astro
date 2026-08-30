@@ -19,9 +19,9 @@ const { class: classe = '' } = Astro.props;
   ]}
   aria-hidden="true"
 >
-  {/* `currentColor` plutôt qu'un blanc en dur : les cernes suivent ainsi la
-      couleur de texte de l'aplat, et restent visibles quand une piste claire
-      fait passer `sur-marque` à l'encre. */}
+  {/* `currentColor` plutôt qu'un blanc en dur : l'aplat de marque est clair et
+      porte de l'encre, un blanc en dur s'y effacerait. Les cernes suivent la
+      couleur de texte de l'aplat, quelle qu'elle devienne. */}
   <svg viewBox="0 0 200 150" class="h-full w-full" preserveAspectRatio="xMidYMid slice">
     <g fill="none" stroke="currentColor" stroke-opacity="0.28" stroke-linecap="round">
       {

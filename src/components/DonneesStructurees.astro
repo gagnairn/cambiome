@@ -123,8 +123,8 @@ const fiche = {
   ...(contact.instagram && { sameAs: [contact.instagram] }),
   ...(contact.siret && { identifier: { '@type': 'PropertyValue', propertyID: 'SIRET', value: contact.siret } }),
   areaServed: { '@type': 'Place', name: site.zone },
-  // Les quatre métiers, tels qu'ils sont présentés au visiteur. `itemOffered`
-  // plutôt qu'une simple liste de mots-clés : ce sont des prestations.
+  // Les métiers, tels qu'ils sont présentés au visiteur. `itemOffered` plutôt
+  // qu'une simple liste de mots-clés : ce sont des prestations.
   makesOffer: metiers.map((m) => ({
     '@type': 'Offer',
     itemOffered: { '@type': 'Service', name: m.titre, description: m.chapo },

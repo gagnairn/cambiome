@@ -1,7 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import marqueClaire from '~/assets/logos/marque-blanche.png';
-import marqueSombre from '~/assets/logos/marque-noire.png';
+import marque from '~/assets/logos/marque-noire.png';
 import logoRge from '~/assets/logos/rge-qualibat.png';
 import { site, contact, metiers, rge, rgeEnCours } from '~/data/site';
 import { lien } from '~/lib/base';
@@ -14,11 +13,13 @@ const annee = 2026; // mise à jour manuelle : le site est statique, pas de JS d
 // RGE a expiré et que la mission passe en tête. Chacune se cale ensuite dans sa
 // colonne (à gauche, au centre, à droite) pour occuper toute la largeur du pied
 // de page plutôt que de se tasser d'un côté.
-// Tout le pied de page tient sur un seul ton de texte, `sur-marque`. Ce n'est
-// pas un appauvrissement gratuit : le fond est désormais la couleur de marque,
-// à mi-tons, et il n'y reste pas 4,5:1 de marge pour un second ton (×1,15 sous
-// Ardoise, ×1,06 sous Terracotta — calculé, pas estimé). La hiérarchie passe
-// donc par la casse, l'interlettrage et la taille, pas par la couleur.
+// Tout le pied de page tient sur un seul ton de texte, `sur-marque`. La
+// contrainte qui l'imposait a disparu avec les pistes à aplat mi-tons, où il
+// ne restait pas 4,5:1 de marge pour un second ton ; sur #9DC3D4 l'encre donne
+// 9,03:1, et un ton secondaire tiendrait jusqu'à 70 % d'opacité (4,52:1). Si
+// la hiérarchie reste portée par la casse, l'interlettrage et la taille, c'est
+// désormais un choix et non une obligation — le rappeler évite de rouvrir le
+// calcul la prochaine fois que la question se pose.
 const entreeBandeau =
   'group flex items-center gap-4 sm:border-l sm:border-sur-marque/25 sm:first:border-l-0';
 const titreBandeau = 'block font-display tracking-[0.16em] uppercase';
@@ -34,24 +35,16 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
   <div class="container-page grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-4">
     <div class="sm:col-span-2 lg:col-span-1">
       {/* Marque seule : le nom et la baseline suivent en texte, juste dessous.
-          Les deux versions sont rendues et le thème en masque une (règles dans
-          themes.css) : la marque blanche donne 1,88:1 sur le fond clair de la
-          piste Ciel, elle y serait invisible. */}
+          La version sombre, comme tout ce qui est posé sur l'aplat : la marque
+          blanche ne donnerait que 1,88:1 sur #9DC3D4, elle y serait invisible.
+          C'est aussi celle qui convient à l'impression, où le fond saute. */}
       <Image
-        src={marqueClaire}
+        src={marque}
         alt=""
         width={56}
         height={56}
         densities={[1, 2, 3]}
-        class="logo-sur-marque-clair h-14 w-14"
-      />
-      <Image
-        src={marqueSombre}
-        alt=""
-        width={56}
-        height={56}
-        densities={[1, 2, 3]}
-        class="logo-sur-marque-sombre h-14 w-14"
+        class="h-14 w-14"
       />
       <p class="mt-4 font-display text-lg tracking-[0.22em]">
         {site.nom}
@@ -180,8 +173,8 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
         rgeEnCours && (
           <a class={entreeBandeau} href={lien('/rge-qualibat')}>
             {/* Filet sur la pastille : le fond blanc qu'impose la charte
-                Qualibat ne donne que 1,88:1 sur l'aplat de la piste Ciel, la
-                plaque s'y évanouit. Le logo lui-même reste lisible (il est sur
+                Qualibat ne donne que 1,88:1 sur l'aplat de marque, la plaque
+                s'y évanouit. Le logo lui-même reste lisible (il est sur
                 blanc) et les logos échappent aux seuils de contraste, mais un
                 cerne suffit à ce que la plaque se lise comme un choix. */}
             <span class="shrink-0 rounded-md border border-encre/10 bg-white p-1.5">

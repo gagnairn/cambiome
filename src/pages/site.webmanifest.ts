@@ -20,7 +20,7 @@ export const GET: APIRoute = () => {
     start_url: lien('/'),
     scope: lien('/'),
     display: 'browser',
-    theme_color: '#41738D',
+    theme_color: '#0C7D93', // --color-ciel-500, identique au theme-color de Base.astro
     background_color: '#FBFAF8', // --color-sable-50, le fond du site
     icons: [
       { src: lien('/icon-192.png'), sizes: '192x192', type: 'image/png' },

@@ -3,16 +3,14 @@ import '~/styles/global.css';
 import DonneesStructurees from '~/components/DonneesStructurees.astro';
 import EnTete from '~/components/EnTete.astro';
 import PiedDePage from '~/components/PiedDePage.astro';
-import SelecteurTheme from '~/components/SelecteurTheme.astro';
-import { site, themes } from '~/data/site';
+import { site } from '~/data/site';
 import { lien } from '~/lib/base';
-import { SCRIPT_THEME } from '~/lib/theme-script';
 
-// Les deux sous-ensembles latins, les seuls qu'un texte français télécharge —
-// les autres (cyrillique, grec, vietnamien) sont déclarés avec leur
-// `unicode-range` et ne partent jamais. Importés en `?url` pour obtenir le nom
-// haché que Vite leur donne au build : l'écrire à la main le figerait, et le
-// préchargement pointerait dans le vide au prochain build.
+// Les deux seuls fichiers de police du site : ils sont déjà sous-ensemblés au
+// répertoire latin, il n'y a pas de cyrillique ni de grec à écarter (voir
+// global.css). Importés en `?url` pour obtenir le nom haché que Vite leur donne
+// au build : l'écrire à la main le figerait, et le préchargement pointerait
+// dans le vide au prochain build.
 import policeTexte from '~/assets/polices/inter-400-700.woff2?url';
 import policeTitres from '~/assets/polices/jost-300-400.woff2?url';
 
@@ -68,16 +66,6 @@ const ogImage = new URL(lien('/og-image.jpg'), Astro.site);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    {
-      /* Restauration de la piste chromatique choisie — DISPOSITIF TEMPORAIRE,
-         voir `themes` dans src/data/site.ts. En tête de <head> et `is:inline`
-         à dessein : un script groupé est différé, la page s'afficherait donc
-         en ardoise avant de virer, à chaque navigation. `set:html` plutôt que
-         du texte entre balises : dans un script `is:inline`, Astro n'évalue
-         pas les accolades et écrirait l'expression telle quelle. Le hachage
-         CSP est dérivé de la même chaîne dans astro.config.mjs. */
-      themes.selecteur && <script is:inline set:html={SCRIPT_THEME} />
-    }
     {/* Préchargement des polices. Sans lui, le navigateur ne découvre les
         `woff2` qu'après avoir analysé la feuille de style : le texte s'affiche
         d'abord dans la police de repli, puis saute quand la vraie arrive.
@@ -109,7 +97,11 @@ const ogImage = new URL(lien('/og-image.jpg'), Astro.site);
     <link rel="icon" href={lien('/favicon.ico')} sizes="16x16 32x32 48x48" />
     <link rel="apple-touch-icon" href={lien('/apple-touch-icon.png')} />
     <link rel="manifest" href={lien('/site.webmanifest')} />
-    <meta name="theme-color" content="#41738D" />
+    {/* Teinte de l'interface du navigateur sur mobile. Le cran 500 et non
+        `marque` : elle habille une barre qui porte du texte système clair, et
+        #9DC3D4 ne le porterait pas (1,88:1). Même valeur que le fond des
+        icônes — voir `CIEL` dans scripts/generer-images.mjs. */}
+    <meta name="theme-color" content="#0C7D93" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.nom} />
@@ -130,7 +122,7 @@ const ogImage = new URL(lien('/og-image.jpg'), Astro.site);
   <body class="flex min-h-dvh flex-col">
     <a
       href="#contenu"
-      class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded-full focus:bg-ardoise-700 focus:px-5 focus:py-2 focus:text-sm focus:text-white"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded-full focus:bg-ciel-700 focus:px-5 focus:py-2 focus:text-sm focus:text-white"
     >
       Aller au contenu
     </a>
@@ -142,7 +134,5 @@ const ogImage = new URL(lien('/og-image.jpg'), Astro.site);
     </main>
 
     <PiedDePage />
-
-    {themes.selecteur && <SelecteurTheme />}
   </body>
 </html>

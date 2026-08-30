@@ -1,11 +1,9 @@
 // @ts-check
-import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import yaml from 'js-yaml';
-import { SCRIPT_THEME } from './src/lib/theme-script.ts';
 import { estEnCours } from './src/lib/echeance.ts';
 
 // Le contenu du site est en YAML, lu ailleurs par `src/lib/contenu.ts` — mais
@@ -20,13 +18,6 @@ const rge = /** @type {{ fin: string }} */ (
   })
 );
 const rgeEnCours = estEnCours(rge.fin);
-
-// Hachage du seul script `is:inline` du site, celui qui restaure la piste
-// chromatique choisie. Astro hache tout seul les scripts qu'il groupe, mais
-// pas les `is:inline` — il faut donc le lui donner, sinon la CSP le bloque.
-// Calculé à partir de la chaîne elle-même : les deux ne peuvent pas diverger.
-// À SUPPRIMER avec le reste du dispositif de thèmes.
-const HACHAGE_SCRIPT_THEME = `sha256-${createHash('sha256').update(SCRIPT_THEME).digest('base64')}`;
 
 /**
  * Où le site est servi. **C'est le seul interrupteur de la mise en ligne** :
@@ -70,7 +61,9 @@ export default defineConfig({
 
   // Politique de sécurité du contenu. Astro calcule au build le hachage de
   // chaque script et style inline et injecte la meta correspondante : pas de
-  // 'unsafe-inline' à concéder.
+  // 'unsafe-inline' à concéder. Aucun `scriptDirective.hashes` à déclarer à la
+  // main — le site n'a plus de script `is:inline`, les seuls qu'Astro ne sache
+  // pas hacher tout seul.
   //
   // `frame-ancestors` est volontairement absent : le navigateur l'ignore quand
   // la CSP arrive par <meta>. Il est posé en en-tête HTTP dans public/_headers
@@ -78,7 +71,6 @@ export default defineConfig({
   // pas servir.
   security: {
     csp: {
-      scriptDirective: { hashes: [HACHAGE_SCRIPT_THEME] },
       directives: [
         "default-src 'self'",
         // Le formulaire de contact poste vers Web3Forms, en fetch (connect-src)

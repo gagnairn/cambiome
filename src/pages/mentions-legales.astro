@@ -21,7 +21,10 @@ const manquants = [
   contact.assurance.assureur,
 ].filter((v) => !v).length;
 
-// « SASU au capital de 5 000 € », ou la forme seule tant que le capital manque.
+// « SAS (société par actions simplifiée à associé unique) au capital de
+// 6 000 € ». Le capital est une mention imposée (art. R123-237 du code de
+// commerce) : tant qu'il manque, la page le réclame en clair au lieu de laisser
+// un blanc que personne ne remarquerait.
 const forme = `${contact.formeJuridique} (${contact.formeJuridiqueLongue})`;
 const formeEtCapital = contact.capital
   ? `${forme} au capital de ${contact.capital}`

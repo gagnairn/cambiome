@@ -8,11 +8,6 @@ Statique, sans cookie ni traceur. Le seul JavaScript côté client est l'envoi d
 formulaire de contact, et il n'est pas nécessaire : sans lui, le formulaire est
 posté nativement par le navigateur.
 
-*Pendant la phase de choix des couleurs*, un second script accompagne le
-sélecteur de thème et retient la teinte choisie en `localStorage` — une
-préférence locale, jamais transmise. Il disparaît avec le sélecteur (voir
-« Thèmes »).
-
 ## Stack
 
 | | |
@@ -96,8 +91,7 @@ src/
 │                           lecture YAML (contenu.ts), gabarits (gabarit.ts)
 ├── pages/                ← une page = un fichier
 └── styles/
-    ├── global.css        ← charte : couleurs, polices, utilitaires
-    └── themes.css        ← pistes chromatiques alternatives (temporaire)
+    └── global.css        ← charte : couleurs, polices, utilitaires
 ```
 
 `.pages.yml`, à la racine, décrit les formulaires du CMS. Il n'est lu que par
@@ -126,10 +120,14 @@ Charte relevée sur les logos du brief :
 
 | Rôle | Hex |
 |---|---|
-| Bleu ardoise (primaire) | `#41738D` |
-| Terracotta (secondaire) | `#AD7B7A` |
+| Bleu ardoise | `#41738D` |
+| Terracotta | `#AD7B7A` |
 | Neutres chauds « sable » | `#FBFAF8` → `#B3A996` (+ un `500` hors charte, voir « Accessibilité ») |
 | Encre | `#1A1D1F` |
+
+Le site n'est pas bleu ardoise pour autant : la couleur retenue est **Ciel
+`#9DC3D4`**, choisie après démonstration sur le site réel. Le relevé ci-dessus
+reste la charte des logos livrés, qui n'ont pas changé — voir « Couleurs ».
 
 ## Le CMS
 
@@ -168,96 +166,81 @@ un champ. `scripts/verifier-cms.mjs` refuse le retour en arrière.
 
 Le guide destiné à l'éditeur est [GUIDE-MODIFICATION.md](GUIDE-MODIFICATION.md).
 
-## Thèmes — trois pistes soumises au client
+## Couleurs
 
-**Dispositif temporaire**, le temps du choix de la direction couleur. Une carte
-flottante en bas à droite permet de parcourir le vrai site dans trois teintes
-plutôt que de les juger sur un nuancier. Le choix suit d'une page à l'autre.
+La couleur du site est **Ciel `#9DC3D4`**, arrêtée par le client après l'avoir
+vue sur le site réel plutôt que sur un nuancier. Le sélecteur de thème qui
+servait à cette démonstration, et les deux pistes concurrentes (Ardoise,
+Terracotta), ont été retirés avec la décision : plus de `themes.css`, plus de
+`SelecteurTheme.astro`, plus de script `is:inline`, plus de `localStorage`.
+Tout tient dans le `@theme` de `global.css`.
 
-| Piste | Ancrage | Où vit la couleur |
+### La rampe ne suit pas la teinte de #9DC3D4
+
+`#9DC3D4` est à 199° de teinte, à deux degrés du `#41738D` des logos : ce n'est
+pas un autre bleu, c'est le bleu de la charte éclairci. Une rampe prolongée
+« fidèlement » autour de lui restait à ΔE 3,5–5 du bleu d'origine sur les crans
+porteurs — au seuil de perception. La page aurait changé de couleur sans que
+cela se voie.
+
+D'où le parti pris : `#9DC3D4` est conservé tel quel au cran **300**, et le
+reste de la rampe vire au turquoise franc (190°) à 85 % de saturation. C'est la
+saturation qui fait le travail perceptif. Conséquence assumée, le 300 est le
+seul cran à ne pas suivre la teinte de sa propre rampe.
+
+Les crans ont un emploi imposé par les composants — mesures sur le fond de page
+`sable-50` :
+
+| Cran | Emploi | Contraste |
 | --- | --- | --- |
-| **Ardoise** (défaut) | `#41738D` | le `@theme` de `global.css` |
-| **Terracotta** | `#AD7B7A` — logo `bloc-terracotta.png` | `themes.css` |
-| **Ciel** | `#9DC3D4` | `themes.css` |
+| `700` | texte des boutons en contour, panneaux | 8,06:1 |
+| `600` | petit texte (surtitres, liens de carte) | 6,14:1 |
+| `500` | contour des commandes, anneau de focus | 4,61:1 |
+| `400` | purement décoratif | 2,68:1 — sous tous les seuils |
+| `300` | la teinte de marque elle-même, en aplat | — |
 
-Aucun composant n'est concerné : ils écrivent `bg-ardoise-700`, que Tailwind
-compile en `var(--color-ardoise-700)`. Un thème ne fait que redéfinir ces
-variables sous `html[data-theme=…]`. Deux contraintes à connaître avant
-d'ajouter une piste, détaillées en tête de `src/styles/themes.css` :
-
-- les crans ont un emploi imposé — `700` porte du texte blanc, `600` et `500`
-  du petit texte sur fond clair, `800` est le fond du pied de page. Une teinte
-  de marque trop claire ne peut donc pas occuper le cran 500 : c'est le cas
-  des deux pistes alternatives, dont l'ancrage descend au 400 ou au 300 ;
-- les blocs sont hors de tout `@layer`, et ne sont pas écrits en `@theme` —
-  Tailwind élague les variables de thème inutilisées.
+Une couleur de marque aussi claire ne peut pas occuper le cran 500 : elle tient
+le 300, et la rampe se prolonge en dessous.
 
 ### Les grands aplats : quatre variables à part
 
 Boutons, bloc d'appel, panneau de cernes et pied de page ne visent pas un cran
-de la rampe mais quatre variables sémantiques, déclarées dans le `@theme` de
-`global.css` et redéfinies par chaque piste :
+de la rampe mais quatre variables sémantiques :
 
-| Variable | Rôle | Ardoise | Terracotta | Ciel |
-| --- | --- | --- | --- | --- |
-| `--color-marque` | l'aplat | `#41738d` | `#ad7b7a` | `#9dc3d4` |
-| `--color-marque-survol` | l'aplat au survol | `#386478` | `#c09796` | `#86b4c8` |
-| `--color-marque-bord` | contour du bouton | `#386478` | `#96625f` | `#0c7d93` |
-| `--color-sur-marque` | tout ce qui est posé dessus | `#ffffff` | `#1a1d1f` | `#1a1d1f` |
+| Variable | Rôle | Valeur |
+| --- | --- | --- |
+| `--color-marque` | l'aplat | `#9dc3d4` |
+| `--color-marque-survol` | l'aplat au survol | `#86b4c8` |
+| `--color-marque-bord` | contour du bouton | `#0c7d93` |
+| `--color-sur-marque` | tout ce qui est posé dessus | `#1a1d1f` |
 
-La raison de ce détour : la teinte relevée sur le logo n'occupe pas le même
-rôle d'une piste à l'autre. `#41738d` porte du texte blanc (5,17:1), `#ad7b7a`
-ne le porte pas (3,56:1) et réclame de l'encre (4,75:1), `#9dc3d4` porte
-l'encre confortablement (9,03:1). Écrire `bg-ardoise-700 text-white` dans les
-composants figerait ce choix pour toutes les pistes ; `bg-marque
-text-sur-marque` le laisse au thème, et le couple s'inverse tout seul.
+Le détour a été introduit pour que le couple fond / texte s'inverse d'une piste
+à l'autre, et il survit à la décision pour une raison qui, elle, reste vraie :
+`#9dc3d4` est un aplat **clair**, il porte de l'encre (9,03:1) et non du blanc
+(1,88:1). Écrire `bg-ciel-700 text-white` dans les composants — le réflexe
+habituel — donnerait ici un texte invisible. `bg-marque text-sur-marque` dit ce
+que le composant veut, et `global.css` décide de quoi il s'agit.
 
-Trois conséquences qui se voient dans le code :
+Deux conséquences qui se voient dans le code :
 
-- **contour permanent sur les boutons.** Un aplat de marque doit se détacher du
-  fond de page à 3:1 (WCAG 1.4.11). Terracotta au survol tombe à 2,48:1 et Ciel
-  à 1,80:1. Plutôt qu'un contour n'apparaissant que sur certaines pistes,
-  `marque-bord` en donne un à tous, en permanence ;
-- **plus de second ton de texte** dans le pied de page ni dans le bloc d'appel.
-  Sur un fond à mi-tons il ne reste pas 4,5:1 de marge pour un ton secondaire
-  (×1,15 sous Ardoise, ×1,06 sous Terracotta). La hiérarchie y passe par la
-  casse, l'interlettrage et la taille ;
-- **les deux marques sont rendues** dans le pied de page, et le thème en masque
-  une (règles en fin de `themes.css`). La marque blanche donne 1,88:1 sur
-  l'aplat clair de la piste Ciel : elle y serait invisible. Un `filter: invert()`
-  aurait suffi à l'écran, mais c'est le genre de raccourci qui survit en
-  production.
+- **contour permanent sur les boutons pleins.** Un aplat de marque doit se
+  détacher du fond de page à 3:1 (WCAG 1.4.11) ; `#9dc3d4` sur `sable-50` n'en
+  donne que 1,80:1. `marque-bord` lui donne ce contour en permanence ;
+- **un seul ton de texte** dans le pied de page et dans le bloc d'appel. Ce
+  n'est plus une contrainte — sur `#9dc3d4` un ton secondaire tiendrait
+  jusqu'à 70 % d'opacité (4,52:1) — mais un choix : la hiérarchie y passe par
+  la casse, l'interlettrage et la taille. Le commentaire de `PiedDePage.astro`
+  garde le calcul pour la prochaine fois que la question se pose.
 
-**Ce que le sélecteur ne change pas.** Les logos suivent déjà : l'en-tête et le
-pied de page affichent la marque en monochrome. Mais le favicon, l'image de
-partage et `theme-color` restent bleus pendant la démonstration — ils sont
-générés, et ne se régénèrent qu'une fois le choix fait.
+### Ce qui est généré et doit suivre
 
-### Une fois la direction arrêtée
-
-1. Reporter la rampe retenue dans le `@theme` de `global.css`, puis supprimer
-   `src/styles/themes.css` et son `@import`, `src/components/SelecteurTheme.astro`,
-   `src/lib/theme-script.ts`, l'entrée `themes` de `src/data/site.ts`, et dans
-   `astro.config.mjs` la constante `HACHAGE_SCRIPT_THEME` avec son
-   `scriptDirective`. Le site retrouve son unique script (le formulaire).
-2. Reporter aussi les quatre variables `marque` / `sur-marque` de la piste
-   retenue dans le `@theme` — elles y sont déjà, aux valeurs de l'ardoise.
-   Puis, si `sur-marque` vaut du blanc (cas de l'ardoise seule), retirer du
-   pied de page la seconde `<Image>` et les classes `logo-sur-marque-*`, et de
-   `Bouton.astro` les variantes `sur-marque` / `contour-sur-marque` si elles
-   redeviennent équivalentes à `clair` et à `contour`. Sinon les garder :
-   elles portent l'inversion du texte, pas une préférence.
-3. Si ce n'est plus l'ardoise : mettre à jour `ARDOISE` dans
-   `scripts/generer-images.mjs`, la meta `theme-color` de `Base.astro`,
-   `theme_color` dans `src/pages/site.webmanifest.ts`, le tableau de charte
-   ci-dessus, puis relancer `npm run images`.
-4. Renommer `ardoise-*` d'après la nouvelle teinte — un `sed` sur ~120
-   occurrences. **Pas avant** : tant que l'ardoise est le défaut le nom reste
-   exact, et renommer pendant la phase de choix ferait bouger tous les
-   composants pour une décision qui peut encore changer.
-
-`themes.selecteur = false` dans `src/data/site.ts` éteint tout sans rien
-supprimer — utile pour voir le site tel qu'il sera livré.
+Le favicon, les icônes, l'image de partage et les deux `theme-color` ne sont
+pas produits par la feuille de style. Ils portent le cran **500** (`#0C7D93`)
+et non `marque` : ils habillent des surfaces où du texte système clair se pose,
+que `#9DC3D4` ne porterait pas. Si la teinte devait rebouger, il faut reprendre
+`CIEL` dans `scripts/generer-images.mjs`, la meta `theme-color` de
+`Base.astro`, `theme_color` dans `src/pages/site.webmanifest.ts`, puis relancer
+`npm run images`.
 
 ## Polices
 
@@ -462,10 +445,11 @@ Ce que la machine ne voit pas a été repris à la main. Quatre points en sont
 sortis, et expliquent du code qui paraîtrait sinon arbitraire.
 
 **L'anneau de focus passe par une variable.** `:focus-visible` trace
-`var(--anneau-focus, var(--color-ardoise-500))`. Un anneau unique ne pouvait
-pas convenir : `ardoise-500` *est* la couleur de `bg-marque`, il y était donc
-invisible — tout le pied de page et tous les blocs d'appel, sur les neuf pages.
-Les deux surfaces sombres du site, `.surface-marque` et `.surface-sombre`,
+`var(--anneau-focus, var(--color-ciel-500))`. Un anneau unique ne pouvait pas
+convenir : sur l'aplat de marque, le cran 500 ne donne que 2,56:1, sous le
+seuil de 3:1 — tout le pied de page et tous les blocs d'appel, sur les neuf
+pages. Les deux surfaces à fond plein du site, `.surface-marque` et
+`.surface-sombre`,
 redéclarent la variable ; elle est héritée, donc tout ce qui est posé dessus
 est couvert sans avoir à y penser composant par composant. La règle est portée
 par la **surface** et non par la classe qui donne le fond, parce que
@@ -489,14 +473,10 @@ et cliquable ; « Mentions légales » est un lien *au fil du texte*, dont la
 hauteur est celle de l'interligne — exception « Inline », explicite dans la
 règle.
 
-Deux pièges pour qui relance un audit :
-
-- **le sélecteur de thème fausse le relevé.** Ses trois pastilles sont à 2 px
-  l'une de l'autre et ressortent sur chaque page. C'est le dispositif
-  temporaire décrit plus haut, il disparaît avec le choix de la piste ;
-- **estimer une longueur de ligne en `fontSize × 0,5` ne marche pas ici.**
-  Cela mesure la largeur du bloc et non celle du texte : 181 signes annoncés
-  sur des surtitres qui en font 17. Il faut mesurer l'avance réelle.
+Un piège pour qui relance un audit : **estimer une longueur de ligne en
+`fontSize × 0,5` ne marche pas ici.** Cela mesure la largeur du bloc et non
+celle du texte : 181 signes annoncés sur des surtitres qui en font 17. Il faut
+mesurer l'avance réelle.
 
 Reste non vérifié : les états *envoyé* et *en erreur* du formulaire, qui
 n'apparaissent qu'après une soumission réelle.
@@ -891,9 +871,9 @@ Ce qui est en place :
 - **CSP** générée par Astro (`security.csp` dans `astro.config.mjs`) et injectée
   en `<meta>` avec le hachage de chaque script inline. Aucun `unsafe-inline`.
   Les seules destinations externes autorisées sont celles du formulaire de
-  contact (`api.web3forms.com`). Astro ne hache que les scripts qu'il groupe :
-  le script `is:inline` du sélecteur de thème déclare le sien, dérivé de la
-  chaîne elle-même dans `astro.config.mjs` pour que les deux ne divergent pas.
+  contact (`api.web3forms.com`). Astro ne hache que les scripts qu'il groupe —
+  aucun hachage n'est donc à déclarer à la main : le site n'a plus de script
+  `is:inline`, les seuls qui échappent à Astro.
 - **Actions GitHub épinglées sur un SHA de commit** plutôt que sur un tag
   mutable, pour qu'un tag repointé ne puisse pas exécuter de code arbitraire
   dans le workflow.
@@ -987,12 +967,15 @@ sont récupérables dans l'historique git (`git log -- src/assets/realisations`)
 Attention en y touchant : les `legende` et les `alt` de `realisations.yaml`
 décrivent le cadrage actuel, pas la photo publiée.
 
-`bloc-terracotta` est la variante secondaire du bloc : conservée parce qu'elle
-fait partie de la charte, mais référencée nulle part dans le site.
+`bloc-terracotta` est la variante secondaire du bloc, référencée nulle part
+dans le site. Elle reste malgré tout la source d'une couleur de la feuille de
+style : `terre-*`, la teinte des messages d'erreur, est le `#AD7B7A` relevé
+dessus. Supprimer le fichier laisserait cette valeur sans origine vérifiable.
 
 Aucun de ces cinq logos n'est importé par un composant : ils n'apparaissent
 donc jamais dans `dist/`, et ne coûtent rien au poids du site. Quatre sont les
-sources de `npm run images` — les supprimer rendrait la commande injouable.
-`bloc-terracotta` est le seul à ne rien alimenter ; il attend la décision sur
-la couleur (voir « Thèmes »), et se supprimera avec `themes.css` si la piste
-terracotta n'est pas retenue.
+sources de `npm run images`, qui en tire les marques monochromes et les icônes
+— les supprimer rendrait la commande injouable. `marque-blanche.png` fait
+exception depuis le passage à Ciel : la marque blanche donne 1,88:1 sur
+`#9DC3D4`, plus aucun composant ne l'affiche. Elle continue d'être produite,
+pour trois kilo-octets qui ne sont jamais servis.

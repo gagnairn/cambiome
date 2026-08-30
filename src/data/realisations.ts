@@ -14,10 +14,11 @@
  *
  * Les huit chantiers ajoutés depuis le compte Instagram de CAMBIOME
  * (couverture à tasseaux, lucarne, chéneau, pergola, chevrons porteurs,
- * consoles, bardage mélèze, garde-corps) n'existent qu'en 1080 px : c'est le
- * maximum servi par Instagram, pas les 2400 px du reste du dossier. Ils
- * tiennent en galerie, qui ne demande jamais plus de 1200 px ; en illustration
- * de métier, où la page monte à 1400, Astro les laisse à leur taille native.
+ * consoles, bardage mélèze, garde-corps) plafonnent à 1080 px, et descendent à
+ * 810 pour le plus petit : c'est ce que sert Instagram, une fois recadré, pas
+ * les 2400 px du reste du dossier. Ils tiennent en galerie, qui ne demande
+ * jamais plus de 1200 px ; en illustration de métier, où la page monte à 1400,
+ * Astro les laisse à leur taille native.
  * Si les originaux ressortent un jour, il suffit de réécrire les fichiers.
  *
  * Instagram rend aussi ses photos au carré, quand les vignettes du site sont
@@ -101,13 +102,14 @@ const SchemaChantiers = z
         .string()
         .trim()
         .min(1, 'Le titre du chantier ne peut pas être vide.')
-        // Le titre est affiché sur une ligne par-dessus la vignette ; au-delà,
-        // il passe à la ligne et recouvre la photo.
+        // Le titre est un intitulé sous la vignette, pas une phrase : au-delà
+        // de deux lignes il déséquilibre la rangée, les cartes voisines
+        // s'alignant sur la plus haute.
         .max(
           60,
-          'Le titre du chantier dépasse 60 signes ; il recouvrirait la photo.',
+          'Le titre du chantier dépasse 60 signes ; il tiendrait sur trois lignes sous la photo.',
         ),
-      /** Étiquette affichée sur la vignette, libre — « Zinguerie », « Ossature bois ». */
+      /** Étiquette affichée au-dessus du titre, libre — « Zinguerie », « Ossature bois ». */
       metier: z.string().trim().min(1, "L'étiquette de métier ne peut pas être vide."),
       /**
        * Rattache le chantier à l'un des métiers de `metiers.yaml`. La
@@ -152,10 +154,8 @@ const SchemaChantiers = z
 export type Realisation = {
   titre: string;
   metier: string;
-  /** slug du métier, pour filtrer */
   metierSlug: string;
   legende: string;
-  /** Texte alternatif : décrit l'image, ne répète pas le titre. */
   alt: string;
   image: ImageMetadata;
 };

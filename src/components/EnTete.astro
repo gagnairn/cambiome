@@ -38,7 +38,7 @@ const actif = (href: string) => ici === href.replace(/\/$/, '');
         <span class="block font-display text-xl font-light tracking-[0.22em] text-encre">
           {site.nom}
         </span>
-        <span class="mt-1 block font-display text-[0.62rem] tracking-[0.3em] text-ardoise-600 uppercase">
+        <span class="mt-1 block font-display text-[0.62rem] tracking-[0.3em] text-ciel-600 uppercase">
           {site.baseline}
         </span>
       </span>
@@ -58,9 +58,9 @@ const actif = (href: string) => ici === href.replace(/\/$/, '');
                 href={item.href}
                 aria-current={actif(item.href) ? 'page' : undefined}
                 class:list={[
-                  'text-sm transition-colors hover:text-ardoise-600',
+                  'text-sm transition-colors hover:text-ciel-600',
                   actif(item.href)
-                    ? 'text-ardoise-700 underline decoration-ardoise-400 underline-offset-8'
+                    ? 'text-ciel-700 underline decoration-ciel-400 underline-offset-8'
                     : 'text-encre/75',
                 ]}
               >
@@ -72,8 +72,8 @@ const actif = (href: string) => ici === href.replace(/\/$/, '');
       </ul>
     </nav>
 
-    <!-- Menu mobile : <details> natif. Le déploiement ne demande aucun JS ;
-         la fermeture, si — voir le script en bas de fichier. -->
+    {/* Menu mobile : <details> natif. Le déploiement ne demande aucun JS ;
+        la fermeture, si — voir le script en bas de fichier. */}
     <details id="menu-mobile" class="group relative md:hidden">
       <summary
         class="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full border border-sable-300 text-encre [&::-webkit-details-marker]:hidden"
@@ -105,7 +105,7 @@ const actif = (href: string) => ici === href.replace(/\/$/, '');
       </summary>
       <nav
         aria-label="Menu principal"
-        class="absolute right-0 mt-3 w-60 rounded-lg border border-sable-200 bg-sable-50 p-2 shadow-lg shadow-ardoise-900/5"
+        class="absolute right-0 mt-3 w-60 rounded-lg border border-sable-200 bg-sable-50 p-2 shadow-lg shadow-ciel-900/5"
       >
         <ul>
           {
@@ -116,7 +116,7 @@ const actif = (href: string) => ici === href.replace(/\/$/, '');
                   aria-current={actif(item.href) ? 'page' : undefined}
                   class:list={[
                     'block rounded-md px-4 py-3 text-sm hover:bg-sable-100',
-                    actif(item.href) ? 'text-ardoise-700' : 'text-encre/80',
+                    actif(item.href) ? 'text-ciel-700' : 'text-encre/80',
                   ]}
                 >
                   {item.label}
@@ -142,8 +142,8 @@ const actif = (href: string) => ici === href.replace(/\/$/, '');
    *
    * `popover` réglerait les deux nativement, mais il place le panneau dans la
    * couche supérieure, hors du flux : il faudrait le repositionner à la main
-   * sous un en-tête collant, ou recourir à l'ancrage CSS. Douze lignes ici
-   * coûtent moins cher que cette bascule.
+   * sous un en-tête collant, ou recourir à l'ancrage CSS. Le script qui suit
+   * coûte moins cher que cette bascule.
    *
    * Sans JavaScript, le menu s'ouvre et se ferme quand même par son bouton :
    * ce script améliore, il ne fait pas fonctionner.

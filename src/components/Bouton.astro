@@ -8,9 +8,9 @@
  *  - sur un aplat de marque : `sur-marque`, `contour-sur-marque`
  *
  * Les deux dernières sont nécessaires parce que `clair` (blanc sur photo) ne
- * convient pas à un aplat de marque clair : un bouton blanc sur #9dc3d4 donne
- * 1,88:1, il disparaît. Elles s'expriment donc en `sur-marque`, qui vaut du
- * blanc sous Ardoise et de l'encre sous Terracotta et Ciel.
+ * convient pas à un aplat de marque : un bouton blanc sur #9DC3D4 donne
+ * 1,88:1, il disparaît. Elles s'expriment donc en `sur-marque`, l'encre, qui y
+ * donne 9,03:1.
  *
  * Variantes plutôt que surcharges via `class` : deux utilitaires Tailwind
  * visant la même propriété sont départagés par leur ordre dans la feuille
@@ -28,13 +28,17 @@ const { href, variante = 'plein', class: classe = '' } = Astro.props;
 const styles = {
   plein:
     'border border-marque-bord bg-marque text-sur-marque hover:bg-marque-survol',
+  // Contour au cran 500 et non au 400 : ce trait est la seule limite visible du
+  // bouton, il lui faut 3:1 sur le fond de page (WCAG 1.4.11). Le 400 n'en donne
+  // que 2,68:1 sur `sable-50`, le 500 en donne 4,61:1 — et 4,27:1 sur le
+  // `sable-100` des sections en encart, l'autre fond sur lequel il se pose.
   contour:
-    'border border-ardoise-400 text-ardoise-700 hover:border-ardoise-600 hover:bg-ardoise-50',
+    'border border-ciel-500 text-ciel-700 hover:border-ciel-600 hover:bg-ciel-50',
   clair: 'bg-white/95 text-encre hover:bg-white',
   'sur-marque': 'bg-sur-marque text-marque hover:bg-sur-marque/90',
   // 75 % et pas moins : le contour est la seule limite visible de ce bouton, il
-  // lui faut 3:1 sur l'aplat (WCAG 1.4.11). À 40 % il tombait à 1,87:1 sous
-  // Terracotta ; à 75 % la piste la plus serrée donne 3,36:1.
+  // lui faut 3:1 sur l'aplat (WCAG 1.4.11). À 40 % il tombait à 1,87:1 ; à 75 %
+  // l'encre donne 5,11:1 sur #9DC3D4.
   'contour-sur-marque':
     'border border-sur-marque/75 text-sur-marque hover:border-sur-marque hover:bg-sur-marque/10',
 } as const;

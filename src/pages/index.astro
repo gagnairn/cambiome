@@ -38,11 +38,11 @@ const heroTailles = '(max-width: 767px) 85vw, 100vw';
 ---
 
 <Base titre="accueil">
-  <!-- Hero. `surface-sombre` : sous le voile, l'anneau de focus des deux
-       boutons passe au blanc — voir global.css. -->
+  {/* Hero. `surface-sombre` : sous le voile, l'anneau de focus des deux
+      boutons passe au blanc — voir global.css. */}
   <section class="surface-sombre relative">
     <div class="absolute inset-0">
-      <!--
+      {/*
         La photo est en portrait (1542 × 2048). Sur un écran large,
         `object-cover` n'en montre qu'une bande centrale — rampant en panneaux,
         percée sur le paysage, poutre sur tréteaux ; sur mobile, le cadrage
@@ -68,7 +68,7 @@ const heroTailles = '(max-width: 767px) 85vw, 100vw';
         deux lignes de balisage pour ne pas servir un hero vide à qui n'a pas
         mis son iPhone à jour.
 
-La qualité monte avec la largeur — 50, 50, 55, 68 — et c'est
+        La qualité monte avec la largeur — 50, 50, 55, 68 — et c'est
         l'inverse de ce qu'on ferait par réflexe. La raison tient à la densité
         d'affichage : la source ne fait que 1542 px de large, si bien qu'un
         téléphone reçoit la 900w pour une boîte de 390 px, soit plus de deux
@@ -108,7 +108,7 @@ La qualité monte avec la largeur — 50, 50, 55, 68 — et c'est
 
         Au-dessus de 768 px, `100vw` reprend : un grand écran en densité 1 a
         besoin de toute la largeur, et n'a pas le même problème de débit.
-      -->
+      */}
       <picture>
         <source type="image/avif" srcset={heroSrcset} sizes={heroTailles} />
         <img
@@ -150,7 +150,6 @@ La qualité monte avec la largeur — 50, 50, 55, 68 — et c'est
     </div>
   </section>
 
-  <!-- Métiers -->
   <section class="container-page mt-24">
     <TitreSection surtitre={accueil.metiers.surtitre} titre={accueil.metiers.titre}>
       <p>{accueil.metiers.texte}</p>
@@ -161,7 +160,6 @@ La qualité monte avec la largeur — 50, 50, 55, 68 — et c'est
     </div>
   </section>
 
-  <!-- Démarche -->
   <section class="mt-24 bg-sable-100 py-24">
     <div class="container-page">
       <TitreSection surtitre={accueil.demarche.surtitre} titre={accueil.demarche.titre}>
@@ -180,7 +178,7 @@ La qualité monte avec la largeur — 50, 50, 55, 68 — et c'est
         {
           demarche.map((d, i) => (
             <li class="border-t border-sable-300 pt-6">
-              <span class="font-display text-sm text-ardoise-500">
+              <span class="font-display text-sm text-ciel-500">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <h3 class="mt-2 font-display text-xl font-light">{d.titre}</h3>
@@ -198,7 +196,6 @@ La qualité monte avec la largeur — 50, 50, 55, 68 — et c'est
     </div>
   </section>
 
-  <!-- Réalisations -->
   <section class="container-page mt-24">
     <TitreSection
       surtitre={accueil.realisations.surtitre}

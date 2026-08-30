@@ -21,7 +21,10 @@
 import { writeFile } from 'node:fs/promises';
 import sharp from 'sharp';
 
-const ARDOISE = '#41738d'; // --color-ardoise-500, identique au theme-color
+// Fond des icônes. Le cran 500 et non `--color-marque` : la marque y est
+// détourée en BLANC, et #9DC3D4 ne la porterait pas (1,88:1). Le 500 en donne
+// 4,81:1. Identique au theme-color de Base.astro et du manifeste.
+const CIEL = '#0c7d93'; // --color-ciel-500
 const PUBLIC = new URL('../public/', import.meta.url);
 const chemin = (nom) => new URL(nom, PUBLIC);
 const source = (nom) => new URL(`../src/assets/${nom}`, import.meta.url).pathname;
@@ -120,7 +123,7 @@ const rendre = async (taille, ratio = 0.86) => {
   const { width, height } = await sharp(dessin).metadata();
 
   return sharp({
-    create: { width: taille, height: taille, channels: 4, background: ARDOISE },
+    create: { width: taille, height: taille, channels: 4, background: CIEL },
   })
     .composite([
       {

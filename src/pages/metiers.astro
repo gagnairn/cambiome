@@ -26,7 +26,7 @@ const illustrations = new Map(
             <li>
               <a
                 href={`#${m.slug}`}
-                class="inline-block rounded-full border border-sable-300 px-4 py-2 text-sm text-encre/75 transition-colors hover:border-ardoise-400 hover:text-ardoise-700"
+                class="inline-block rounded-full border border-sable-300 px-4 py-2 text-sm text-encre/75 transition-colors hover:border-ciel-400 hover:text-ciel-700"
               >
                 {m.titre}
               </a>
@@ -78,7 +78,7 @@ const illustrations = new Map(
             )}
 
             <div class:list={[!illu && 'mx-auto max-w-3xl']}>
-              <span class="font-display text-sm text-ardoise-500">
+              <span class="font-display text-sm text-ciel-500">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <h2 class="mt-2 text-3xl leading-tight sm:text-4xl">{m.titre}</h2>
@@ -93,7 +93,7 @@ const illustrations = new Map(
                 {m.points.map((pt) => (
                   <li class="flex gap-3 text-sm text-encre/80">
                     <svg
-                      class="mt-1 h-4 w-4 shrink-0 text-ardoise-500"
+                      class="mt-1 h-4 w-4 shrink-0 text-ciel-500"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"

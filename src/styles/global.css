@@ -1,10 +1,5 @@
 @import 'tailwindcss';
 
-/* Pistes chromatiques proposées au client — redéfinit les variables du
-   `@theme` ci-dessous sous `html[data-theme=…]`. Fichier temporaire : il
-   disparaît une fois la direction arrêtée. */
-@import './themes.css';
-
 /* Polices auto-hébergées (pas d'appel au CDN Google : conforme CNIL).
  *
  * Les fichiers sont dans src/assets/polices/ et non tirés de
@@ -52,20 +47,46 @@
 
 @theme {
   /* --- Charte CAMBIOME ---------------------------------------------------
-     Bleu ardoise #41738D et terracotta #AD7B7A relevés directement sur les
-     logos fournis, versionnés dans src/assets/logos/. Les neutres sont
-     volontairement chauds (pierre / bois) plutôt que gris purs. */
+     La couleur de marque est #9DC3D4, arrêtée par le client. Les neutres sont
+     volontairement chauds (pierre / bois) plutôt que gris purs, et `terre-*`,
+     la couleur des erreurs, reste le terracotta #AD7B7A relevé sur le logo
+     `bloc-terracotta.png`.
 
-  --color-ardoise-50: #f3f7f9;
-  --color-ardoise-100: #e3ecf1;
-  --color-ardoise-200: #c6d9e3;
-  --color-ardoise-300: #9dbece;
-  --color-ardoise-400: #6e9cb4;
-  --color-ardoise-500: #41738d;
-  --color-ardoise-600: #386478;
-  --color-ardoise-700: #2f5263;
-  --color-ardoise-800: #294450;
-  --color-ardoise-900: #243944;
+     --- La rampe ne suit pas la teinte de #9DC3D4, et c'est délibéré ---
+
+     #9DC3D4 est à 199° de teinte, à deux degrés du bleu #41738D des logos
+     fournis : ce n'est pas un autre bleu, c'est le bleu de la charte éclairci.
+     Une rampe prolongée « fidèlement » autour de lui restait à ΔE 3,5–5 du
+     bleu d'origine sur les crans porteurs, soit au seuil de perception — la
+     page changeait de couleur sans qu'on puisse le voir.
+
+     D'où le parti pris : #9DC3D4 est conservé tel quel au cran 300 — c'est la
+     teinte validée, elle ne bouge pas — et tout le reste de la rampe vire au
+     turquoise franc (190°) à 85 % de saturation. C'est la saturation qui fait
+     le gros du travail perceptif : boutons et pied de page se lisent turquoise
+     vif là où le bleu d'origine restait éteint. Conséquence assumée, le cran
+     300 est le seul de sa rampe à ne pas en suivre la teinte.
+
+     Les crans ne sont pas décoratifs, chacun a un emploi imposé par les
+     composants — mesures sur le fond de page `sable-50` :
+       700  texte des boutons en contour, panneaux            8,06:1
+       600  petit texte (surtitres, liens de carte)           6,14:1
+       500  contour des commandes et anneau de focus          4,61:1
+       400  purement décoratif — 2,68:1, sous tous les seuils
+       300  la teinte de marque elle-même, en aplat
+     Une couleur de marque aussi claire ne peut pas occuper le cran 500 : elle
+     tient le 300, et la rampe se prolonge en dessous. */
+
+  --color-ciel-50: #f0fafc;
+  --color-ciel-100: #dbf0f5;
+  --color-ciel-200: #b5e0e9;
+  --color-ciel-300: #9dc3d4;
+  --color-ciel-400: #34a8bf;
+  --color-ciel-500: #0c7d93;
+  --color-ciel-600: #0a687b;
+  --color-ciel-700: #085565;
+  --color-ciel-800: #06414e;
+  --color-ciel-900: #05323c;
 
   --color-terre-50: #faf5f5;
   --color-terre-100: #f3e9e9;
@@ -92,27 +113,27 @@
   --color-encre: #1a1d1f;
 
   /* --- Surfaces de marque -------------------------------------------------
-     Les grandes aplats colorés — boutons, bloc d'appel, pied de page — ne
-     pointent pas un cran de la rampe mais ces quatre variables. Raison : la
-     couleur relevée sur le logo n'occupe pas le même rôle d'une piste à
-     l'autre. #41738d accepte du texte blanc (5,17:1), #ad7b7a ne l'accepte pas
-     (3,56:1) et réclame de l'encre (4,75:1). Écrire `bg-ardoise-700
-     text-white` dans les composants figerait ce choix pour toutes les pistes ;
-     `bg-marque text-sur-marque` le laisse au thème, et le couple s'inverse
-     tout seul.
+     Les grands aplats colorés — boutons, bloc d'appel, pied de page — ne
+     pointent pas un cran de la rampe mais ces quatre variables. Raison : un
+     aplat de marque n'est pas qu'une couleur de fond, c'est un couple
+     fond/texte, et ici il s'inverse. #9DC3D4 ne porte pas de blanc (1,88:1) ;
+     il porte l'encre confortablement (9,03:1). Écrire `bg-ciel-300 text-encre
+     border-ciel-500` dans chaque composant éparpillerait ce couple ; les
+     quatre variables le tiennent d'un seul endroit, et les règles d'impression
+     comme celles de l'anneau de focus n'ont qu'un nom à viser.
 
-     Les valeurs ci-dessous sont celles d'Ardoise : le thème par défaut n'a pas
-     de bloc à lui, il EST le @theme. Voir themes.css pour les deux autres.
+     `marque-bord` : un aplat de marque doit se détacher du fond de page à 3:1
+     (WCAG 1.4.11, contour des composants d'interface). #9DC3D4 n'en donne que
+     1,80:1, et 2,15:1 au survol — un bouton posé sur la page se dissoudrait
+     dans le sable. D'où un contour permanent sur tous les aplats, au cran 500
+     (4,61:1).
 
-     `marque-bord` : un fond de marque doit se détacher du fond de page à 3:1
-     (WCAG 1.4.11, contour des composants d'interface). Terracotta au survol
-     tombe à 2,48:1 et Ciel à 1,80:1. Plutôt qu'un contour qui n'apparaîtrait
-     que sur certaines pistes ou certains états, tous les boutons en portent
-     un, en permanence. */
-  --color-marque: #41738d;
-  --color-marque-survol: #386478;
-  --color-marque-bord: #386478;
-  --color-sur-marque: #ffffff;
+     Le survol ÉCLAIRCIT au lieu d'assombrir : sous de l'encre, assombrir
+     rapprocherait le fond du texte qu'il porte. */
+  --color-marque: #9dc3d4;
+  --color-marque-survol: #86b4c8;
+  --color-marque-bord: #0c7d93;
+  --color-sur-marque: #1a1d1f;
 
   --font-display: 'Jost Variable', 'Jost', 'Jost repli', ui-sans-serif, system-ui, sans-serif;
   --font-sans: 'Inter Variable', 'Inter', 'Inter repli', ui-sans-serif, system-ui, sans-serif;
@@ -196,11 +217,11 @@
   /* Focus visible homogène — accessibilité clavier.
 
      La couleur passe par une variable parce qu'un anneau unique ne peut pas
-     convenir partout : `ardoise-500` EST la couleur de `bg-marque`, donc
-     l'anneau y était invisible (contraste 1,00:1) — tout le pied de page et
-     tous les blocs d'appel, sur les neuf pages. WCAG 2.4.7 est de niveau A. */
+     convenir partout : sur l'aplat de marque, un anneau au cran 500 tombe à
+     2,56:1, sous le seuil de 3:1 — tout le pied de page et tous les blocs
+     d'appel, sur les neuf pages. WCAG 2.4.7 est de niveau A. */
   :focus-visible {
-    outline: 2px solid var(--anneau-focus, var(--color-ardoise-500));
+    outline: 2px solid var(--anneau-focus, var(--color-ciel-500));
     outline-offset: 2px;
   }
 
@@ -212,20 +233,20 @@
      c'est cette classe qui donne le fond. La raison tient à `outline-offset` :
      l'anneau est tracé 2 px en dehors de l'élément, donc sur ce qu'il y a
      derrière, pas sur l'élément lui-même. Un bouton `bg-marque` posé sur une
-     page claire a donc son anneau sur du sable, où c'est l'ardoise qui se voit
-     et le blanc qui disparaît. Seuls comptent les fonds assez larges pour que
-     l'anneau retombe dedans : le pied de page et le bloc d'appel. */
+     page claire a donc son anneau sur du sable, où c'est le cran 500 qui se
+     voit. Seuls comptent les fonds assez larges pour que l'anneau retombe
+     dedans : le pied de page et le bloc d'appel. */
   .surface-marque {
-    /* `sur-marque` et non du blanc : la même variable que le texte, elle
-       bascule en encre sous Terracotta et Ciel, dont l'aplat est clair.
-       Contraste sur les trois pistes : 5,17:1 · 3,56:1 · 5,11:1, au-dessus du
-       seuil de 3:1 des éléments non textuels (WCAG 1.4.11). */
+    /* `sur-marque` et non un cran de la rampe : la même variable que le texte
+       posé sur cet aplat, donc le même contraste qu'on a déjà vérifié pour lui
+       — 9,03:1, très au-dessus du seuil de 3:1 des éléments non textuels
+       (WCAG 1.4.11). */
     --anneau-focus: var(--color-sur-marque);
   }
 
   .surface-sombre {
     /* Le voile du hero est un dégradé d'encre à 45-70 % sur la photo : sombre
-       dans les trois pistes, indépendamment du thème. */
+       quoi qu'il arrive, l'anneau de la page n'y suffirait pas. */
     --anneau-focus: #fff;
   }
 }
@@ -253,7 +274,7 @@
 @utility rule-cernes {
   background-image: repeating-linear-gradient(
     to right,
-    var(--color-ardoise-300) 0 2px,
+    var(--color-ciel-300) 0 2px,
     transparent 2px 7px
   );
 }
@@ -266,9 +287,9 @@
    tout ce qui est en `text-sur-marque` (le pied de page entier, les blocs
    d'appel) sortait en blanc sur blanc.
 
-   Hors de tout `@layer`, comme themes.css : une règle non calquée l'emporte
-   sur les utilitaires de Tailwind, qui le sont. Sans quoi il faudrait un
-   `!important` par déclaration. */
+   Hors de tout `@layer` : une règle non calquée l'emporte sur les utilitaires
+   de Tailwind, qui le sont. Sans quoi il faudrait un `!important` par
+   déclaration. */
 @media print {
   /* Ce qui ne sert qu'à naviguer ne sert à rien sur une feuille. */
   header nav,
@@ -298,14 +319,6 @@
     background: none;
     color: #000;
     border-color: rgb(0 0 0 / 0.25);
-  }
-
-  /* Corollaire : c'est la marque sombre qu'il faut, dans les trois pistes. */
-  .logo-sur-marque-clair {
-    display: none;
-  }
-  .logo-sur-marque-sombre {
-    display: block;
   }
 
   /* Une adresse cliquable devient une adresse perdue. Seuls les liens sortants

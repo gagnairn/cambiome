@@ -33,7 +33,7 @@ const urlMerci = new URL(lien('/merci'), Astro.site).href;
 const origine = new URL(urlMerci).hostname;
 
 // Message d'échec : on n'oriente vers un moyen de contact direct que s'il est
-// effectivement renseigné dans `site.ts`.
+// effectivement renseigné dans le CMS, entrée « Entreprise ».
 const messageErreur = contact.email
   ? `L'envoi a échoué. Réessayez dans un instant, ou écrivez-nous directement à ${contact.email}.`
   : contact.telephone
@@ -45,7 +45,7 @@ const messageErreur = contact.email
 // donnait que 1,60. Même raison pour le texte indicatif, remonté de 35 % à
 // 65 % d'opacité — il était à 2,17:1.
 const champ =
-  'mt-2 w-full rounded-md border border-sable-500 bg-white px-4 py-3 text-sm placeholder:text-encre/65 focus:border-ardoise-500';
+  'mt-2 w-full rounded-md border border-sable-500 bg-white px-4 py-3 text-sm placeholder:text-encre/65 focus:border-ciel-500';
 const label = 'block text-sm text-encre/80';
 ---
 
@@ -57,7 +57,7 @@ const label = 'block text-sm text-encre/80';
         id="contact-succes"
         tabindex="-1"
         hidden
-        class="rounded-lg border border-ardoise-200 bg-ardoise-50 p-8"
+        class="rounded-lg border border-ciel-200 bg-ciel-50 p-8"
       >
         <h2 class="text-xl">Message envoyé.</h2>
         <p class="mt-4 text-sm leading-relaxed text-encre/75">
@@ -211,7 +211,7 @@ const label = 'block text-sm text-encre/80';
             type="checkbox"
             value="accordé"
             required
-            class="mt-1 size-4 shrink-0 accent-ardoise-600"
+            class="mt-1 size-4 shrink-0 accent-ciel-600"
           />
           {/* Le lien est volontairement HORS du <label>. Imbriqué, un clic
               dessus suit le lien et coche la case au passage, selon le

@@ -354,30 +354,3 @@ export const metiers: Metier[] = charger(
 ).metiers;
 
 export const demarche = charger('demarche', z.object({ piliers: SchemaDemarche })).piliers;
-
-/**
- * Pistes chromatiques soumises au client. Dispositif TEMPORAIRE : le temps du
- * choix, un sélecteur flottant permet de voir le vrai site dans les trois
- * teintes plutôt que de les décrire sur un nuancier.
- *
- * Volontairement laissé en TypeScript et hors du CMS : ce n'est pas du
- * contenu, c'est un réglage de chantier appelé à disparaître, et chaque entrée
- * ici suppose une rampe correspondante dans src/styles/themes.css — un ajout
- * depuis un formulaire produirait une piste sans couleurs.
- *
- * `selecteur: false` suffit à tout éteindre — le site retombe sur l'ardoise,
- * sans sélecteur ni script. Une fois la direction arrêtée, voir la section
- * « Thèmes » du README pour le nettoyage définitif.
- *
- * Le thème par défaut a un `id` vide : c'est le `@theme` de global.css, sans
- * attribut sur <html>. Ajouter une piste = une entrée ici, une rampe et une
- * pastille dans themes.css.
- */
-export const themes = {
-  selecteur: true,
-  liste: [
-    { id: '', nom: 'Ardoise' },
-    { id: 'terracotta', nom: 'Terracotta' },
-    { id: 'ciel', nom: 'Ciel' },
-  ],
-} as const;
