@@ -28,12 +28,10 @@ chantiers:
   - titre: Isolation en fibre de bois
     metier: Rénovation thermique
     metierSlug: renovation-thermique
-    legende: "Doublage intérieur en panneaux de fibre de bois entre montants
-      ossature, frein-vapeur continu du sol au plafond : une étanchéité à l'air
+    legende: Création d'une salle de réunion en murs ossature bois en zone non chauffée.
+    alt: "Doublage intérieur en panneaux de fibre de bois entre montants ossature,
+      frein-vapeur continu du sol au plafond : une étanchéité à l'air
       performante nécessite une attention particulière des détails et raccords."
-    alt: Pièce en travaux dont les murs sont doublés de panneaux de fibre de bois
-      entre montants de bois ; au plafond, un freine-vapeur clair aux lés
-      adhésivés, au sol un plancher d'OSB et un panneau isolant posé à plat.
     image: isolation-fibre-de-bois.jpg
   - titre: Pignon de grange en mélèze
     metier: Menuiserie
