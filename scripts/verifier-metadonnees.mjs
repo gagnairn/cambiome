@@ -34,19 +34,21 @@ const DESCRIPTION_MAX = 160;
 const DESCRIPTION_MIN = 50;
 
 /**
- * Les pages volontairement hors index : la confirmation d'envoi, et la 404 qui
- * n'est servie qu'en réponse à une adresse fausse. Ni description à calibrer,
- * ni canonique à porter.
+ * Deux pages dispensées du calibrage de titre et de description : la 404, qui
+ * n'est servie qu'en réponse à une adresse fausse, et la confirmation d'envoi.
+ * Ni l'une ni l'autre ne paraîtra dans un résultat de recherche, et leurs
+ * descriptions — trente et quarante-cinq signes — tomberaient sous le minimum
+ * sans rien y gagner.
  *
- * Écrite ici, et non déduite de la balise `robots` du HTML. En préversion,
- * `Base.astro` pose cette balise sur TOUTES les pages, le temps que le site
- * soit servi depuis github.io (`HEBERGEMENT`, dans astro.config.mjs) : la lire
- * reviendrait à désactiver le contrôle des titres, des descriptions et des
- * canoniques sur le site entier — en continuant d'annoncer « rien à signaler ».
- * Une liste se périme ; un contrôle muet ne se remarque pas.
+ * C'est tout ce que fait cette liste. Elle a servi un temps à vérifier la
+ * cohérence entre elle-même, la balise `robots` et la canonique ; ce contrôle
+ * a été retiré. Il se dérèglait seul : `rge-qualibat` passe en `noindex` à
+ * l'expiration de la qualification RGE, sans figurer ici, et faisait échouer
+ * toute publication à partir de cette date — y compris celles du client
+ * depuis le CMS. Son message invitait de surcroît à retirer un `noindex`
+ * délibéré pour le faire taire.
  *
- * Elle ne peut pas se désynchroniser en silence : la cohérence entre cette
- * liste, la canonique et la balise `robots` est vérifiée page par page.
+ * Ce qui reste ici ne se périme pas : ces deux pages n'ont pas de date.
  */
 const HORS_INDEX = new Set(['404.html', 'merci/index.html']);
 
@@ -98,37 +100,6 @@ for (const fichier of pages) {
     else if (n < DESCRIPTION_MIN)
       signale(`description de ${n} signes (min ${DESCRIPTION_MIN})`);
   }
-
-  /*
-   * La canonique désigne l'adresse de référence d'une page indexable. Une page
-   * hors index n'en porte pas : elle ne demande pas à être indexée, et la 404
-   * en aurait une vers /404/, une adresse qui n'existe pas. `Base.astro` suit
-   * exactement cette règle, ce qui permet de la contrôler dans les deux sens —
-   * et d'attraper au passage une page entrée dans `HORS_INDEX` sans que son
-   * `noindex` ait suivi, ou l'inverse.
-   */
-  const canonique = /<link rel="canonical"/.test(html);
-  if (!horsIndex && !canonique) signale('pas de <link rel="canonical">');
-  if (horsIndex && canonique)
-    signale('canonique sur une page hors index — le `noindex` de la page a-t-il disparu ?');
-
-  /*
-   * La balise `robots` elle-même. En préversion, `Base.astro` la pose partout :
-   * il n'y a alors rien à comparer, et c'est voulu. En production, un `noindex`
-   * resté sur une page ordinaire la retirerait des moteurs sans que rien ne le
-   * signale — la panne la plus silencieuse de cette liste, et la plus chère.
-   *
-   * La préversion se lit sur `og:url`, qui porte l'adresse réellement servie et
-   * est présente sur toutes les pages, hors index comprises.
-   */
-  const preversion = /<meta property="og:url" content="https:\/\/[a-z0-9.-]*github\.io/.test(html);
-  const misHorsIndex = /<meta[^>]+name="robots"[^>]+noindex/.test(html);
-  if (!preversion && misHorsIndex !== horsIndex)
-    signale(
-      misHorsIndex
-        ? '`noindex` sur une page qui doit être indexée — elle disparaîtra des moteurs'
-        : 'pas de `noindex` sur une page hors index',
-    );
 
   // La fiche d'entreprise. `JSON.parse` est le seul juge qui compte : un bloc
   // invalide est ignoré par les moteurs, en silence et sans message.
