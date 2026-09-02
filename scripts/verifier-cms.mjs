@@ -26,14 +26,15 @@
  */
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import yaml from 'js-yaml';
+// Exports nommés : js-yaml 5 n'expose plus d'export par défaut.
+import { load, JSON_SCHEMA } from 'js-yaml';
 
 const racine = new URL('../', import.meta.url);
 const lire = (chemin) =>
-  yaml.load(readFileSync(fileURLToPath(new URL(chemin, racine)), 'utf8'), {
+  load(readFileSync(fileURLToPath(new URL(chemin, racine)), 'utf8'), {
     // Même schéma que le chargeur du site : sans lui, `2026-12-09` deviendrait
     // un objet Date et la comparaison ne voudrait plus rien dire.
-    schema: yaml.JSON_SCHEMA,
+    schema: JSON_SCHEMA,
   });
 
 const config = lire('.pages.yml');

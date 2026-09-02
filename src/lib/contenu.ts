@@ -20,7 +20,10 @@
  * ligne reste sur sa version précédente. Sans schéma, un champ vidé par
  * mégarde passerait et produirait une page trouée.
  */
-import yaml from 'js-yaml';
+// Imports nommés et non un objet par défaut : js-yaml 5 a réorganisé son API
+// en exports plats et n'expose plus d'export par défaut. La bibliothèque
+// embarque désormais ses propres types, `@types/js-yaml` a donc été retiré.
+import { load, JSON_SCHEMA } from 'js-yaml';
 import type { z } from 'astro/zod';
 
 // `**` : la prose des pages est rangée dans un sous-dossier `pages/`, pour que
@@ -86,7 +89,7 @@ export function charger<T extends z.ZodTypeAny>(
     // (`rgeEnCours`), et l'éditeur voit dans son formulaire ce qui est écrit
     // dans le fichier. On veut donc des chaînes, pas des Date reconstituées
     // dans le fuseau du serveur de build.
-    donnees = yaml.load(brut, { schema: yaml.JSON_SCHEMA });
+    donnees = load(brut, { schema: JSON_SCHEMA });
   } catch (cause) {
     // Erreur de syntaxe YAML — indentation, guillemet non fermé. Le message de
     // js-yaml porte la ligne et la colonne, on le garde tel quel.

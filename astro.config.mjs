@@ -3,7 +3,8 @@ import { readFileSync } from 'node:fs';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
-import yaml from 'js-yaml';
+// Exports nommés : js-yaml 5 n'expose plus d'export par défaut.
+import { load, JSON_SCHEMA } from 'js-yaml';
 import { estEnCours } from './src/lib/echeance.ts';
 
 // Le contenu du site est en YAML, lu ailleurs par `src/lib/contenu.ts` — mais
@@ -13,8 +14,8 @@ import { estEnCours } from './src/lib/echeance.ts';
 // donnée dont le sitemap a besoin. La règle d'échéance, elle, n'est pas
 // recopiée : elle vient de `src/lib/echeance.ts`, comme pour les pages.
 const rge = /** @type {{ fin: string }} */ (
-  yaml.load(readFileSync(new URL('./src/content/rge.yaml', import.meta.url), 'utf8'), {
-    schema: yaml.JSON_SCHEMA,
+  load(readFileSync(new URL('./src/content/rge.yaml', import.meta.url), 'utf8'), {
+    schema: JSON_SCHEMA,
   })
 );
 const rgeEnCours = estEnCours(rge.fin);
