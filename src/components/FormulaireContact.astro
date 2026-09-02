@@ -22,11 +22,16 @@ import { telephoneInsecable } from '~/lib/texte';
  *   pour intitulé. D'où « Adresse postale du chantier » plutôt que `adresse` :
  *   c'est une étiquette lue par CAMBIOME, pas un identifiant de code ;
  * — le champ nommé `email` ou `Email` devient l'adresse de réponse. Répondre
- *   au message reçu écrit donc à la personne, sans copier-coller. La
- *   documentation de Web3Forms accepte les deux graphies ; c'est `Email` qui
- *   est retenu, pour que l'intitulé s'aligne sur les autres — en version texte
- *   du message, l'attribut est repris tel quel et `email` y détonnait, seule
- *   minuscule d'une liste par ailleurs en français soigné.
+ *   au message reçu écrit donc à la personne, sans copier-coller. C'est
+ *   `Email` qui est retenu, pour que l'intitulé s'aligne sur les autres — en
+ *   version texte du message, l'attribut est repris tel quel et `email` y
+ *   détonnait, seule minuscule d'une liste par ailleurs en français soigné.
+ *
+ *   La majuscule est sûre, mais elle a demandé un essai : la documentation de
+ *   Web3Forms n'écrit noir sur blanc que les deux graphies sont reconnues que
+ *   dans la section de l'autorépondeur, pas dans celle du Reply-To. Vérifié
+ *   sur un envoi réel le 2 septembre 2026 — l'en-tête `Reply-To` portait bien
+ *   l'adresse du visiteur. Inutile de refaire l'essai.
  *
  * L'ORDRE DES CHAMPS EST CELUI DU MESSAGE. Web3Forms recopie la requête dans
  * l'ordre où le navigateur la sérialise, donc dans l'ordre du DOM. Déplacer un
