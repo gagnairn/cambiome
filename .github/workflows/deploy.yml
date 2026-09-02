@@ -4,6 +4,20 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      # Déclaré pour le bouton « Republier le site » du CMS (voir le bloc
+      # `actions` en bas de .pages.yml) : Pages CMS déclenche toujours le
+      # workflow avec cette entrée, et GitHub rejette un déclenchement dont une
+      # entrée n'est pas déclarée. Le contenu n'est lu par personne ici — la
+      # publication ne dépend pas de qui la demande — mais il reste consultable
+      # dans le récapitulatif du run, ce qui suffit à savoir d'où vient une
+      # republication.
+      #
+      # `required: false` : sans cela, le déclenchement manuel depuis l'onglet
+      # Actions réclamerait de coller un JSON à la main.
+      payload:
+        description: Charge utile JSON de Pages CMS — laisser vide en manuel
+        required: false
 
 # Aucun droit par défaut : chaque job demande ce dont il a besoin, et rien de
 # plus. Le job qui construit n'a ainsi jamais de jeton capable de déployer.

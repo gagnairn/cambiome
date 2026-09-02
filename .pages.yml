@@ -928,7 +928,14 @@ content:
             label: Horaires d'ouverture
             type: object
             list:
-              collapsible: true
+              # Sans `summary`, les lignes repliées s'intitulent « Item #1 »,
+              # « Item #2 » : pour choisir laquelle corriger, il faut les
+              # déplier une à une. Le gabarit affiche la plage elle-même.
+              # `{fields.jours}` rend la valeur brute — « lundi-vendredi », pas
+              # « Lundi – vendredi » : Pages CMS interpole le contenu du champ,
+              # pas l'intitulé de l'option choisie.
+              collapsible:
+                summary: '{fields.jours} : {fields.ouvre} – {fields.ferme}'
             description: >-
               ⚠ Ce champ ne fait pas qu'afficher une ligne. Tant qu'il est
               vide, le site dit aux moteurs de recherche « nous intervenons
@@ -980,19 +987,29 @@ content:
                 required: true
                 description: Même forme — 12:00, 18:00.
 
+      # Retiré du formulaire, pas du fichier : `hidden` ne masque que
+      # l'affichage. Pages CMS charge la valeur dans l'état du formulaire comme
+      # les autres (`initializeState`) et la réécrit telle quelle ; seul le
+      # rendu est sauté. La clé ne risque donc pas de se perdre à
+      # l'enregistrement — c'est précisément ce qu'on évite ici : vidée par
+      # mégarde, elle fait disparaître le formulaire de la page Contact sans
+      # que rien ne le signale, ni au build ni en ligne.
+      #
+      # `hidden` est posé sur l'objet et non sur son unique champ : sur le
+      # champ, il resterait une section « Formulaire de contact » vide.
+      #
+      # Pour changer la clé — obtenue gratuitement sur web3forms.com en y
+      # saisissant l'adresse qui recevra les messages —, il faut donc passer
+      # par GitHub. C'est un geste unique, fait une fois pour toutes ; elle est
+      # publique par conception, il n'y a rien à cacher.
       - name: formulaire
         label: Formulaire de contact
         type: object
+        hidden: true
         fields:
           - name: web3formsCle
             label: Clé Web3Forms
             type: string
-            description: >-
-              Tant que ce champ est vide, la page Contact n'affiche que le
-              téléphone et l'e-mail, sans formulaire. Pour l'activer, obtenez une
-              clé gratuite sur web3forms.com en y saisissant l'adresse qui
-              recevra les messages, puis collez-la ici. Cette clé est publique
-              par conception, il n'y a rien à cacher.
 
       - name: identiteLegale
         label: Identité légale
@@ -1164,3 +1181,35 @@ settings:
       update: 'Modification de {filename} (depuis le CMS)'
       delete: 'Suppression de {filename} (depuis le CMS)'
       rename: 'Renommage de {oldPath} en {newPath} (depuis le CMS)'
+
+# Un bouton dans la barre latérale du CMS, qui déclenche un workflow.
+#
+# Enregistrer depuis le CMS publie déjà : chaque commit sur `main` lance
+# .github/workflows/deploy.yml. Ce bouton sert aux deux cas où la publication
+# n'a pas suivi, et où il n'y a rien à réenregistrer :
+#
+#   — une vérification a échoué, l'erreur a été corrigée ailleurs (une photo
+#     remplacée, une dépendance mise à jour), et le site est resté sur sa
+#     version précédente ;
+#   — le redimensionnement automatique des photos a repoussé un commit signé
+#     par GITHUB_TOKEN, qui ne redéclenche aucun workflow — garde-fou de GitHub
+#     contre les boucles, expliqué en bas de photos.yml.
+#
+# Sans ce bouton, la seule issue est l'onglet Actions de GitHub, que l'éditeur
+# n'a aucune raison de connaître.
+actions:
+  - name: republier
+    label: Republier le site
+    # Le nom du fichier dans .github/workflows/, pas son intitulé. Pages CMS
+    # appelle `createWorkflowDispatch` avec une entrée `payload` contenant un
+    # JSON (qui a cliqué, depuis où) : deploy.yml doit la déclarer, sans quoi
+    # GitHub refuse le déclenchement pour entrée inconnue.
+    workflow: deploy.yml
+    # `ref` omis : Pages CMS retombe alors sur la branche affichée.
+    confirm:
+      title: Republier le site ?
+      message: >-
+        Le site est reconstruit et remis en ligne à partir du contenu
+        actuel. Comptez deux à trois minutes. Rien n'est modifié ni perdu :
+        c'est la même publication que celle d'un enregistrement.
+      button: Republier
