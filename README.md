@@ -44,7 +44,27 @@ npm run dev        # http://localhost:4321
 
 Les fichiers produits par `npm run images` sont versionnés mais **ne se
 retouchent pas à la main** : on modifie le logo source, puis on relance la
-commande.
+commande — ou on laisse la CI le faire, voir ci-dessous.
+
+### Les trois dossiers de `src/assets/logos/`
+
+| Dossier | Contenu | Téléversable au CMS |
+|---|---|---|
+| `marque/` | logos fournis par CAMBIOME | **oui** |
+| `partenaires/` | Qualibat, RFCP | **oui** |
+| `derives/` | produits par `npm run images` | non |
+
+`derives/marque-noire.png` est le logo affiché en haut du site, et c'est un
+**fichier généré** : découpé dans `marque/logo-noir.png` à des coordonnées
+mesurées au pixel. Il n'est donc pas exposé au CMS — un remplacement y serait
+écrasé à la génération suivante. Idem pour `public/` : favicon, icônes,
+image de partage.
+
+Les découpes étant mesurées, `generer-images.mjs` **refuse une source dont les
+dimensions ont changé**, en nommant le fichier et la taille attendue. Changer
+délibérément de logo suppose donc de remesurer `MARQUE` et `SEULE` dans le
+script. Sans ce contrôle, un logo d'une autre taille produirait des icônes
+fausses en silence.
 
 ## Structure
 
@@ -53,7 +73,7 @@ src/
 ├── content/     ← TOUT le contenu, en YAML — c'est ce qu'écrit le CMS
 │   └── pages/   ← la prose des pages, un fichier par page
 ├── data/        ← lecture et validation zod du contenu
-├── assets/      ← logos fournis et photos de chantier
+├── assets/      ← logos (marque/ partenaires/ derives/) et photos
 ├── components/  ← noms français : EnTete, PiedDePage, CarteMetier…
 ├── layouts/     ← Base.astro : <head>, métadonnées, structure
 ├── lib/         ← liens, typographie, lecture YAML, gabarits
@@ -85,7 +105,7 @@ fait échouer la chaîne, et le site en ligne garde sa version précédente.
 
 | Job | Rôle |
 |---|---|
-| `build` | `check`, `build`, `verifier`, puis dépose `dist/` en artefact |
+| `build` | `images`, `check`, `build`, `verifier`, puis dépose `dist/` en artefact |
 | `deploy` | reprend l'artefact et le miroite en SFTP chez OVH |
 | `fumee` | interroge le site en ligne : pages en 200, 404 servie, CSP présente |
 
@@ -113,8 +133,25 @@ Trois choses à ne pas défaire :
   de sécurité et la page 404.
 - Les actions sont épinglées au SHA, pas au tag. Dependabot les tient à jour.
 
-Second workflow, `photos.yml` : ramène à 2400 px les photos arrivées du CMS
-depuis un téléphone, et recommite. C'est le seul job du dépôt qui écrive.
+`npm run images` tourne **avant** `check`, et c'est ce qui rend la marque
+modifiable sans développeur : remplacer `marque/logo-noir.png` depuis le CMS met
+à jour le logo de l'en-tête, le favicon, les icônes et l'image de partage dans
+la même publication. La sortie étant déterministe, l'étape ne produit aucune
+différence tant que les logos ne bougent pas.
+
+Deux autres workflows, les seuls jobs du dépôt qui **écrivent** — d'où leurs
+fichiers séparés, `deploy.yml` n'ayant que `contents: read` :
+
+| Workflow | Déclencheur | Effet |
+|---|---|---|
+| `photos.yml` | `src/assets/realisations/**` | ramène les photos du CMS à 2400 px, recommite |
+| `images.yml` | `src/assets/logos/marque/**` | régénère les dérivés, recommite |
+
+`images.yml` ne tient que la cohérence du **dépôt** — la production, elle, est
+déjà juste puisque `deploy.yml` régénère avant de construire. Sans lui,
+`npm run dev` montrerait l'ancienne marque après un changement de logo au CMS.
+Un push signé par `GITHUB_TOKEN` ne redéclenchant aucun workflow, son commit ne
+relance pas de publication : c'est voulu, il n'y a rien à republier.
 
 Le test de fumée se rejoue en local :
 

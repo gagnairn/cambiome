@@ -8,15 +8,26 @@
  * mais ce script reste la source de vérité : on ne retouche pas les PNG à la
  * main, on modifie la source puis on relance.
  *
- * Sources :
- *   src/assets/logos/bloc-bleu.png                -> icônes (marque détourée)
- *   src/assets/logos/logo-noir.png                -> marque seule, sombre
- *   src/assets/logos/logo-blanc.png               -> marque seule, claire
- *   src/assets/logos/titre-horizontal.png         -> logotype de l'image OG
+ * Sources, toutes dans src/assets/logos/marque/ sauf la dernière :
+ *   marque/bloc-bleu.png                          -> icônes (marque détourée)
+ *   marque/logo-noir.png                          -> marque seule, sombre
+ *   marque/logo-blanc.png                         -> marque seule, claire
+ *   marque/titre-horizontal.png                   -> logotype de l'image OG
  *   src/assets/realisations/charpente-aretier.jpg -> fond de l'image OG
  *
- * Tout ce qui porte le préfixe `marque-` dans src/assets/logos/ sort d'ici ;
- * le reste du dossier, ce sont les fichiers fournis par CAMBIOME.
+ * Produits :
+ *   src/assets/logos/derives/marque-noire.png     -> en-tête et pied de page
+ *   src/assets/logos/derives/marque-blanche.png
+ *   public/{favicon.ico, icon-*.png, apple-touch-icon.png, og-image.jpg}
+ *
+ * Les trois dossiers de src/assets/logos/ se lisent ainsi : `marque/` et
+ * `partenaires/` sont fournis — ils sont téléversables depuis le CMS —, et
+ * `derives/` sort d'ici. Rien de ce qui est dans `derives/` ni dans `public/`
+ * ne se retouche à la main : le prochain passage l'écraserait.
+ *
+ * Ce script tourne aussi en CI, avant chaque publication (deploy.yml), pour que
+ * remplacer un logo depuis le CMS mette à jour le favicon et l'image de partage
+ * dans le même geste. C'est ce qui rend la marque modifiable sans développeur.
  */
 import { writeFile } from 'node:fs/promises';
 import sharp from 'sharp';
@@ -28,6 +39,56 @@ const CIEL = '#0c7d93'; // --color-ciel-500
 const PUBLIC = new URL('../public/', import.meta.url);
 const chemin = (nom) => new URL(nom, PUBLIC);
 const source = (nom) => new URL(`../src/assets/${nom}`, import.meta.url).pathname;
+
+/**
+ * Refuse une source absente, ou dont les dimensions ne sont plus celles sur
+ * lesquelles les découpes ont été mesurées.
+ *
+ * Sans ce contrôle, remplacer un logo par une image d'une autre taille ne
+ * produirait pas une erreur mais un favicon massacré — `extract()` prélèverait
+ * un rectangle au mauvais endroit, ou déborderait. Or les logos sont désormais
+ * téléversables depuis le CMS : l'erreur est devenue atteignable par quelqu'un
+ * qui n'ouvrira jamais ce fichier.
+ *
+ * On échoue donc bruyamment. La publication est refusée, le site en ligne garde
+ * sa version précédente, et le message dit quoi faire — c'est la règle du dépôt
+ * pour toute donnée invalide.
+ *
+ * @param chemin  Relatif à src/assets/.
+ * @param largeur Attendue, en pixels. Omise, seule la présence est vérifiée.
+ */
+async function exiger(chemin, largeur, hauteur) {
+  let taille;
+  try {
+    taille = await sharp(source(chemin)).metadata();
+  } catch {
+    throw new Error(
+      `Image source introuvable ou illisible : src/assets/${chemin}\n` +
+        `La génération des icônes ne peut pas se faire sans elle.`,
+    );
+  }
+  if (largeur && (taille.width !== largeur || taille.height !== hauteur)) {
+    throw new Error(
+      `src/assets/${chemin} mesure ${taille.width}×${taille.height} px, ` +
+        `alors que la génération attend ${largeur}×${hauteur}.\n\n` +
+        `Les découpes de ce script sont mesurées au pixel sur ce fichier : une ` +
+        `image d'une autre taille produirait des icônes fausses, sans que rien ` +
+        `ne le signale.\n\n` +
+        `Deux issues : téléverser une image aux mêmes dimensions, ou remesurer ` +
+        `les constantes MARQUE et SEULE dans scripts/generer-images.mjs.`,
+    );
+  }
+}
+
+// Dimensions des fichiers fournis par CAMBIOME, relevées une fois. Elles ne
+// décrivent pas une contrainte esthétique : elles sont le repère des découpes
+// ci-dessous.
+await exiger('logos/marque/bloc-bleu.png', 1932, 1968);
+await exiger('logos/marque/logo-noir.png', 568, 568);
+await exiger('logos/marque/logo-blanc.png', 568, 568);
+// Redimensionné et non découpé : sa taille est libre, sa présence non.
+await exiger('logos/marque/titre-horizontal.png');
+await exiger('realisations/charpente-aretier.jpg');
 
 // --- Détourage de la marque ------------------------------------------------
 
@@ -41,7 +102,7 @@ const MARQUE = { left: 469, top: 329, width: 957, height: 987 };
 // fond. On reconstruit donc l'opacité à partir de la clarté du pixel, ce qui
 // donne la marque en blanc sur transparent, réutilisable sur n'importe quel
 // fond.
-const { data: bloc, info: infoBloc } = await sharp(source('logos/bloc-bleu.png'))
+const { data: bloc, info: infoBloc } = await sharp(source('logos/marque/bloc-bleu.png'))
   .extract(MARQUE)
   .raw()
   .toBuffer({ resolveWithObject: true });
@@ -210,15 +271,15 @@ for (const [nom, donnees] of icones) {
 const SEULE = { left: 135, top: 97, width: 281, height: 281 };
 
 for (const [entree, sortie] of [
-  ['logos/logo-noir.png', 'marque-noire.png'],
-  ['logos/logo-blanc.png', 'marque-blanche.png'],
+  ['logos/marque/logo-noir.png', 'marque-noire.png'],
+  ['logos/marque/logo-blanc.png', 'marque-blanche.png'],
 ]) {
   const donnees = await sharp(source(entree))
     .extract(SEULE)
     .png({ compressionLevel: 9 })
     .toBuffer();
-  await writeFile(source(`logos/${sortie}`), donnees);
-  console.log(`  src/assets/logos/${sortie} — ${(donnees.length / 1024).toFixed(1)} ko`);
+  await writeFile(source(`logos/derives/${sortie}`), donnees);
+  console.log(`  src/assets/logos/derives/${sortie} — ${(donnees.length / 1024).toFixed(1)} ko`);
 }
 
 // --- Image de partage (Open Graph) -----------------------------------------
@@ -248,7 +309,7 @@ const fond = await sharp(source('realisations/charpente-aretier.jpg'))
 // alpha, recolorié en blanc.
 // `metadata()` décrirait l'image d'origine, pas la version redimensionnée : on
 // prend les dimensions sur le tampon brut effectivement produit.
-const { data: alpha, info } = await sharp(source('logos/titre-horizontal.png'))
+const { data: alpha, info } = await sharp(source('logos/marque/titre-horizontal.png'))
   .resize({ width: 620 })
   .ensureAlpha()
   .extractChannel('alpha')

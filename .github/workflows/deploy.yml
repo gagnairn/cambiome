@@ -62,6 +62,22 @@ jobs:
 
       - run: npm ci
 
+      # Les icônes, la marque de l'en-tête et l'image de partage sont des
+      # dérivés des logos sources — et ces logos sont téléversables depuis le
+      # CMS. Sans cette étape, remplacer le logo publierait un site à la
+      # nouvelle marque mais au favicon de l'ancienne, jusqu'à ce qu'un
+      # développeur relance la commande à la main. On régénère donc à chaque
+      # publication : le site en ligne est toujours cohérent avec ses sources.
+      #
+      # La sortie est déterministe — mêmes sources, mêmes octets — donc cette
+      # étape ne produit aucune différence tant que les logos ne bougent pas.
+      # Les fichiers restent versionnés pour que `npm run dev` fonctionne sans
+      # avoir rien à lancer, et `images.yml` les recommite quand ils changent.
+      #
+      # Elle passe AVANT `check` : c'est `derives/marque-noire.png` qu'importe
+      # l'en-tête, et il doit être à jour avant qu'Astro ne le lise.
+      - run: npm run images
+
       # `build` ne remonte pas les erreurs de types ni de props Astro : sans
       # cette étape, un lien ou une prop cassée se déploie sans rien signaler.
       - run: npm run check

@@ -1,0 +1,81 @@
+name: Régénération des icônes
+
+# Les logos sources sont téléversables depuis le CMS. Quand l'un d'eux change,
+# les fichiers qui en dérivent — marque de l'en-tête, jeu d'icônes, image de
+# partage — deviennent périmés dans le dépôt.
+#
+# La publication, elle, ne les attend pas : `deploy.yml` régénère avant de
+# construire, donc le site en ligne est déjà juste. Ce workflow-ci ne sert qu'à
+# faire converger le dépôt, pour que `npm run dev` et `git diff` ne montrent pas
+# l'ancienne marque à qui reprendra le code plus tard.
+#
+# Deux moitiés, deux raisons : l'une tient la production, l'autre tient le
+# dépôt. Aucune ne dépend de l'autre.
+on:
+  push:
+    branches: [main]
+    paths:
+      - src/assets/logos/marque/**
+      # Le fond de l'image de partage, qui est une photo de chantier comme une
+      # autre et peut donc être remplacée depuis le CMS.
+      - src/assets/realisations/charpente-aretier.jpg
+      # Une découpe remesurée change les dérivés sans qu'aucune source bouge.
+      - scripts/generer-images.mjs
+  workflow_dispatch:
+
+permissions: {}
+
+# Même raisonnement que pour les photos : deux téléversements rapprochés se
+# marcheraient dessus au moment du push. On sérialise sans annuler.
+concurrency:
+  group: images
+  cancel-in-progress: false
+
+jobs:
+  regenerer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Avec `photos.yml`, le seul travail du dépôt qui écrive — d'où son propre
+    # fichier plutôt qu'une greffe sur deploy.yml, dont les jobs n'ont que
+    # `contents: read`.
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Ici le jeton doit rester : c'est lui qui signe le push de retour.
+          persist-credentials: true
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # Échoue si une source manque ou a changé de dimensions — les découpes du
+      # script sont mesurées au pixel. Le message nomme le fichier et la taille
+      # attendue ; rien n'est commité dans ce cas.
+      - run: npm run images
+
+      - name: Committer les icônes régénérées
+        env:
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          if git diff --quiet -- src/assets/logos/derives public; then
+            echo "Les dérivés sont déjà à jour."
+            exit 0
+          fi
+          git add src/assets/logos/derives public
+          git commit -m "Régénération automatique des icônes et de l'image de partage"
+          # `--force-with-lease` : si une modification est arrivée entre le
+          # checkout et maintenant, on échoue plutôt que de l'écraser.
+          git push --force-with-lease
+
+      # Un push signé par GITHUB_TOKEN ne redéclenche aucun workflow — garde-fou
+      # de GitHub contre les boucles. Ici c'est sans conséquence : la
+      # publication déclenchée par le téléversement du logo a déjà régénéré ses
+      # propres dérivés avant de construire. Ce commit ne rattrape que le dépôt.

@@ -387,6 +387,51 @@ engage l'entreprise.
 
 ---
 
+### Remplacer un logo
+
+Dans **Media**, à côté des photos, deux rubriques :
+
+| Rubrique | Ce qu'elle contient |
+|---|---|
+| **Logos de la marque** | vos logos CAMBIOME |
+| **Logos de partenaires** | Qualibat et le RFCP |
+
+Remplacer un fichier de **Logos de la marque** met tout à jour d'un coup : le
+logo en haut du site, celui du pied de page, l'icône de l'onglet du navigateur,
+l'icône sur l'écran d'accueil d'un téléphone, et l'image qui s'affiche quand on
+partage le site sur un réseau social. Vous n'avez rien d'autre à faire.
+
+⚠ **Deux règles, et elles sont strictes.**
+
+**Gardez le même nom de fichier.** Le site appelle chaque logo par son nom :
+`logo-noir.png` remplacé par `logo-noir.png`, oui ; renommé en
+`nouveau-logo.png`, la publication échoue.
+
+**Gardez les mêmes dimensions**, indiquées ci-dessous. Le site découpe ces
+images à des endroits mesurés au pixel — la marque est extraite du logo complet
+pour fabriquer l'icône. Une image d'une autre taille donnerait un découpage à
+côté. La publication est refusée dans ce cas, avec un message qui dit la taille
+attendue, donc **rien ne peut partir en ligne de travers** ; mais autant le
+savoir avant.
+
+| Fichier | Dimensions | À quoi il sert |
+|---|---|---|
+| `bloc-bleu.png` | 1932 × 1968 | favicon et icônes |
+| `logo-noir.png` | 568 × 568 | le logo affiché sur le site |
+| `logo-blanc.png` | 568 × 568 | sa version claire |
+| `titre-horizontal.png` | libre | l'image de partage sur les réseaux |
+| `bloc-terracotta.png` | — | aucun usage, variante conservée |
+
+Si votre nouveau logo n'a pas ces dimensions, **écrivez-nous** : il faut
+reprendre les mesures dans le code, c'est rapide mais ça ne se fait pas depuis
+le CMS.
+
+Vous ne verrez **pas** le favicon ni les icônes dans Media : ce sont des
+fichiers fabriqués à partir des logos ci-dessus, ils se refont tout seuls. Les
+remplacer à la main ne servirait à rien, la fabrication suivante les écraserait.
+
+---
+
 ## Les textes qu'il ne faut pas reformuler
 
 Vous avez accès à **tous** les textes du site, y compris les textes juridiques.

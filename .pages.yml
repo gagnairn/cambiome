@@ -53,6 +53,59 @@ media:
     extensions: [jpg, jpeg, png, webp]
     rename: safe
 
+  # ⚠ On n'expose ici QUE les sources. `src/assets/logos/` compte trois
+  # dossiers, et la distinction décide de ce qui est téléversable :
+  #
+  #   marque/       fichiers fournis par CAMBIOME        — exposé ci-dessous
+  #   partenaires/  logos Qualibat et RFCP               — exposé ci-dessous
+  #   derives/      produits par `npm run images`        — JAMAIS exposé
+  #
+  # `derives/marque-noire.png` est le logo qu'on voit en haut du site, et c'est
+  # un fichier généré : découpé dans `marque/logo-noir.png` à des coordonnées
+  # mesurées au pixel. L'exposer inviterait à le remplacer, et le remplacement
+  # serait écrasé à la publication suivante sans que personne ne le remarque.
+  # Même raison pour `public/` — favicon, icônes, image de partage.
+  #
+  # Remplacer une source, en revanche, met tout à jour d'un coup : `deploy.yml`
+  # régénère avant de construire. C'est ce qui rend la marque modifiable sans
+  # développeur, et c'est la seule raison d'être de ces deux entrées.
+  #
+  # `rename: safe` n'est volontairement PAS repris ici : les fichiers sont
+  # importés par leur nom dans le code (`~/assets/logos/marque/logo-noir.png`).
+  # Un nom modifié à l'arrivée casserait l'import, donc la publication.
+  - name: logos-marque
+    label: Logos de la marque
+    input: src/assets/logos/marque
+    output: src/assets/logos/marque
+    extensions: [png]
+    # Chaque source commande un dérivé, et les découpes sont mesurées sur les
+    # dimensions actuelles — `generer-images.mjs` refuse une autre taille avec
+    # un message qui la nomme :
+    #
+    #   bloc-bleu.png         1932×1968  -> favicon et icônes
+    #   logo-noir.png          568×568   -> marque de l'en-tête et du pied
+    #   logo-blanc.png         568×568   -> marque claire
+    #   titre-horizontal.png   568×218   -> logotype de l'image de partage
+    #                                       (redimensionné, taille libre)
+    #   bloc-terracotta.png   1922×1938  -> aucun usage. Variante de couleur
+    #                                       fournie par le client, qu'aucune
+    #                                       page n'affiche. La rampe terracotta
+    #                                       de la charte a été retirée le
+    #                                       2 septembre 2026 (voir global.css) ;
+    #                                       ce fichier lui survit, sans emploi.
+    #                                       À supprimer si le client confirme
+    #                                       qu'il n'en veut plus.
+
+  - name: logos-partenaires
+    label: Logos de partenaires
+    input: src/assets/logos/partenaires
+    output: src/assets/logos/partenaires
+    extensions: [png]
+    # `rge-qualibat.png` et `rfcp.png`. Aucune génération derrière eux : ils
+    # sont affichés tels quels, au pied de page et sur la page RGE. À remplacer
+    # le jour où l'organisme diffuse une nouvelle version de son logo — en
+    # respectant sa charte, qui impose pour Qualibat un fond clair.
+
 content:
   # ------------------------------------------------------------ pages du site
   # Le menu suit la navigation du site — accueil, métiers, démarche,
