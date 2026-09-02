@@ -79,7 +79,9 @@
       "WebFetch(domain:gagnairn.github.io)",
       "Bash(git branch *)",
       "Bash(git checkout *)",
-      "Bash(git merge *)"
+      "Bash(git merge *)",
+      "Bash(curl -s https://gagnairn.github.io/cambiome/)",
+      "Bash(grep -n \"^#\\\\{1,3\\\\} \\\\|^---$\" GUIDE-MODIFICATION.md)"
     ]
   }
 }
