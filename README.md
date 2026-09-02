@@ -18,7 +18,7 @@ posté nativement par le navigateur.
 | Polices | Jost + Inter, auto-hébergées, sous-ensemblées (43,3 Ko) |
 | Images | `astro:assets` — redimensionnement et conversion WebP au build |
 | Node | 24 en CI (LTS active) ; la 26 ne passe LTS qu'en octobre 2026 |
-| Déploiement | GitHub Pages via GitHub Actions |
+| Déploiement | OVH mutualisé (Apache), dépôt SFTP via GitHub Actions |
 
 **TypeScript ne doit pas passer en 7.** La 7 est le compilateur réécrit en Go ;
 il n'expose pas l'API programmatique dont `astro check` se sert, et `astro
@@ -32,7 +32,7 @@ aboutira.
 
 ```bash
 npm install
-npm run dev        # http://localhost:4321/cambiome
+npm run dev        # http://localhost:4321
 ```
 
 | Commande | Effet |
@@ -112,13 +112,17 @@ commentaires, guide client) ; deux composants en anglais y faisaient une
 exception sans raison.
 
 **Un lien interne s'écrit `lien('/contact')`**, jamais autrement.
-`import.meta.env.BASE_URL` vaut `/cambiome` sous GitHub Pages et `/` avec un
-domaine propre : concaténer sans normaliser le slash final donne
-`/cambiomecontact` dans un cas et `//contact` dans l'autre. Cette normalisation
-a été recopiée dans onze fichiers, sous deux formes divergentes. Elle vit
-maintenant dans `src/lib/base.ts` — et le préfixe n'y est **délibérément pas
-exporté**, pour que la règle soit tenue par le compilateur et pas par la
-mémoire de qui relit. `lien()` couvre tout : les pages, la racine (`lien('/')`)
+`import.meta.env.BASE_URL` vaut `/` sur le domaine propre, et valait
+`/cambiome` du temps de GitHub Pages : concaténer sans normaliser le slash
+final donnait `/cambiomecontact` dans un cas et `//contact` dans l'autre. Cette
+normalisation avait été recopiée dans onze fichiers, sous deux formes
+divergentes. Elle vit maintenant dans `src/lib/base.ts` — et le préfixe n'y est
+**délibérément pas exporté**, pour que la règle soit tenue par le compilateur
+et pas par la mémoire de qui relit.
+
+Le préfixe est vide depuis la bascule chez OVH, ce qui rend la règle invisible
+mais pas inutile : c'est elle qui a permis de changer d'hébergeur sans toucher
+à un seul lien du site. `lien()` couvre tout : les pages, la racine (`lien('/')`)
 et les fichiers de `public/` (`lien('/favicon.ico')`).
 
 Charte relevée sur les logos du brief :
@@ -579,10 +583,9 @@ de Google sur chaque visite, ce que la section « Polices » explique avoir
 justement écarté. L'adresse et les horaires en texte suffisent au visiteur, et
 c'est le balisage — pas une carte — que lit le moteur.
 
-**Lighthouse annonce 66 en référencement, et c'est normal en préversion.** Un
-seul des onze contrôles échoue, `is-crawlable` : la page est délibérément en
-`noindex`. Le score repasse à 100 au passage en `production` — vérifié en
-basculant l'interrupteur.
+**Lighthouse annonçait 66 en référencement du temps de la préversion.** Un
+seul des onze contrôles échouait, `is-crawlable` : la page était délibérément
+en `noindex`. Le score est repassé à 100 au passage en `production`.
 
 Une réserve de contenu, qui appartient au client : les titres d'onglet
 occupent 18 à 34 signes sur la soixantaine que Google affiche, et aucun ne
@@ -595,10 +598,9 @@ amène vraiment quelqu'un. Ils sont tous dans le CMS, un par page.
 Ces éléments manquent au brief. Tant qu'ils sont vides, le site masque les blocs
 concernés plutôt que d'afficher de fausses informations.
 
-- [ ] Basculer l'hébergement vers OVH — les mentions légales le désignent
-      **déjà** comme hébergeur, ce qui ne sera exact qu'une fois la bascule
-      faite (voir « Migrer vers un hébergeur »). Tant qu'elle ne l'est pas, la
-      page nomme un hébergeur qui ne sert pas le site.
+- [x] Basculer l'hébergement vers OVH — fait le 2 septembre 2026. La mention
+      d'hébergeur des mentions légales, qui désignait OVH par anticipation,
+      est désormais exacte.
 - [ ] **Médiateur de la consommation** : les mentions légales n'en désignent
       aucun. L'article L616-1 du code de la consommation impose à tout
       professionnel travaillant pour des particuliers d'en nommer un, avec son
@@ -611,9 +613,9 @@ concernés plutôt que d'afficher de fausses informations.
       Métiers se passe d'illustration. Un plan ou une vue de projet suffirait.
       La rénovation thermique, elle, n'a qu'une seule photo alors que c'est le
       métier mis en avant par la qualification RGE
-- [ ] `astro.config.mjs` → passer `HEBERGEMENT` à `'production'` au moment de
-      la bascule vers `www.cambiome.fr`. Un seul mot, qui commande `site`,
-      `base` et l'indexation (voir « Passer à un domaine propre »)
+- [x] `astro.config.mjs` → `HEBERGEMENT` passé à `'production'`. Un seul mot,
+      qui commandait `site`, `base` et l'indexation (voir « Historique de la
+      mise en ligne »)
 - [ ] **Horaires de l'atelier** dans le CMS, entrée « Entreprise » → bloc
       « Atelier ». Tant qu'ils sont vides, le balisage reste en
       `Organization` : le site n'invite pas à venir, et le référencement local
@@ -743,38 +745,69 @@ git revert <commit>
 
 ## Déploiement
 
-Le workflow `.github/workflows/deploy.yml` construit et publie sur GitHub Pages
-à chaque push sur `main`, en trois jobs :
+Le workflow `.github/workflows/deploy.yml` construit et dépose le site chez
+**OVH** — hébergement mutualisé Apache, par SFTP — à chaque push sur `main`,
+en trois jobs :
 
 | Job | Rôle |
 | --- | --- |
-| `build` | `check` (types et props), `build`, puis `verifier` (liens internes) |
-| `deploy` | publie l'artefact sur Pages |
-| `fumee` | interroge le site publié : pages en 200, 404 servie, CSP présente |
+| `build` | `check` (types et props), `build`, `verifier` (liens internes), puis dépose `dist/` en artefact |
+| `deploy` | reprend l'artefact et le miroite en SFTP vers l'hébergeur |
+| `fumee` | interroge `https://www.cambiome.fr` : pages en 200, 404 servie, CSP présente |
 
-**Settings → Pages → Build and deployment → Source** doit rester sur **GitHub
-Actions**. S'il repointe sur une branche, GitHub relance en parallèle son
-constructeur Jekyll historique, qui échoue à chaque push sur un site Astro : un
-second run rouge, sans rapport avec le déploiement réel. Ce réglage n'est pas
-automatisable depuis le workflow — l'API demande des droits d'administration que
-`GITHUB_TOKEN` n'a pas. Pour le vérifier sans passer par l'interface :
+Le site était publié sur GitHub Pages jusqu'au 2 septembre 2026 ; voir
+« Historique de la mise en ligne » plus bas pour ce qu'il reste de cette
+période dans le dépôt.
 
-```sh
-gh api repos/gagnairn/cambiome/pages --jq .build_type   # doit dire « workflow »
-```
+**Les secrets attendus**, tous en secrets et non en variables — le dépôt est
+public, et les logs d'un dépôt public le sont aussi ; `vars.` n'y est pas
+masqué, `secrets.` l'est :
 
-Les deux dernières étapes existent parce que le reste ne suffit pas.
+| Secret | Contenu |
+| --- | --- |
+| `OVH_SFTP_SERVEUR` | `sftp.clusterXXX.hosting.ovh.net` |
+| `OVH_SFTP_LOGIN` | le login de l'hébergement |
+| `OVH_SFTP_MOTDEPASSE` | son mot de passe |
+| `OVH_SFTP_CLE_HOTE` | sortie de `ssh-keyscan <serveur>`, relevée une fois |
+| `OVH_SFTP_REPERTOIRE` | la racine du site, `/home/<login>/www` en général |
+
+Le transfert n'emploie **aucune action tierce**. Les actions du dépôt sont
+épinglées au SHA parce qu'un tag est mutable ; sur le chemin d'un mot de passe
+d'hébergeur, le plus sûr reste de n'y mettre aucun code tiers du tout. `lftp`
+vient des dépôts Ubuntu et se contente du sous-système SFTP, là où `rsync`
+exigerait un shell distant que le mutualisé OVH n'ouvre pas. Le mot de passe
+est lu dans `LFTP_PASSWORD` par `--env-password` : ni dans la ligne de
+commande, où la table des processus l'exposerait, ni dans le script.
+
+La clé d'hôte est épinglée depuis un secret plutôt que découverte à la volée.
+Sans elle il faudrait `StrictHostKeyChecking=no`, qui accepterait n'importe
+quel serveur répondant à cette adresse.
+
+Le job `deploy` porte `permissions: {}` : il ne parle plus qu'à OVH. Il est
+aussi le seul à voir les secrets SFTP — `build` exécute `npm ci`, donc les
+scripts d'installation de toutes les dépendances, et n'a rien à faire avec un
+mot de passe d'hébergeur. C'est la même séparation qu'au temps de Pages, où le
+job de construction n'avait jamais de jeton capable de déployer.
+
+`mirror --delete` retire du serveur ce qui n'est plus dans `dist/` : les
+fichiers de `_astro/` sont nommés par empreinte et s'accumuleraient sinon.
+C'est aussi ce qui rend `OVH_SFTP_REPERTOIRE` critique — s'il désigne la racine
+du compte plutôt que celle du site, le miroir emporte tout le reste. Un
+garde-fou précède le transfert : le job refuse de continuer si `index.html` ou
+`.htaccess` manquent de l'artefact.
+
+Les deux étapes de contrôle existent parce que le reste ne suffit pas.
 `astro check` ne regarde pas les URL : le favicon a été servi en 404 pendant
 deux commits sans que rien ne devienne rouge. Et un déploiement peut réussir
 sur un artefact vide. `verifier` attrape le premier cas avant publication,
 `fumee` le second après.
 
-L'étape de publication porte `include-hidden-files: true`, et il ne faut pas
-l'enlever. Depuis sa v4, `upload-pages-artifact` exclut les fichiers cachés de
-l'archive. `dist/` en contient deux, tous deux venus de `public/` :
-`.nojekyll`, et `.htaccess` qui attend la migration chez un hébergeur Apache.
-Sans cette ligne ils disparaîtraient de la publication **sans qu'aucun log ne
-le signale** — le run reste vert. (`.git` et `.github` restent exclus d'office.)
+L'étape d'artefact porte `include-hidden-files: true`, et il ne faut pas
+l'enlever. Depuis sa v4, `upload-artifact` exclut les fichiers cachés.
+`dist/.htaccess` en est un — et c'est lui qui porte les en-têtes de sécurité et
+la page 404 côté Apache. Sans cette ligne il disparaîtrait **sans qu'aucun log
+ne le signale** ; seul le garde-fou du job `deploy` l'attrape désormais.
+(`.git` et `.github` restent exclus d'office.)
 
 Les actions du workflow sont épinglées sur un SHA de commit, pas sur un tag.
 `.github/dependabot.yml` les tient à jour : Dependabot connaît la convention
@@ -796,91 +829,87 @@ téléversement tourne donc sur l'original, ce qui ne change rien au rendu.
 Le test de fumée se rejoue en local sur le site en ligne :
 
 ```sh
-./scripts/fumee.sh https://gagnairn.github.io/cambiome/
+./scripts/fumee.sh https://www.cambiome.fr
 ```
 
-URL par défaut : `https://gagnairn.github.io/cambiome/`
+Le script exige son URL en argument : c'est le seul endroit, avec le job
+`fumee`, où l'adresse est écrite en clair. Un hébergeur SFTP ne renvoyant pas
+l'adresse à laquelle il sert, il n'y a pas d'équivalent de la sortie que
+`deploy-pages` fournissait.
 
-### Passer à un domaine propre
+### Historique de la mise en ligne
 
-Domaine prévu : **`https://www.cambiome.fr`**.
+Le site a vécu sur GitHub Pages, à `gagnairn.github.io/cambiome`, du 14 août au
+2 septembre 2026. Il est depuis servi par OVH à **`https://www.cambiome.fr`**.
+Ce qu'il faut en retenir tient en deux points, qui commandent encore le code.
 
-1. `astro.config.mjs` : passer `HEBERGEMENT` de `'preversion'` à
-   `'production'`. **C'est le seul interrupteur** — il commande `site`, `base`
-   et l'indexation d'un coup.
-2. Rien à faire pour `robots.txt` ni le manifeste : ils sont générés depuis
-   `site` et `base` (`src/pages/robots.txt.ts`, `src/pages/site.webmanifest.ts`).
-3. Ajouter `public/CNAME` contenant `www.cambiome.fr` — utile seulement tant
-   que l'hébergement reste GitHub Pages.
-4. Renseigner le domaine dans **Settings → Pages → Custom domain**.
+#### Un seul interrupteur
 
-#### Pourquoi un seul interrupteur
+`site` et `base` sont **solidaires**. Dès que `base` disparaît, tous les liens
+visent la racine ; servis depuis un sous-dossier, ils répondraient tous en 404.
+Et `site` ne sert pas qu'aux balises : il construit l'adresse de retour du
+formulaire quand JavaScript n'est pas disponible (`FormulaireContact.astro`).
+Déclarer le domaine avant qu'il ne serve le site aurait cassé la navigation
+*et* le formulaire — d'où l'attente, et d'où la constante unique
+`HEBERGEMENT` dans `astro.config.mjs`, dont `preversion` reste le chemin de
+retour si OVH tombe.
 
-`site` et `base` sont **solidaires**, et ne peuvent pas anticiper le domaine.
-Dès que `base` disparaît, tous les liens visent la racine ; tant que les pages
-sont servies depuis `gagnairn.github.io/cambiome/`, elles répondent toutes en
-404. `site` ne sert pas non plus qu'aux balises : il construit l'adresse de
-retour du formulaire quand JavaScript n'est pas disponible
-(`FormulaireContact.astro`). Déclarer le domaine avant qu'il ne serve le site
-casserait donc la navigation *et* le formulaire.
+`robots.txt` et le manifeste n'ont jamais eu à suivre : ils sont générés depuis
+`site` et `base` (`src/pages/robots.txt.ts`, `src/pages/site.webmanifest.ts`).
 
-#### L'indexation suit le même interrupteur
+#### L'indexation suivait le même interrupteur
 
-Tant que `HEBERGEMENT` vaut `preversion`, chaque page porte
-`<meta name="robots" content="noindex, follow">`. C'est délibéré : le site est
-servi à une adresse qui n'est pas la sienne, et la laisser indexer coûterait
-cher à la bascule — les pages de la marque installées sous un sous-domaine
-personnel, puis deux adresses servant le même contenu, sans possibilité de
-rediriger, GitHub Pages ne sachant pas émettre de 301.
+En préversion, chaque page portait `<meta name="robots" content="noindex,
+follow">`. Le site était servi à une adresse qui n'était pas la sienne, et le
+laisser indexer aurait coûté cher : les pages de la marque installées sous un
+sous-domaine personnel, puis deux adresses servant le même contenu, sans
+possibilité de rediriger — GitHub Pages ne sait pas émettre de 301.
 
-La balise est **déduite du nom d'hôte** (`src/layouts/Base.astro`) et non d'un
-drapeau à part : elle disparaît d'elle-même au passage en `production`. Rien à
-penser à retirer, donc rien à oublier.
+La balise était **déduite du nom d'hôte** (`src/layouts/Base.astro:56`) et non
+d'un drapeau à part : elle a disparu d'elle-même au passage en `production`. Il
+n'y a rien eu à penser à retirer.
 
-Et c'est bien un `noindex`, pas un `Disallow` dans `robots.txt` : interdire
-l'exploration empêcherait justement les moteurs de *lire* la balise, et
-l'adresse pourrait ressortir malgré tout dans les résultats, sans description.
-Laisser explorer et demander à ne pas indexer est la seule combinaison qui
-tient.
+C'était bien un `noindex` et non un `Disallow` dans `robots.txt` : interdire
+l'exploration aurait empêché les moteurs de *lire* la balise, et l'adresse
+aurait pu ressortir malgré tout dans les résultats, sans description.
 
 #### www ou domaine nu ?
 
-Un seul des deux doit être l'adresse officielle, l'autre s'y redirige en 301.
-S'ils répondent tous les deux, la même page existe à deux URL : les moteurs
-partagent le référencement entre elles, et le `<link rel="canonical">` que
-génère Astro depuis `site` en désigne une seule, ce qui contredit l'autre.
+Un seul des deux est l'adresse officielle, l'autre s'y redirige en 301. S'ils
+répondaient tous les deux, la même page existerait à deux URL : les moteurs
+partageraient le référencement entre elles, et le `<link rel="canonical">` que
+génère Astro depuis `site` en désigne une seule, ce qui contredirait l'autre.
 
-`www` étant l'adresse retenue, la redirection du domaine nu vers `www` est
-préparée — commentée — dans `public/.htaccess`, à activer une fois le DNS en
-place.
+`www` est l'adresse retenue ; la redirection du domaine nu est dans
+`public/.htaccess`.
 
-### Migrer vers un hébergeur
+### Changer d'hébergeur
 
 Le site est entièrement statique : déployer, c'est téléverser le contenu de
 `dist/`. Rien à installer côté serveur, ni Node ni base de données.
 
-1. `astro.config.mjs` : passer `HEBERGEMENT` à `'production'` — c'est le même
-   interrupteur qu'à la section précédente, et il n'y en a pas d'autre.
-2. Rien à faire pour `robots.txt` ni le manifeste : ils sont générés depuis
-   `site` et `base` (`src/pages/robots.txt.ts`, `src/pages/site.webmanifest.ts`).
+1. `astro.config.mjs` : ajouter l'adresse à `ADRESSES` et y pointer
+   `HEBERGEMENT` — c'est le seul interrupteur, il n'y en a pas d'autre.
+2. Rien à faire pour `robots.txt` ni le manifeste, générés depuis `site` et
+   `base`.
 3. `src/content/entreprise.yaml` → `hebergeur` (CMS : « L'entreprise →
-   Hébergeur du site ») : rien à faire si la cible est bien OVH,
-   dont les coordonnées y figurent déjà. Pour tout autre hébergeur, ce sont
-   son nom, son adresse et son téléphone qu'il faut y mettre : la mention est
-   une obligation légale et doit désigner l'hébergeur réel.
-4. `npm run build`, puis téléverser `dist/`.
+   Hébergeur du site ») : y mettre le nom, l'adresse et le téléphone du
+   nouvel hébergeur. La mention est une obligation légale et doit désigner
+   l'hébergeur réel.
+4. Adapter le job `deploy` de `.github/workflows/deploy.yml`, et l'URL du job
+   `fumee`.
 5. Vérifier que les en-têtes de sécurité sortent bien (voir ci-dessous).
 
-Les en-têtes sont déjà écrits, dans deux formats livrés à la racine du site :
+Les en-têtes sont écrits dans deux formats :
 
 | Hébergeur | Fichier |
 | --- | --- |
+| Apache — OVH, o2switch, Infomaniak… | `public/.htaccess` — **celui en service** |
 | Netlify, Cloudflare Pages | `public/_headers` |
-| Apache — OVH, o2switch, Infomaniak… | `public/.htaccess` |
 | nginx / VPS | à recopier dans le bloc `server` (voir plus bas) |
 
-GitHub Pages les ignore tous les deux, ce qui est sans conséquence : ils
-attendent la migration.
+`public/_headers` ne sert à rien chez OVH : il est conservé pour la portabilité
+et **exclu du dépôt SFTP**, pour ne pas être servi publiquement sans raison.
 
 ## Sécurité
 

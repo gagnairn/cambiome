@@ -1,4 +1,4 @@
-name: Déploiement GitHub Pages
+name: Déploiement OVH
 
 on:
   push:
@@ -12,7 +12,7 @@ permissions: {}
 # Un seul déploiement à la fois ; on laisse finir celui en cours plutôt que de
 # l'interrompre au milieu d'une publication.
 concurrency:
-  group: pages
+  group: ovh
   cancel-in-progress: false
 
 # Les actions sont épinglées sur un SHA de commit et non sur un tag : un tag
@@ -59,40 +59,116 @@ jobs:
       # pendant deux commits serait tombé ici.
       - run: npm run verifier
 
-      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
+          name: site
           path: dist
+          retention-days: 7
           # Depuis la v4, l'action exclut les fichiers cachés de l'archive.
-          # `dist` en contient deux, tous deux venus de `public/` : .nojekyll,
-          # et .htaccess qui attend la migration chez un hébergeur Apache.
-          # Sans cette ligne, ils disparaîtraient de la publication sans que
-          # rien ne le signale. (.git et .github restent exclus d'office.)
+          # `dist` en contient un, venu de `public/` : .htaccess, qui porte les
+          # en-têtes de sécurité et la page 404 côté Apache. Sans cette ligne
+          # il disparaîtrait du dépôt sans que rien ne le signale, et le site
+          # servirait la page d'erreur par défaut d'Apache, sans en-têtes.
+          # (.git et .github restent exclus d'office.)
           include-hidden-files: true
 
+  # Dépôt chez OVH, hébergement mutualisé Apache, par SFTP.
+  #
+  # Aucune permission GitHub : ce job ne parle plus qu'à OVH. C'est aussi le
+  # seul à voir les secrets SFTP — le job `build` ci-dessus exécute `npm ci`,
+  # donc les scripts d'installation de toutes les dépendances, et n'a rien à
+  # faire avec un mot de passe d'hébergeur.
+  #
+  # Pas d'action tierce pour le transfert : le dépôt épingle ses actions au SHA
+  # précisément parce qu'un tag est mutable, et le raisonnement vaut d'autant
+  # plus sur le chemin d'un mot de passe. `lftp` est dans les dépôts Ubuntu et
+  # se contente du sous-système SFTP, là où `rsync` exigerait un shell distant
+  # que le mutualisé OVH n'ouvre pas.
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    outputs:
-      url: ${{ steps.deployment.outputs.page_url }}
+    timeout-minutes: 15
+    permissions: {}
     steps:
-      # La source Pages doit être réglée sur « GitHub Actions » dans
-      # Settings → Pages. Tant qu'elle pointe sur une branche, GitHub lance en
-      # parallèle son constructeur Jekyll historique, qui échoue à chaque push
-      # sur un site Astro. Ce réglage ne peut pas être automatisé ici :
-      # l'endpoint REST correspondant exige des droits d'administration que
-      # `GITHUB_TOKEN` n'a pas, même avec `pages: write` (403).
-      - id: deployment
-        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: site
+          path: dist
 
-  # Le déploiement peut réussir sur un site cassé : artefact vide, page 404 non
-  # servie, CSP absente. Ce job interroge l'URL réellement publiée.
+      # Garde-fou : un artefact vide passerait le miroir sans erreur et
+      # viderait le site. `index.html` et `.htaccess` sont les deux fichiers
+      # dont l'absence ne se verrait pas autrement — le second est caché, et
+      # c'est lui qui porte les en-têtes et la page 404.
+      - name: Vérifier l'artefact avant de toucher au serveur
+        run: |
+          test -f dist/index.html || { echo "::error::dist/index.html manquant"; exit 1; }
+          test -f dist/.htaccess  || { echo "::error::dist/.htaccess manquant — en-têtes et page 404 perdus"; exit 1; }
+          echo "$(find dist -type f | wc -l) fichiers à déposer"
+
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends lftp
+
+      # La clé d'hôte est épinglée plutôt que découverte : sans elle il
+      # faudrait `StrictHostKeyChecking=no`, qui accepterait n'importe quel
+      # serveur répondant à cette adresse. Relevée une fois par
+      # `ssh-keyscan <serveur>` et rangée en secret.
+      - name: Épingler la clé d'hôte
+        env:
+          CLE_HOTE: ${{ secrets.OVH_SFTP_CLE_HOTE }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$CLE_HOTE" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      # `--delete` retire du serveur ce qui n'est plus dans `dist/`. C'est
+      # nécessaire : les fichiers de `_astro/` sont nommés par empreinte et
+      # s'accumuleraient à chaque publication. C'est aussi l'étape qui exige
+      # que `OVH_SFTP_REPERTOIRE` désigne bien la racine du site et rien
+      # au-dessus.
+      #
+      # Pas de `--only-newer` : un build CI horodate tous les fichiers à
+      # l'instant présent, donc tout y est « plus récent » et le drapeau
+      # promettrait une incrémentalité qu'il ne rend pas. Chaque publication
+      # redépose donc les ~10 Mo du site, une minute ou deux. Les variantes
+      # qui compareraient la taille seule (`--ignore-time`) iraient plus vite
+      # mais laisseraient passer un HTML modifié à taille égale : trop cher
+      # payé pour le gain.
+      #
+      # `--exclude-glob _headers` : format Netlify / Cloudflare, sans effet
+      # chez Apache. Le déposer le rendrait public pour rien.
+      #
+      # Le mot de passe n'est écrit nulle part : `--env-password` le fait lire
+      # par lftp dans `LFTP_PASSWORD`. Le passer en argument l'exposerait dans
+      # la table des processus du runner, et l'écrire dans le script le ferait
+      # apparaître tel quel si la commande était tracée.
+      #
+      # Le script arrive par l'entrée standard et non par `lftp -c "…"`, pour
+      # la même raison. Les variables sont donc développées par le shell, pas
+      # par lftp, qui ne le fait pas.
+      - name: Déposer le site
+        env:
+          SERVEUR: ${{ secrets.OVH_SFTP_SERVEUR }}
+          LOGIN: ${{ secrets.OVH_SFTP_LOGIN }}
+          LFTP_PASSWORD: ${{ secrets.OVH_SFTP_MOTDEPASSE }}
+          REPERTOIRE: ${{ secrets.OVH_SFTP_REPERTOIRE }}
+        run: |
+          lftp <<LFTP
+          set cmd:fail-exit true
+          set net:max-retries 3
+          set net:timeout 20
+          set sftp:auto-confirm false
+          set sftp:connect-program "ssh -a -x -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts"
+          open --env-password -u "$LOGIN" sftp://$SERVEUR
+          mirror --reverse --delete --parallel=4 --verbose=1 --exclude-glob _headers dist/ "$REPERTOIRE"
+          bye
+          LFTP
+
+  # Le déploiement peut réussir sur un site cassé : transfert partiel, page 404
+  # non servie, CSP absente. Ce job interroge l'adresse réellement publiée.
+  #
+  # L'URL est écrite ici : elle venait de la sortie de `deploy-pages`, qui
+  # n'existe plus. C'est le seul endroit du dépôt où le domaine est en dur hors
+  # d'`astro.config.mjs` — inévitable, un hébergeur SFTP ne renvoyant pas
+  # l'adresse à laquelle il sert.
   fumee:
     needs: deploy
     runs-on: ubuntu-latest
@@ -104,5 +180,5 @@ jobs:
           persist-credentials: false
 
       - env:
-          URL_SITE: ${{ needs.deploy.outputs.url }}
+          URL_SITE: https://www.cambiome.fr
         run: ./scripts/fumee.sh "$URL_SITE"

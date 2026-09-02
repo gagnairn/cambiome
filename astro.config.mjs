@@ -20,29 +20,33 @@ const rge = /** @type {{ fin: string }} */ (
 const rgeEnCours = estEnCours(rge.fin);
 
 /**
- * Où le site est servi. **C'est le seul interrupteur de la mise en ligne** :
- * `preversion` aujourd'hui, `production` au premier dépôt chez l'hébergeur.
+ * Où le site est servi. **C'est le seul interrupteur de la mise en ligne.**
+ * Passé en `production` le 2 septembre 2026, à la bascule vers OVH.
  *
- * `site` et `base` ne peuvent pas être dissociés, et ne peuvent pas non plus
- * anticiper le domaine. Ils ne servent pas qu'aux balises : `base` préfixe
- * TOUS les liens internes, et `site` construit l'adresse de retour du
- * formulaire sans JavaScript (`FormulaireContact.astro`). Les déclarer sur
- * www.cambiome.fr pendant que le site est servi depuis GitHub Pages donnerait
- * des liens en 404 et renverrait les envois de formulaire sur une adresse qui
- * ne sert pas encore le site.
+ * `site` et `base` ne peuvent pas être dissociés. Ils ne servent pas qu'aux
+ * balises : `base` préfixe TOUS les liens internes, et `site` construit
+ * l'adresse de retour du formulaire sans JavaScript
+ * (`FormulaireContact.astro`). C'est pourquoi ils n'ont pas pu anticiper le
+ * domaine : les déclarer sur www.cambiome.fr pendant que le site était servi
+ * depuis GitHub Pages aurait donné des liens en 404 et renvoyé les envois de
+ * formulaire sur une adresse qui ne servait pas encore le site.
  *
  * Le nom d'hôte commande aussi l'indexation : voir `src/layouts/Base.astro`,
- * qui pose `noindex` tant qu'on est sur github.io. Un seul mot à changer ici
- * lève donc la préversion en entier — impossible de mettre en ligne en
- * oubliant d'enlever le `noindex`, ou l'inverse.
+ * qui pose `noindex` tant qu'on est sur github.io. Ce seul mot a donc levé la
+ * préversion en entier — il n'y a jamais eu de `noindex` à penser à retirer.
+ *
+ * `preversion` reste déclaré plus bas : c'est le chemin de retour si OVH
+ * tombe. Y revenir suppose de remettre Settings → Pages → Source sur
+ * « GitHub Actions », et de rétablir le déploiement Pages dans
+ * `.github/workflows/deploy.yml`, que la bascule a remplacé par un dépôt SFTP.
  */
-const HEBERGEMENT = 'preversion';
+const HEBERGEMENT = 'production';
 
 const ADRESSES = {
-  // Projet GitHub Pages : le site vit dans un sous-dossier, d'où `base`.
+  // Ancien projet GitHub Pages : le site vivait dans un sous-dossier, d'où
+  // `base`. Conservé comme repli, voir le commentaire ci-dessus.
   preversion: { site: 'https://gagnairn.github.io', base: '/cambiome' },
-  // Domaine propre chez OVH : racine du domaine, pas de préfixe. À la bascule,
-  // suivre la marche à suivre du README (CNAME, .htaccess, images à regénérer).
+  // Domaine propre chez OVH : racine du domaine, pas de préfixe.
   production: { site: 'https://www.cambiome.fr' },
 };
 

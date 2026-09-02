@@ -49,7 +49,7 @@ Trois adresses sont à garder sous la main :
 | | |
 |---|---|
 | **Modifier le site** | https://app.pagescms.org/gagnairn/cambiome/main/file |
-| Le site en ligne | https://gagnairn.github.io/cambiome |
+| Le site en ligne | https://www.cambiome.fr |
 | L'état des publications | https://github.com/gagnairn/cambiome/actions |
 
 La première est **la seule par laquelle on modifie le site**, et c'est elle
@@ -439,24 +439,26 @@ dans la précipitation.
 
 ---
 
-## Le site n'apparaît pas encore dans Google
+## Le référencement vient de démarrer
 
-C'est voulu. Chercher « cambiome » sur Google ne donnera rien pour l'instant, et
-il n'y a là aucun problème à signaler.
+Le site est en ligne à son adresse définitive, **`www.cambiome.fr`**, depuis le
+2 septembre 2026. Jusque-là il vivait à une adresse de travail et demandait
+expressément aux moteurs de ne pas le répertorier ; cette consigne est levée.
 
-L'adresse actuelle, `gagnairn.github.io/cambiome`, est une adresse de travail :
-elle n'appartient pas à l'entreprise. Si Google référençait les pages sous ce
-nom, elles y resteraient — et le jour de la bascule vers `www.cambiome.fr`, le
-site existerait à deux adresses à la fois, sans que Google sache laquelle
-proposer. Chaque page demande donc, pour le moment, à ne pas être répertoriée.
+**Comptez quelques semaines** avant que Google ait parcouru l'ensemble des
+pages, et davantage avant que « cambiome » vous place en tête. C'est le délai
+normal d'un site neuf : il n'y a rien à demander, rien à relancer, et l'absence
+de résultats dans les premiers jours n'est pas un problème à signaler.
 
-Cela ne limite rien d'autre : le site est public, il fonctionne entièrement, et
-vous pouvez le consulter, le montrer et en envoyer le lien à qui vous voulez. Il
-n'est simplement pas *trouvable par une recherche*.
+Ce que vous pouvez faire en attendant, et qui compte plus que le reste :
+publier des chantiers. Chaque chantier ajoute une photo, une légende et une
+description — autant de matière que les moteurs lisent. Un site qui bouge est
+mieux traité qu'un site figé.
 
-Le référencement démarre le jour où le site passe sur `www.cambiome.fr` : c'est
-la même opération, il n'y a rien à demander en plus. Comptez ensuite quelques
-semaines pour que Google ait parcouru l'ensemble des pages.
+Une seule chose peut défaire ce travail : **changer l'identifiant d'un métier**.
+C'est son adresse web ; la modifier fait disparaître la page référencée et la
+remplace par une nouvelle, à recommencer de zéro. D'où l'avertissement sur ce
+champ dans le CMS.
 
 ---
 
@@ -468,7 +470,7 @@ semaines pour que Google ait parcouru l'ensemble des pages.
   les liens existants et les résultats Google.
 - **Les couleurs, les polices, la mise en page.**
 - **L'année du copyright**, une fois par an.
-- **Changer d'hébergeur**, ou basculer sur le domaine `www.cambiome.fr`.
+- **Changer d'hébergeur**, ou changer l'adresse du site.
 - **Le renouvellement ou l'expiration du RGE**, pour relancer une publication.
 - Toute question sur un message d'erreur que vous ne comprenez pas.
 - **Une modification urgente alors que le CMS est inaccessible.** Il n'y a pas
