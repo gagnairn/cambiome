@@ -158,9 +158,10 @@ Pour rétablir la règle : `git revert` du commit qui l'a retirée.
       la **Search Console**.
 
       Le site est prêt à l'accueillir : coller le lien de la fiche dans
-      **L'entreprise → Coordonnées → Fiche Google** ajoute le bouton
-      « Itinéraire » à la page Contact et le `sameAs` au balisage. Rien
-      d'autre à toucher, et rien ne s'affiche tant que le champ est vide.
+      **Textes de service → L'entreprise → Coordonnées → Fiche Google**
+      ajoute le bouton « Itinéraire » à la page Contact et le `sameAs` au
+      balisage. Rien d'autre à toucher, et rien ne s'affiche tant que le
+      champ est vide.
 
       Deux points décident du rapprochement fiche ↔ site. D'abord la
       concordance nom / adresse / téléphone, au signe près : `CAMBIOME` seul,

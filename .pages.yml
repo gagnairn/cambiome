@@ -740,308 +740,15 @@ content:
                 type: string
                 required: true
 
-  # --------------------------------------------------------------- entreprise
-  - name: entreprise
-    label: L'entreprise
-    type: file
-    path: src/content/entreprise.yaml
-    format: yaml
-    fields:
-      - name: identite
-        label: Identité
-        type: object
-        fields:
-          - name: nom
-            label: Nom
-            type: string
-            required: true
-          - name: baseline
-            label: Baseline
-            type: string
-            required: true
-            description: Affichée sous le nom dans l'en-tête.
-          - name: accroche
-            label: Accroche
-            type: string
-            required: true
-          - name: description
-            label: Description du site
-            type: text
-            required: true
-            description: >-
-              Le résumé que Google affiche sous le lien du site. Au-delà
-              d'environ 160 signes, il est coupé.
-            options:
-              maxlength: 320
-          - name: zone
-            label: Zone d'intervention
-            type: string
-            required: true
-
-      - name: coordonnees
-        label: Coordonnées
-        type: object
-        description: >-
-          Ces coordonnées apparaissent au pied de page, sur la page Contact et
-          dans les mentions légales à la fois : il n'y a qu'un endroit à
-          corriger. Un champ laissé vide fait disparaître la ligne du site,
-          plutôt que d'afficher un blanc — mieux vaut ne rien annoncer qu'un
-          numéro qui ne répond plus. Seule exception, l'adresse : celle d'ici
-          est le siège social, et ne sert qu'aux mentions légales. Celle que
-          voient vos visiteurs est dans le bloc « Atelier », plus bas.
-        fields:
-          - name: email
-            label: E-mail
-            type: string
-          - name: telephone
-            label: Téléphone
-            type: string
-          - name: adresse
-            label: Siège social
-            description: >-
-              L'adresse immatriculée au RCS. Elle paraît dans les mentions
-              légales, où la loi l'exige, et sur la page Contact sous
-              l'intitulé « Courrier » — c'est là qu'aboutit un recommandé. Ne
-              pas y mettre l'atelier : le siège est une donnée juridique, il ne
-              se corrige pas ici mais au greffe.
-            type: string
-          - name: instagram
-            label: Lien Instagram
-            type: string
-          - name: ficheGoogle
-            label: Fiche Google
-            type: string
-            description: >-
-              Le lien vers l'établissement dans Google Maps. Pour l'obtenir :
-              ouvrir la fiche, bouton « Partager », « Copier le lien ». Il
-              ajoute un bouton « Itinéraire » sur la page Contact, et surtout
-              il dit à Google que la fiche et le site sont bien la même
-              entreprise — ce qui compte pour apparaître dans les résultats
-              locaux. Laissé vide tant que la fiche n'existe pas : le bouton ne
-              s'affiche alors pas.
-
-      - name: atelier
-        label: Atelier
-        type: object
-        description: >-
-          L'établissement où l'on travaille, celui qui a une porte — à ne pas
-          confondre avec le siège social ci-dessus. C'est cette adresse qui
-          s'affiche au pied de page et sur la page Contact, et c'est elle
-          qu'annonce le balisage lu par Google.
-        fields:
-          - name: adresse
-            label: Adresse de l'atelier
-            type: string
-            description: >-
-              Doit être identique, au signe près, à celle de la fiche Google
-              Business Profile : c'est sur cette concordance que le moteur
-              rapproche la fiche du site. Laissée vide, c'est le siège social
-              qui s'affiche partout.
-          - name: latitude
-            label: Latitude
-            type: number
-            description: >-
-              Situe la porte au mètre près. Pour l'obtenir : clic droit sur le
-              point exact dans Google Maps, les deux nombres proposés en haut du
-              menu sont la latitude puis la longitude. Laisser 0 si l'on ne
-              sait pas — un 0 est traité comme absent.
-          - name: longitude
-            label: Longitude
-            type: number
-            description: Voir Latitude ci-dessus. Laisser 0 si l'on ne sait pas.
-          - name: horaires
-            label: Horaires d'ouverture
-            type: object
-            list:
-              # Sans `summary`, les lignes repliées s'intitulent « Item #1 »,
-              # « Item #2 » : pour choisir laquelle corriger, il faut les
-              # déplier une à une. Le gabarit affiche la plage elle-même.
-              # `{fields.jours}` rend la valeur brute — « lundi-vendredi », pas
-              # « Lundi – vendredi » : Pages CMS interpole le contenu du champ,
-              # pas l'intitulé de l'option choisie.
-              collapsible:
-                summary: '{fields.jours} : {fields.ouverture} – {fields.fermeture}'
-            description: >-
-              ⚠ Ce champ ne fait pas qu'afficher une ligne. Tant qu'il est
-              vide, le site dit aux moteurs de recherche « nous intervenons
-              dans cette zone ». Dès qu'une plage y figure, il dit « venez
-              ici » : Google peut alors proposer un itinéraire vers l'atelier
-              et afficher ces horaires. Ne les renseigner que si quelqu'un
-              ouvre effectivement la porte à ces heures-là — un client devant
-              une porte fermée coûte plus cher que le gain de référencement.
-              Une ligne par plage : « lundi – vendredi 8 h – 12 h » et
-              « lundi – vendredi 14 h – 18 h » font deux lignes.
-            fields:
-              - name: jours
-                label: Jours
-                type: select
-                required: true
-                options:
-                  # Recopié de PLAGES dans src/lib/horaires.ts. Les deux listes
-                  # sont comparées par `npm run verifier` : en ajouter une ici
-                  # sans l'ajouter là-bas fait échouer le build.
-                  values:
-                    - name: lundi-vendredi
-                      label: Lundi – vendredi
-                    - name: lundi-jeudi
-                      label: Lundi – jeudi
-                    - name: lundi-samedi
-                      label: Lundi – samedi
-                    - name: samedi-dimanche
-                      label: Samedi – dimanche
-                    - name: lundi
-                      label: Lundi
-                    - name: mardi
-                      label: Mardi
-                    - name: mercredi
-                      label: Mercredi
-                    - name: jeudi
-                      label: Jeudi
-                    - name: vendredi
-                      label: Vendredi
-                    - name: samedi
-                      label: Samedi
-                    - name: dimanche
-                      label: Dimanche
-              - name: ouverture
-                label: Ouverture
-                type: string
-                required: true
-                description: Sur 24 heures, deux chiffres et deux points — 08:00, 14:30.
-              - name: fermeture
-                label: Fermeture
-                type: string
-                required: true
-                description: Même forme — 12:00, 18:00.
-
-      # Retiré du formulaire, pas du fichier : `hidden` ne masque que
-      # l'affichage. Pages CMS charge la valeur dans l'état du formulaire comme
-      # les autres (`initializeState`) et la réécrit telle quelle ; seul le
-      # rendu est sauté. La clé ne risque donc pas de se perdre à
-      # l'enregistrement — c'est précisément ce qu'on évite ici : vidée par
-      # mégarde, elle fait disparaître le formulaire de la page Contact sans
-      # que rien ne le signale, ni au build ni en ligne.
-      #
-      # `hidden` est posé sur l'objet et non sur son unique champ : sur le
-      # champ, il resterait une section « Formulaire de contact » vide.
-      #
-      # Pour changer la clé — obtenue gratuitement sur web3forms.com en y
-      # saisissant l'adresse qui recevra les messages —, il faut donc passer
-      # par GitHub. C'est un geste unique, fait une fois pour toutes ; elle est
-      # publique par conception, il n'y a rien à cacher.
-      - name: formulaire
-        label: Formulaire de contact
-        type: object
-        hidden: true
-        fields:
-          - name: web3formsCle
-            label: Clé Web3Forms
-            type: string
-
-      - name: identiteLegale
-        label: Identité légale
-        type: object
-        description: >-
-          ⚠ Contenu imposé par la loi (art. 6-III de la LCEN). Ces mentions
-          doivent figurer sur le site et être exactes ; les vider ou les
-          approximer expose l'entreprise. À ne corriger qu'à partir d'un document
-          officiel — extrait Kbis, statuts.
-        fields:
-          - name: siret
-            label: SIRET
-            type: string
-            required: true
-          - name: formeJuridique
-            label: Forme juridique (abrégée)
-            type: string
-            required: true
-            description: Telle qu'elle apparaît en pied de page. Ex. « SAS ».
-          - name: formeJuridiqueLongue
-            label: Forme juridique (en toutes lettres)
-            type: string
-            required: true
-            description: >-
-              Reprise des statuts, art. 1er. Ex. « société par actions simplifiée
-              à associé unique ».
-          - name: capital
-            label: Capital social
-            type: string
-            required: true
-            description: Celui inscrit aux statuts, mention imposée par leur art. 2.
-          - name: rcs
-            label: Immatriculation au RCS
-            type: string
-            required: true
-          - name: tva
-            label: TVA intracommunautaire
-            type: string
-            required: true
-          - name: directeurPublication
-            label: Directeur de la publication
-            type: string
-            required: true
-            description: Le représentant légal — pour une SASU, le président.
-
-      - name: assurance
-        label: Assurance professionnelle
-        type: object
-        description: >-
-          ⚠ La garantie décennale est obligatoire (art. L241-1 du code des
-          assurances) et l'art. L243-2 impose d'en afficher les coordonnées :
-          assureur, contrat, couverture géographique. À reprendre de
-          l'attestation d'assurance, sans rien inventer.
-        fields:
-          - name: souscrite
-            label: Contrat en cours
-            type: boolean
-            required: true
-          - name: assureur
-            label: Assureur
-            type: string
-            required: true
-          - name: contrat
-            label: Numéro de contrat
-            type: string
-            required: true
-          - name: adresse
-            label: Adresse de l'assureur
-            type: string
-            description: >-
-              Le siège social — pas l'adresse de résiliation du contrat, qui n'a
-              rien à faire dans des mentions légales. Peut rester vide : la page
-              n'affiche alors que le nom, ce qui reste exact.
-          - name: couverture
-            label: Couverture géographique
-            type: string
-            required: true
-
-      - name: hebergeur
-        label: Hébergeur du site
-        type: object
-        description: >-
-          ⚠ Nom, adresse et téléphone exigés par l'art. 6-III de la LCEN. La
-          mention doit désigner l'hébergeur réel du moment : elle sert à savoir
-          qui détient les fichiers en cas de litige. Ne la modifiez que si
-          l'hébergement change — auquel cas prévenez-nous, c'est une bascule
-          technique.
-        fields:
-          - name: nom
-            label: Nom
-            type: string
-            required: true
-          - name: adresse
-            label: Adresse
-            type: string
-            required: true
-          - name: telephone
-            label: Téléphone
-            type: string
-            required: true
-
   # -------------------------------------------------------- textes de service
-  # Les trois textes qu'on n'ouvre presque jamais : les obligations légales, la
-  # page de confirmation d'envoi, la page d'erreur. Groupés hors de la liste des
-  # pages pour ne pas la charger de ce qui ne se modifie qu'une fois.
+  # Ce qui n'est pas une page du site : les données de l'entreprise, les
+  # obligations légales, la page de confirmation d'envoi, la page d'erreur.
+  # Groupés hors de la liste des pages pour ne pas la charger.
+  #
+  # L'intitulé est plus étroit que le contenu — « L'entreprise » n'est ni un
+  # texte ni du service, et c'est l'entrée la plus ouverte du lot. Le placement
+  # a été demandé et discuté ; ce commentaire est là pour qu'on ne le prenne pas
+  # plus tard pour un classement par fréquence, qu'il n'est pas.
   #
   # Les « blocs répétés » n'y sont PAS, bien qu'ils en aient d'abord eu l'air :
   # `commun.yaml` porte l'encadré de contact du bas de page et le renvoi RGE de
@@ -1051,6 +758,310 @@ content:
     label: Textes de service
     type: group
     items:
+      # -------------------------------------------------------------- entreprise
+      # Coordonnées, atelier, clé du formulaire, identité légale, assurance,
+      # hébergeur. Rangée ici à la demande, bien qu'elle contienne trois des
+      # cinq modifications courantes du guide — le téléphone, la fiche Google
+      # et l'adresse de réception du formulaire. Elle est donc plus ouverte que
+      # tout le reste du groupe, et c'est pourquoi elle en est le premier
+      # élément plutôt que le dernier.
+      - name: entreprise
+        label: L'entreprise
+        type: file
+        path: src/content/entreprise.yaml
+        format: yaml
+        fields:
+          - name: identite
+            label: Identité
+            type: object
+            fields:
+              - name: nom
+                label: Nom
+                type: string
+                required: true
+              - name: baseline
+                label: Baseline
+                type: string
+                required: true
+                description: Affichée sous le nom dans l'en-tête.
+              - name: accroche
+                label: Accroche
+                type: string
+                required: true
+              - name: description
+                label: Description du site
+                type: text
+                required: true
+                description: >-
+                  Le résumé que Google affiche sous le lien du site. Au-delà
+                  d'environ 160 signes, il est coupé.
+                options:
+                  maxlength: 320
+              - name: zone
+                label: Zone d'intervention
+                type: string
+                required: true
+
+          - name: coordonnees
+            label: Coordonnées
+            type: object
+            description: >-
+              Ces coordonnées apparaissent au pied de page, sur la page Contact et
+              dans les mentions légales à la fois : il n'y a qu'un endroit à
+              corriger. Un champ laissé vide fait disparaître la ligne du site,
+              plutôt que d'afficher un blanc — mieux vaut ne rien annoncer qu'un
+              numéro qui ne répond plus. Seule exception, l'adresse : celle d'ici
+              est le siège social, et ne sert qu'aux mentions légales. Celle que
+              voient vos visiteurs est dans le bloc « Atelier », plus bas.
+            fields:
+              - name: email
+                label: E-mail
+                type: string
+              - name: telephone
+                label: Téléphone
+                type: string
+              - name: adresse
+                label: Siège social
+                description: >-
+                  L'adresse immatriculée au RCS. Elle paraît dans les mentions
+                  légales, où la loi l'exige, et sur la page Contact sous
+                  l'intitulé « Courrier » — c'est là qu'aboutit un recommandé. Ne
+                  pas y mettre l'atelier : le siège est une donnée juridique, il ne
+                  se corrige pas ici mais au greffe.
+                type: string
+              - name: instagram
+                label: Lien Instagram
+                type: string
+              - name: ficheGoogle
+                label: Fiche Google
+                type: string
+                description: >-
+                  Le lien vers l'établissement dans Google Maps. Pour l'obtenir :
+                  ouvrir la fiche, bouton « Partager », « Copier le lien ». Il
+                  ajoute un bouton « Itinéraire » sur la page Contact, et surtout
+                  il dit à Google que la fiche et le site sont bien la même
+                  entreprise — ce qui compte pour apparaître dans les résultats
+                  locaux. Laissé vide tant que la fiche n'existe pas : le bouton ne
+                  s'affiche alors pas.
+
+          - name: atelier
+            label: Atelier
+            type: object
+            description: >-
+              L'établissement où l'on travaille, celui qui a une porte — à ne pas
+              confondre avec le siège social ci-dessus. C'est cette adresse qui
+              s'affiche au pied de page et sur la page Contact, et c'est elle
+              qu'annonce le balisage lu par Google.
+            fields:
+              - name: adresse
+                label: Adresse de l'atelier
+                type: string
+                description: >-
+                  Doit être identique, au signe près, à celle de la fiche Google
+                  Business Profile : c'est sur cette concordance que le moteur
+                  rapproche la fiche du site. Laissée vide, c'est le siège social
+                  qui s'affiche partout.
+              - name: latitude
+                label: Latitude
+                type: number
+                description: >-
+                  Situe la porte au mètre près. Pour l'obtenir : clic droit sur le
+                  point exact dans Google Maps, les deux nombres proposés en haut du
+                  menu sont la latitude puis la longitude. Laisser 0 si l'on ne
+                  sait pas — un 0 est traité comme absent.
+              - name: longitude
+                label: Longitude
+                type: number
+                description: Voir Latitude ci-dessus. Laisser 0 si l'on ne sait pas.
+              - name: horaires
+                label: Horaires d'ouverture
+                type: object
+                list:
+                  # Sans `summary`, les lignes repliées s'intitulent « Item #1 »,
+                  # « Item #2 » : pour choisir laquelle corriger, il faut les
+                  # déplier une à une. Le gabarit affiche la plage elle-même.
+                  # `{fields.jours}` rend la valeur brute — « lundi-vendredi », pas
+                  # « Lundi – vendredi » : Pages CMS interpole le contenu du champ,
+                  # pas l'intitulé de l'option choisie.
+                  collapsible:
+                    summary: '{fields.jours} : {fields.ouverture} – {fields.fermeture}'
+                description: >-
+                  ⚠ Ce champ ne fait pas qu'afficher une ligne. Tant qu'il est
+                  vide, le site dit aux moteurs de recherche « nous intervenons
+                  dans cette zone ». Dès qu'une plage y figure, il dit « venez
+                  ici » : Google peut alors proposer un itinéraire vers l'atelier
+                  et afficher ces horaires. Ne les renseigner que si quelqu'un
+                  ouvre effectivement la porte à ces heures-là — un client devant
+                  une porte fermée coûte plus cher que le gain de référencement.
+                  Une ligne par plage : « lundi – vendredi 8 h – 12 h » et
+                  « lundi – vendredi 14 h – 18 h » font deux lignes.
+                fields:
+                  - name: jours
+                    label: Jours
+                    type: select
+                    required: true
+                    options:
+                      # Recopié de PLAGES dans src/lib/horaires.ts. Les deux listes
+                      # sont comparées par `npm run verifier` : en ajouter une ici
+                      # sans l'ajouter là-bas fait échouer le build.
+                      values:
+                        - name: lundi-vendredi
+                          label: Lundi – vendredi
+                        - name: lundi-jeudi
+                          label: Lundi – jeudi
+                        - name: lundi-samedi
+                          label: Lundi – samedi
+                        - name: samedi-dimanche
+                          label: Samedi – dimanche
+                        - name: lundi
+                          label: Lundi
+                        - name: mardi
+                          label: Mardi
+                        - name: mercredi
+                          label: Mercredi
+                        - name: jeudi
+                          label: Jeudi
+                        - name: vendredi
+                          label: Vendredi
+                        - name: samedi
+                          label: Samedi
+                        - name: dimanche
+                          label: Dimanche
+                  - name: ouverture
+                    label: Ouverture
+                    type: string
+                    required: true
+                    description: Sur 24 heures, deux chiffres et deux points — 08:00, 14:30.
+                  - name: fermeture
+                    label: Fermeture
+                    type: string
+                    required: true
+                    description: Même forme — 12:00, 18:00.
+
+          # Retiré du formulaire, pas du fichier : `hidden` ne masque que
+          # l'affichage. Pages CMS charge la valeur dans l'état du formulaire comme
+          # les autres (`initializeState`) et la réécrit telle quelle ; seul le
+          # rendu est sauté. La clé ne risque donc pas de se perdre à
+          # l'enregistrement — c'est précisément ce qu'on évite ici : vidée par
+          # mégarde, elle fait disparaître le formulaire de la page Contact sans
+          # que rien ne le signale, ni au build ni en ligne.
+          #
+          # `hidden` est posé sur l'objet et non sur son unique champ : sur le
+          # champ, il resterait une section « Formulaire de contact » vide.
+          #
+          # Pour changer la clé — obtenue gratuitement sur web3forms.com en y
+          # saisissant l'adresse qui recevra les messages —, il faut donc passer
+          # par GitHub. C'est un geste unique, fait une fois pour toutes ; elle est
+          # publique par conception, il n'y a rien à cacher.
+          - name: formulaire
+            label: Formulaire de contact
+            type: object
+            hidden: true
+            fields:
+              - name: web3formsCle
+                label: Clé Web3Forms
+                type: string
+
+          - name: identiteLegale
+            label: Identité légale
+            type: object
+            description: >-
+              ⚠ Contenu imposé par la loi (art. 6-III de la LCEN). Ces mentions
+              doivent figurer sur le site et être exactes ; les vider ou les
+              approximer expose l'entreprise. À ne corriger qu'à partir d'un document
+              officiel — extrait Kbis, statuts.
+            fields:
+              - name: siret
+                label: SIRET
+                type: string
+                required: true
+              - name: formeJuridique
+                label: Forme juridique (abrégée)
+                type: string
+                required: true
+                description: Telle qu'elle apparaît en pied de page. Ex. « SAS ».
+              - name: formeJuridiqueLongue
+                label: Forme juridique (en toutes lettres)
+                type: string
+                required: true
+                description: >-
+                  Reprise des statuts, art. 1er. Ex. « société par actions simplifiée
+                  à associé unique ».
+              - name: capital
+                label: Capital social
+                type: string
+                required: true
+                description: Celui inscrit aux statuts, mention imposée par leur art. 2.
+              - name: rcs
+                label: Immatriculation au RCS
+                type: string
+                required: true
+              - name: tva
+                label: TVA intracommunautaire
+                type: string
+                required: true
+              - name: directeurPublication
+                label: Directeur de la publication
+                type: string
+                required: true
+                description: Le représentant légal — pour une SASU, le président.
+
+          - name: assurance
+            label: Assurance professionnelle
+            type: object
+            description: >-
+              ⚠ La garantie décennale est obligatoire (art. L241-1 du code des
+              assurances) et l'art. L243-2 impose d'en afficher les coordonnées :
+              assureur, contrat, couverture géographique. À reprendre de
+              l'attestation d'assurance, sans rien inventer.
+            fields:
+              - name: souscrite
+                label: Contrat en cours
+                type: boolean
+                required: true
+              - name: assureur
+                label: Assureur
+                type: string
+                required: true
+              - name: contrat
+                label: Numéro de contrat
+                type: string
+                required: true
+              - name: adresse
+                label: Adresse de l'assureur
+                type: string
+                description: >-
+                  Le siège social — pas l'adresse de résiliation du contrat, qui n'a
+                  rien à faire dans des mentions légales. Peut rester vide : la page
+                  n'affiche alors que le nom, ce qui reste exact.
+              - name: couverture
+                label: Couverture géographique
+                type: string
+                required: true
+
+          - name: hebergeur
+            label: Hébergeur du site
+            type: object
+            description: >-
+              ⚠ Nom, adresse et téléphone exigés par l'art. 6-III de la LCEN. La
+              mention doit désigner l'hébergeur réel du moment : elle sert à savoir
+              qui détient les fichiers en cas de litige. Ne la modifiez que si
+              l'hébergement change — auquel cas prévenez-nous, c'est une bascule
+              technique.
+            fields:
+              - name: nom
+                label: Nom
+                type: string
+                required: true
+              - name: adresse
+                label: Adresse
+                type: string
+                required: true
+              - name: telephone
+                label: Téléphone
+                type: string
+                required: true
+
       - name: page-mentions
         label: Mentions légales
         type: file

@@ -70,7 +70,7 @@ Pages du site
   Accueil
   Métiers
     En-tête de la page
-    Les quatre métiers
+    Les métiers
   Notre démarche
     En-tête de la page
     Les piliers
@@ -82,8 +82,8 @@ Pages du site
     Textes de la page
     Le certificat
   Blocs répétés sur plusieurs pages
-L'entreprise                    ← coordonnées, identité légale, assurance
 Textes de service
+  L'entreprise                  ← coordonnées, horaires, identité légale
   Mentions légales
   Merci (après envoi du formulaire)
   Page introuvable
@@ -108,7 +108,7 @@ Quatre pages en ont deux, dans leur dossier : **Métiers**, **Notre démarche**,
 | Vous voulez modifier… | Entrée à ouvrir |
 |---|---|
 | le titre et le chapô en haut de la page Métiers | Métiers → **En-tête de la page** |
-| le texte d'un métier, ses paragraphes, ses puces | Métiers → **Les quatre métiers** |
+| le texte d'un métier, ses paragraphes, ses puces | Métiers → **Les métiers** |
 | le titre et le chapô en haut de la page Démarche | Notre démarche → **En-tête de la page** |
 | le texte d'un pilier | Notre démarche → **Les piliers** |
 | le titre et le chapô en haut de la page Réalisations | Réalisations → **En-tête de la page** |
@@ -248,10 +248,16 @@ En dernier dans ce dossier, **Blocs répétés sur plusieurs pages** : l'encadr�
 page Métiers. Ils ne sont pas rangés ailleurs parce que le visiteur les voit
 partout — les modifier touche tout le site d'un coup.
 
-Le dossier **Textes de service**, plus bas, contient les trois textes qu'on
-n'ouvre presque jamais : **Mentions légales**, et les deux pages que le visiteur
-ne voit qu'en passant — celle qui le remercie après l'envoi du formulaire, celle
-qui s'affiche s'il suit un lien mort. Elles sont modifiables comme les autres.
+Le dossier **Textes de service**, plus bas, réunit ce qui n'est pas une page du
+site : **L'entreprise** — vos coordonnées, les horaires de l'atelier, l'identité
+légale —, les **Mentions légales**, et les deux pages que le visiteur ne voit
+qu'en passant, celle qui le remercie après l'envoi du formulaire et celle qui
+s'affiche s'il suit un lien mort.
+
+⚠ **« L'entreprise » est en première position de ce dossier, et pour cause :**
+c'est là que se corrigent le téléphone, l'e-mail, l'adresse, les horaires et le
+lien de la fiche Google. C'est de loin l'entrée la plus utilisée du dossier,
+malgré l'intitulé qui pourrait laisser croire le contraire.
 
 Dans chaque page, vous trouvez, dans cet ordre :
 
@@ -291,7 +297,7 @@ jeton, réenregistrez.
 
 ### Téléphone, e-mail, adresse
 
-**L'entreprise → Coordonnées.** Il n'y a **qu'un seul endroit à corriger** : ces
+**Textes de service → L'entreprise → Coordonnées.** Il n'y a **qu'un seul endroit à corriger** : ces
 coordonnées alimentent à la fois le pied de page, la page Contact et les mentions
 légales.
 
@@ -301,7 +307,7 @@ répond plus.
 
 ### Le lien de la fiche Google
 
-**L'entreprise → Coordonnées → Fiche Google.** Le jour où la fiche Google
+**Textes de service → L'entreprise → Coordonnées → Fiche Google.** Le jour où la fiche Google
 Business Profile existe, ouvrez-la dans Google Maps, bouton **`Partager`** puis
 **`Copier le lien`**, et collez-le dans ce champ.
 
@@ -316,7 +322,7 @@ aux moteurs.
 
 ### Le texte d'un métier
 
-**Pages du site → Métiers → Les quatre métiers.** Chaque métier a quatre parties :
+**Pages du site → Métiers → Les métiers.** Chaque métier a quatre parties :
 
 | | |
 |---|---|
@@ -340,7 +346,7 @@ l'adresse indiquée au moment où la clé a été créée, sur web3forms.com.
 Pour recevoir les messages **ailleurs**, il ne suffit pas de changer l'e-mail
 de contact du site : demandez une nouvelle clé gratuite sur
 [web3forms.com](https://web3forms.com) en y saisissant la nouvelle adresse, puis
-collez-la dans **L'entreprise → Formulaire de contact → Clé Web3Forms**.
+collez-la dans **Textes de service → L'entreprise → Formulaire de contact → Clé Web3Forms**.
 
 Vider ce champ **retire le formulaire** de la page Contact, qui n'affiche alors
 plus que le téléphone et l'e-mail. C'est le repli prévu si le service devait
