@@ -85,10 +85,10 @@ export function charger<T extends z.ZodTypeAny>(
   try {
     // JSON_SCHEMA et non le schéma par défaut : ce dernier reconnaît le type
     // « timestamp » de YAML 1.1 et transforme `fin: 2026-12-09` en objet Date.
-    // Les dates du site sont comparées en ISO sous forme de chaînes
-    // (`rgeEnCours`), et l'éditeur voit dans son formulaire ce qui est écrit
-    // dans le fichier. On veut donc des chaînes, pas des Date reconstituées
-    // dans le fuseau du serveur de build.
+    // Les dates du site sont comparées en ISO sous forme de chaînes — la
+    // cohérence `debut` ≤ `fin` de `rge.yaml`, par exemple — et l'éditeur voit
+    // dans son formulaire ce qui est écrit dans le fichier. On veut donc des
+    // chaînes, pas des Date reconstituées dans le fuseau du serveur de build.
     donnees = load(brut, { schema: JSON_SCHEMA });
   } catch (cause) {
     // Erreur de syntaxe YAML — indentation, guillemet non fermé. Le message de

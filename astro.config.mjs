@@ -1,24 +1,7 @@
 // @ts-check
-import { readFileSync } from 'node:fs';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
-// Exports nommés : js-yaml 5 n'expose plus d'export par défaut.
-import { load, JSON_SCHEMA } from 'js-yaml';
-import { estEnCours } from './src/lib/echeance.ts';
-
-// Le contenu du site est en YAML, lu ailleurs par `src/lib/contenu.ts` — mais
-// ce chargeur repose sur `import.meta.glob`, que Vite fournit et que Node
-// ignore. Or ce fichier est chargé par Node, et relu tel quel par
-// `scripts/verifier-liens.mjs`. On relit donc le YAML à la main, pour la seule
-// donnée dont le sitemap a besoin. La règle d'échéance, elle, n'est pas
-// recopiée : elle vient de `src/lib/echeance.ts`, comme pour les pages.
-const rge = /** @type {{ fin: string }} */ (
-  load(readFileSync(new URL('./src/content/rge.yaml', import.meta.url), 'utf8'), {
-    schema: JSON_SCHEMA,
-  })
-);
-const rgeEnCours = estEnCours(rge.fin);
 
 /**
  * Où le site est servi. **C'est le seul interrupteur de la mise en ligne.**
@@ -53,14 +36,10 @@ const ADRESSES = {
 
 export default defineConfig({
   ...ADRESSES[HEBERGEMENT],
-  // La page de confirmation d'envoi n'a rien à faire dans l'index. La page de
-  // qualification en sort le jour où la qualification expire : elle ne dit
-  // alors plus que son échéance, ce n'est pas ce qu'on propose aux moteurs.
+  // La page de confirmation d'envoi n'a rien à faire dans l'index.
   integrations: [
     sitemap({
-      filter: (page) =>
-        !page.endsWith('/merci/') &&
-        (rgeEnCours || !page.endsWith('/rge-qualibat/')),
+      filter: (page) => !page.endsWith('/merci/'),
     }),
   ],
 

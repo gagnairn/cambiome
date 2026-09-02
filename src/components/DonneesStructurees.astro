@@ -46,7 +46,7 @@
  * numéro change. Un champ vide disparaît de la fiche — une donnée absente vaut
  * mieux qu'une donnée fausse, que les moteurs sanctionnent.
  */
-import { atelier, contact, metiers, rge, rgeEnCours, site } from '~/data/site';
+import { atelier, contact, metiers, rge, site } from '~/data/site';
 import { lien } from '~/lib/base';
 import { joursSchema } from '~/lib/horaires';
 
@@ -147,19 +147,19 @@ const fiche = {
     '@type': 'Offer',
     itemOffered: { '@type': 'Service', name: m.titre, description: m.chapo },
   })),
-  // La qualification sort de la fiche le jour où elle expire, comme partout
-  // ailleurs sur le site : l'annoncer périmée serait une allégation trompeuse,
-  // et ici elle serait affichée par le moteur de recherche lui-même.
-  ...(rgeEnCours && {
-    hasCredential: {
-      '@type': 'EducationalOccupationalCredential',
-      name: rge.certificat,
-      credentialCategory: 'certification',
-      recognizedBy: { '@type': 'Organization', name: rge.organisme },
-      url: rge.attestation,
-      validUntil: rge.fin,
-    },
-  }),
+  // La qualification est déclarée sans condition d'échéance — la règle qui
+  // l'en retirait passée `rge.fin` a été supprimée du dépôt. `validUntil`
+  // reste, et prend d'autant plus d'importance : c'est désormais le seul
+  // endroit où le site dise jusqu'à quand la qualification vaut. Le tenir à
+  // jour dans le CMS à chaque renouvellement n'est plus une formalité.
+  hasCredential: {
+    '@type': 'EducationalOccupationalCredential',
+    name: rge.certificat,
+    credentialCategory: 'certification',
+    recognizedBy: { '@type': 'Organization', name: rge.organisme },
+    url: rge.attestation,
+    validUntil: rge.fin,
+  },
 };
 ---
 

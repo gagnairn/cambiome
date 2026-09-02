@@ -122,6 +122,30 @@ Le test de fumée se rejoue en local :
 ./scripts/fumee.sh https://www.cambiome.fr
 ```
 
+## La qualification RGE ne s'auto-retire plus
+
+Le dépôt portait une règle d'échéance (`src/lib/echeance.ts`, `rgeEnCours`) qui
+masquait la mention RGE partout passée `rge.fin` : page vidée et sortie du
+sitemap, encadré de renvoi et bandeau du pied de page retirés. **Elle a été
+supprimée à la demande de l'entreprise** — un renouvellement en cours
+d'instruction faisait disparaître la page pour la durée du dossier.
+
+`debut` et `fin` restent saisis et publiés (`validUntil` du balisage), mais ne
+commandent plus rien. Le seul contrôle qui subsiste sur ces dates est leur
+cohérence entre elles.
+
+Ce que ça déplace : afficher un RGE non renouvelé est une allégation trompeuse
+au sens du code de la consommation, et le dépôt ne s'y oppose plus. Le retrait
+est désormais une opération manuelle, et elle demande une intervention sur le
+code — il n'y a pas d'interrupteur dans le CMS.
+
+> Si un interrupteur est souhaité un jour, la forme idiomatique ici serait de
+> rendre les champs de `rge.yaml` facultatifs et de conditionner l'affichage à
+> leur présence, comme le fait déjà chaque coordonnée. C'est une décision, pas
+> un oubli : elle n'a pas été prise.
+
+Pour rétablir la règle : `git revert` du commit qui l'a retirée.
+
 ## À faire
 
 - [ ] **Médiateur de la consommation** : les mentions légales n'en désignent

@@ -1,7 +1,7 @@
 ---
 import Base from '~/layouts/Base.astro';
 import TitreSection from '~/components/TitreSection.astro';
-import { site, contact, hebergeur, rgeEnCours } from '~/data/site';
+import { site, contact, hebergeur } from '~/data/site';
 import { pageMentions } from '~/data/pages';
 import { remplir } from '~/lib/gabarit';
 import { telephoneInsecable } from '~/lib/texte';
@@ -82,14 +82,10 @@ const ouNousEcrire = contact.email
         </ul>
       </div>
 
-      {
-        rgeEnCours && (
-          <div>
-            <h2 class="text-xl text-encre">{pageMentions.titreQualification}</h2>
-            <p class="mt-4">{pageMentions.qualification}</p>
-          </div>
-        )
-      }
+      <div>
+        <h2 class="text-xl text-encre">{pageMentions.titreQualification}</h2>
+        <p class="mt-4">{pageMentions.qualification}</p>
+      </div>
 
       <div>
         <h2 class="text-xl text-encre">{pageMentions.titreAssurance}</h2>

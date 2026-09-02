@@ -3,15 +3,14 @@ import { Image } from 'astro:assets';
 import marque from '~/assets/logos/marque-noire.png';
 import logoRge from '~/assets/logos/rge-qualibat.png';
 import logoRfcp from '~/assets/logos/rfcp.png';
-import { site, contact, metiers, rge, rgeEnCours } from '~/data/site';
+import { site, contact, metiers, rge } from '~/data/site';
 import { lien } from '~/lib/base';
 import { telephoneInsecable } from '~/lib/texte';
 
 const annee = 2026; // mise à jour manuelle : le site est statique, pas de JS d'horloge
 
 // Les entrées du bandeau partagent la même classe : colonnes de largeur égale,
-// filet de séparation sauf sur la première — y compris lorsque la qualification
-// RGE a expiré et que la mission passe en tête. Chacune se cale ensuite dans sa
+// filet de séparation sauf sur la première. Chacune se cale ensuite dans sa
 // colonne (à gauche, au centre, à droite) pour occuper toute la largeur du pied
 // de page plutôt que de se tasser d'un côté.
 // Tout le pied de page tient sur un seul ton de texte, `sur-marque`. La
@@ -27,8 +26,10 @@ const titreBandeau = 'block font-display tracking-[0.16em] uppercase';
 const lienBandeau = 'block underline-offset-4 group-hover:underline';
 
 // Le nombre de colonnes suit le nombre d'entrées réellement rendues, sans quoi
-// une entrée masquée laisserait une colonne vide à droite.
-const nbEntrees = (rgeEnCours ? 1 : 0) + 1 + (contact.instagram ? 1 : 0);
+// une entrée masquée laisserait une colonne vide à droite. Seul Instagram est
+// encore masquable : la qualification RGE et le renvoi Pro-Paille sont rendus
+// sans condition.
+const nbEntrees = 2 + (contact.instagram ? 1 : 0);
 const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
 ---
 
@@ -169,36 +170,32 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
         colonnesBandeau,
       ]}
     >
-      {
-        rgeEnCours && (
-          <a class={entreeBandeau} href={lien('/rge-qualibat')}>
-            {/* Filet sur la pastille : le fond blanc qu'impose la charte
-                Qualibat ne donne que 1,88:1 sur l'aplat de marque, la plaque
-                s'y évanouit. Le logo lui-même reste lisible (il est sur
-                blanc) et les logos échappent aux seuils de contraste, mais un
-                cerne suffit à ce que la plaque se lise comme un choix. */}
-            <span class="shrink-0 rounded-md border border-encre/10 bg-white p-1.5">
-              <Image src={logoRge} alt="" width={44} densities={[1, 2]} class="w-11" />
-            </span>
-            {/* Titre court : sur une colonne au tiers de la largeur,
-                « Reconnu Garant de l'Environnement » passait à la ligne et
-                déséquilibrait la rangée. L'intitulé complet est sur la page
-                dédiée, où mène ce lien — il visait auparavant le PDF de
-                l'attestation, qui se téléchargeait sans prévenir. */}
-            <span class="text-xs leading-relaxed">
-              <span class={titreBandeau}>Qualification RGE</span>
-              <span class={lienBandeau}>{rge.certificat}</span>
-            </span>
-          </a>
-        )
-      }
+      <a class={entreeBandeau} href={lien('/rge-qualibat')}>
+        {/* Filet sur la pastille : le fond blanc qu'impose la charte
+            Qualibat ne donne que 1,88:1 sur l'aplat de marque, la plaque
+            s'y évanouit. Le logo lui-même reste lisible (il est sur
+            blanc) et les logos échappent aux seuils de contraste, mais un
+            cerne suffit à ce que la plaque se lise comme un choix. */}
+        <span class="shrink-0 rounded-md border border-encre/10 bg-white p-1.5">
+          <Image src={logoRge} alt="" width={44} densities={[1, 2]} class="w-11" />
+        </span>
+        {/* Titre court : sur une colonne au tiers de la largeur,
+            « Reconnu Garant de l'Environnement » passait à la ligne et
+            déséquilibrait la rangée. L'intitulé complet est sur la page
+            dédiée, où mène ce lien — il visait auparavant le PDF de
+            l'attestation, qui se téléchargeait sans prévenir. */}
+        <span class="text-xs leading-relaxed">
+          <span class={titreBandeau}>Qualification RGE</span>
+          <span class={lienBandeau}>{rge.certificat}</span>
+        </span>
+      </a>
 
       {/* Pro-Paille n'a pas de page ici — le lien sort donc vers le RFCP, qui
           décrit la formation et publie les règles. C'est la seule preuve
           consultable tant que l'attestation n'est pas versée au dépôt : une
           mention de certification sans destination vérifiable, à côté d'une
-          entrée RGE qui porte son numéro et sa date d'échéance, se lirait
-          comme une allégation. Le titre est court (« Certification » seul) :
+          entrée RGE qui porte son numéro de certificat, se lirait comme une
+          allégation. Le titre est court (« Certification » seul) :
           « Certification Pro-Paille » en capitales interlettrées passe à la
           ligne sur une colonne au tiers de la largeur, comme l'intitulé RGE
           complet juste avant. */}

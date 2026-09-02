@@ -7,18 +7,11 @@ description: >-
 surtitre: Qualification
 titre: Entreprise RGE Qualibat
 
-introEnCours: >-
+intro: >-
   {nom} est qualifiée RGE — « Reconnu Garant de l'Environnement » — par
   {organisme} pour ses travaux d'isolation. C'est cette qualification qui rend le
   chantier éligible aux aides publiques à la rénovation énergétique : sans elle,
   quelle que soit la qualité de l'ouvrage, aucune aide n'est versée.
-
-introExpiree: >-
-  La qualification RGE de {nom} est arrivée à échéance le {date}. Tant qu'elle
-  n'est pas renouvelée, nos chantiers d'isolation n'ouvrent pas droit à
-  MaPrimeRénov' ni aux certificats d'économies d'énergie. Nos {lienMetiers}
-  restent inchangés.
-libelleLienMetiers: quatre métiers
 
 titreAides: Les aides que la qualification ouvre
 aides:

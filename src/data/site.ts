@@ -17,7 +17,6 @@
  */
 import { z } from 'astro/zod';
 import { charger } from '~/lib/contenu';
-import { estEnCours } from '~/lib/echeance';
 import { CODES_PLAGES } from '~/lib/horaires';
 
 /** Chaîne non vide, avec un message en français plutôt que « Required ». */
@@ -240,10 +239,22 @@ const SchemaEntreprise = z.object({
  * celles du registre public de l'ADEME (jeu de données « liste des entreprises
  * RGE » sur data.ademe.fr), pas une déclaration interne.
  *
- * ⚠ La qualification expire. Passée `fin`, l'afficher serait trompeur : les
- * composants la masquent alors d'eux-mêmes (voir `rgeEnCours` plus bas).
- * Comme le site est statique, ce retrait ne prend effet qu'au build suivant :
- * sans publication après cette date, la mention resterait en ligne.
+ * ⚠ `debut` et `fin` sont des DONNÉES, pas des règles. Le site les publie —
+ * `fin` part notamment en `validUntil` dans le balisage structuré — mais
+ * n'en tire aucune conséquence : la qualification s'affiche tant qu'elle est
+ * saisie, échéance dépassée ou non.
+ *
+ * Il y avait ici une règle inverse, qui masquait la mention d'elle-même passé
+ * `fin` (`rgeEnCours`, `src/lib/echeance.ts`). Elle a été retirée à la demande
+ * de l'entreprise : une qualification en cours de renouvellement voyait sa
+ * page entière disparaître du site et du sitemap pour la durée de
+ * l'instruction du dossier, ce qui coûtait plus que ça ne protégeait.
+ *
+ * La contrepartie se tient en une phrase, et elle est maintenant humaine :
+ * afficher un RGE non renouvelé est une allégation trompeuse au sens du code
+ * de la consommation, et plus rien dans le dépôt ne l'empêche. Le jour où la
+ * qualification tombe pour de bon, le retrait se demande — il n'y a plus ni
+ * date ni case à cocher qui le fasse. Voir la note du README.
  */
 const SchemaRge = z
   .object({
@@ -370,12 +381,6 @@ export const atelier = {
 export const hebergeur = entreprise.hebergeur;
 
 export const rge = charger('rge', SchemaRge);
-
-/**
- * La même règle sert au filtre du sitemap, dans astro.config.mjs, qui ne peut
- * pas importer ce module : voir src/lib/echeance.ts.
- */
-export const rgeEnCours = estEnCours(rge.fin);
 
 export type Metier = {
   slug: string;

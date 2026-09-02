@@ -194,14 +194,6 @@ export const page404 = charger(
   }),
 );
 
-/** « 9 décembre 2026 », pour une phrase courante. */
-const enToutesLettres = (iso: string) =>
-  new Date(iso).toLocaleDateString('fr-FR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
-
 /** « 09/12/2026 », pour une énumération de mentions légales. */
 const enChiffres = (iso: string) => iso.split('-').reverse().join('/');
 
@@ -210,20 +202,12 @@ const pageRgeBrute = charger(
   z.object({
     ...enTete,
     description: avecJetons(description, 'La description', 'nom'),
-    introEnCours: avecJetons(
+    intro: avecJetons(
       texte("Le texte d'introduction"),
       "Le texte d'introduction",
       'nom',
       'organisme',
     ),
-    introExpiree: avecJetons(
-      texte("Le texte affiché après l'échéance"),
-      "Le texte affiché après l'échéance",
-      'nom',
-      'date',
-      'lienMetiers',
-    ),
-    libelleLienMetiers: texte('Le libellé du lien'),
     titreAides: texte('Le titre'),
     aides: z
       .array(
@@ -253,14 +237,10 @@ const pageRgeBrute = charger(
 export const pageRge = {
   ...pageRgeBrute,
   description: remplir(pageRgeBrute.description, { nom: site.nom }),
-  introEnCours: remplir(pageRgeBrute.introEnCours, {
+  intro: remplir(pageRgeBrute.intro, {
     nom: site.nom,
     organisme: rge.organisme,
   }),
-  /** De part et d'autre du lien vers la page Métiers. */
-  introExpiree: scinder(pageRgeBrute.introExpiree, 'lienMetiers').map((part) =>
-    remplir(part, { nom: site.nom, date: enToutesLettres(rge.fin) }),
-  ) as [string, string],
   /** De part et d'autre du lien vers l'attestation PDF. */
   texteAttestation: scinder(pageRgeBrute.texteAttestation, 'lienAttestation'),
 };

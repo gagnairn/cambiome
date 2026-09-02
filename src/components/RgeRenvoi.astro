@@ -11,29 +11,25 @@
  * la page Métiers. Tout cela vit désormais sur sa propre page, où il ne coupe
  * plus la lecture des savoir-faire et où il y a la place de l'expliquer.
  *
- * Ne rend rien si la qualification est expirée — l'afficher au-delà de sa date
- * de fin serait une allégation trompeuse au sens du code de la consommation.
+ * Rendu sans condition. Le renvoi se retirait auparavant de lui-même passée
+ * l'échéance de la qualification ; cette règle a été supprimée du dépôt — voir
+ * le bloc RGE de `src/data/site.ts`.
  */
-import { rgeEnCours } from '~/data/site';
 import { renvoiRge } from '~/data/pages';
 import { lien } from '~/lib/base';
 ---
 
-{
-  rgeEnCours && (
-    <a
-      href={lien('/rge-qualibat')}
-      class="group mt-10 block rounded-lg border border-ciel-200 bg-ciel-50 p-5 transition-colors hover:border-ciel-300"
-    >
-      <span class="block font-display text-sm tracking-[0.18em] text-ciel-700 uppercase">
-        {renvoiRge.surtitre}
-      </span>
-      <span class="mt-2 block text-sm leading-relaxed text-encre/75">
-        {renvoiRge.texte}{' '}
-        <span class="text-ciel-700 underline-offset-4 group-hover:underline">
-          {renvoiRge.lien}
-        </span>
-      </span>
-    </a>
-  )
-}
+<a
+  href={lien('/rge-qualibat')}
+  class="group mt-10 block rounded-lg border border-ciel-200 bg-ciel-50 p-5 transition-colors hover:border-ciel-300"
+>
+  <span class="block font-display text-sm tracking-[0.18em] text-ciel-700 uppercase">
+    {renvoiRge.surtitre}
+  </span>
+  <span class="mt-2 block text-sm leading-relaxed text-encre/75">
+    {renvoiRge.texte}{' '}
+    <span class="text-ciel-700 underline-offset-4 group-hover:underline">
+      {renvoiRge.lien}
+    </span>
+  </span>
+</a>
