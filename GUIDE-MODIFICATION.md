@@ -62,42 +62,71 @@ publication. On n'écrit rien depuis elles.
 
 ## Ce que vous voyez en arrivant
 
-Une colonne, à gauche, liste tout ce qui est modifiable :
+Une colonne, à gauche, liste tout ce qui est modifiable. Elle suit l'ordre du
+menu du site, pas l'ordre des fichiers :
 
-| Entrée | Contenu |
-|---|---|
-| **Chantiers** | la galerie de réalisations, photos comprises |
-| **Textes des pages** | un dossier, une entrée par page du site |
-| **Les métiers** | les métiers |
-| **Les piliers de la démarche** | les piliers |
-| **L'entreprise** | coordonnées, identité légale, assurance, hébergeur |
-| **Qualification RGE** | organisme, certificat, dates, domaines |
-| **Mission de la société à mission** | le texte statutaire |
+```
+Pages du site
+  Accueil
+  Métiers
+    En-tête de la page
+    Les quatre métiers
+  Notre démarche
+    En-tête de la page
+    Les piliers
+  Réalisations
+    En-tête de la page
+    Chantiers                   ← la galerie, photos comprises
+  Contact
+  Entreprise RGE Qualibat
+    Textes de la page
+    Le certificat
+  Blocs répétés sur plusieurs pages
+L'entreprise                    ← coordonnées, identité légale, assurance
+Textes de service
+  Mentions légales
+  Merci (après envoi du formulaire)
+  Page introuvable
+```
 
 Plus une rubrique **Media → Photos de chantiers**, qui donne accès aux images
 déjà téléversées.
 
-Chaque entrée est un formulaire : on clique dedans, on modifie, on enregistre.
+Les lignes en retrait sont des **dossiers** : on clique pour les déplier, elles
+ne s'ouvrent pas elles-mêmes. Tout le reste est un formulaire : on clique
+dedans, on modifie, on enregistre.
 
-### Pourquoi deux entrées portent le nom d'une même page
+La règle est sans exception : **une page, un dossier, tout ce qu'il lui faut
+dedans.** Ajouter un chantier se fait donc par *Pages du site → Réalisations →
+Chantiers*.
 
-Dans « Textes des pages », vous trouverez **Nos métiers** et **Notre démarche**.
-Et plus bas, dans la colonne, **Les métiers** et **Les piliers de la démarche**.
-Ce n'est pas un doublon : ces deux entrées ne contiennent pas la même chose, et
-la seconde ne sert pas qu'à sa page.
+### Pourquoi certaines pages ont deux entrées
+
+Quatre pages en ont deux, dans leur dossier : **Métiers**, **Notre démarche**,
+**Réalisations** et **Entreprise RGE Qualibat**. Ce n'est pas un doublon.
 
 | Vous voulez modifier… | Entrée à ouvrir |
 |---|---|
-| le titre et le chapô en haut de la page Métiers | Textes des pages → **Nos métiers** |
-| le texte d'un métier, ses paragraphes, ses puces | **Les métiers** |
-| le titre et le chapô en haut de la page Démarche | Textes des pages → **Notre démarche** |
-| le texte d'un pilier | **Les piliers de la démarche** |
+| le titre et le chapô en haut de la page Métiers | Métiers → **En-tête de la page** |
+| le texte d'un métier, ses paragraphes, ses puces | Métiers → **Les quatre métiers** |
+| le titre et le chapô en haut de la page Démarche | Notre démarche → **En-tête de la page** |
+| le texte d'un pilier | Notre démarche → **Les piliers** |
+| le titre et le chapô en haut de la page Réalisations | Réalisations → **En-tête de la page** |
+| ajouter, modifier ou réordonner un chantier | Réalisations → **Chantiers** |
+| les textes de la page RGE | Entreprise RGE Qualibat → **Textes de la page** |
+| le numéro de certificat, les dates, les domaines | Entreprise RGE Qualibat → **Le certificat** |
 
-La règle est la même dans les deux cas : l'entrée du dossier « Textes des pages »
-ne touche que **l'en-tête** de sa page ; l'entrée du bas porte le contenu, et ce
-contenu est **repris sur la page d'accueil** — les métiers en cartes, les piliers
-en liste numérotée. Modifier un métier change donc deux pages à la fois. Une
-phrase le rappelle une fois l'entrée ouverte, sous la liste.
+La règle est la même à chaque fois : **« En-tête de la page » ne touche que
+l'en-tête** de sa page ; l'autre entrée porte le contenu, et **ce contenu ressort
+ailleurs sur le site** — les métiers en cartes sur l'accueil, les piliers en
+liste numérotée sur l'accueil, les trois premiers chantiers sur l'accueil aussi,
+le certificat dans le bandeau du pied de page et les mentions légales. Modifier
+un métier change donc deux pages à la fois.
+
+C'est une contrainte de l'outil : Pages CMS ne sait afficher qu'**un formulaire
+par fichier**, et ces contenus vivent dans des fichiers séparés justement parce
+qu'ils ne servent pas qu'à une page. Les deux entrées sont donc rapprochées dans
+un même dossier, ce qui est tout ce qu'on peut faire.
 
 ---
 
@@ -134,7 +163,7 @@ C'est le geste le plus fréquent, et celui pour lequel ce système existe.
 La liste s'ouvre repliée : un bandeau par chantier, portant son titre. Cliquez
 sur un bandeau pour le déplier.
 
-1. Ouvrez **Chantiers**.
+1. Ouvrez **Pages du site → Réalisations → Chantiers**.
 2. En bas de la liste, cliquez sur **`Add an item`**. Un bloc vide s'ajoute.
 3. Remplissez les six champs :
 
@@ -192,7 +221,7 @@ Donc : pour mettre un chantier en avant, faites-le remonter dans la liste.
 
 ## Réordonner, modifier ou retirer un chantier
 
-**Réordonner** — ouvrez **Chantiers**, attrapez un bandeau par sa poignée (les
+**Réordonner** — ouvrez **Réalisations → Chantiers**, attrapez un bandeau par sa poignée (les
 six points, à gauche), glissez-le, **`Save`**. Nul besoin de déplier.
 
 **Modifier** — cliquez sur le bandeau pour le déplier, corrigez, **`Save`**.
@@ -209,16 +238,20 @@ Gardez au moins **trois chantiers** : la page d'accueil en affiche trois.
 
 ## Modifier le texte d'une page
 
-Ouvrez le dossier **Textes des pages**. Il contient une entrée par page :
+Ouvrez le dossier **Pages du site**. Deux pages y sont des entrées directes —
+**Accueil** et **Contact** — et les quatre autres sont des sous-dossiers :
+**Métiers**, **Notre démarche**, **Réalisations**, **Entreprise RGE Qualibat**.
+Dans ces quatre cas, le texte d'en-tête est dans **En-tête de la page**.
 
-**Accueil** · **Nos métiers** · **Réalisations** · **Notre démarche** ·
-**Contact** · **Entreprise RGE Qualibat** · **Mentions légales** ·
-**Merci (après envoi du formulaire)** · **Page introuvable** ·
-**Blocs répétés sur plusieurs pages**
+En dernier dans ce dossier, **Blocs répétés sur plusieurs pages** : l'encadré
+« Un projet en tête ? » qui termine presque chaque page, et l'encadré RGE de la
+page Métiers. Ils ne sont pas rangés ailleurs parce que le visiteur les voit
+partout — les modifier touche tout le site d'un coup.
 
-Les deux avant-dernières sont des pages que le visiteur ne voit qu'en passant :
-celle qui le remercie après l'envoi du formulaire, et celle qui s'affiche s'il
-suit un lien mort. Elles sont modifiables comme les autres.
+Le dossier **Textes de service**, plus bas, contient les trois textes qu'on
+n'ouvre presque jamais : **Mentions légales**, et les deux pages que le visiteur
+ne voit qu'en passant — celle qui le remercie après l'envoi du formulaire, celle
+qui s'affiche s'il suit un lien mort. Elles sont modifiables comme les autres.
 
 Dans chaque page, vous trouvez, dans cet ordre :
 
@@ -283,7 +316,7 @@ aux moteurs.
 
 ### Le texte d'un métier
 
-**Les métiers.** Chaque métier a quatre parties :
+**Pages du site → Métiers → Les quatre métiers.** Chaque métier a quatre parties :
 
 | | |
 |---|---|
@@ -319,26 +352,28 @@ n'y a rien à cacher.
 
 ### La qualification RGE
 
-**Qualification RGE** : organisme, numéro de certificat, lien vers l'attestation
-PDF, dates de validité, domaines qualifiés.
+**Pages du site → Entreprise RGE Qualibat → Le certificat** : organisme, numéro
+de certificat, lien vers l'attestation PDF, dates de validité, domaines
+qualifiés.
 
-**La date de fin est surveillée par le site.** Une fois cette date passée, et sans
-que personne ait à intervenir :
+⚠ **La date de fin n'est plus surveillée par le site.** Elle est publiée — elle
+part notamment dans les données que lisent les moteurs de recherche — mais elle
+ne déclenche plus rien.
 
-- la page RGE cesse d'annoncer une qualification en cours et explique qu'elle est
-  arrivée à échéance ;
-- l'encadré de renvoi de la page Rénovation thermique disparaît ;
-- le bandeau du pied de page — logo Qualibat et numéro de certificat — disparaît
-  de tout le site ;
-- la page sort des résultats de recherche.
+Le site retirait auparavant la mention de lui-même passée cette date : la page
+RGE se vidait, l'encadré de la page Rénovation thermique et le bandeau du pied
+de page disparaissaient. Cette règle a été supprimée à votre demande, parce
+qu'un renouvellement en cours d'instruction faisait disparaître la page entière
+pendant plusieurs semaines.
 
-C'est une obligation : afficher un RGE expiré est une allégation trompeuse au sens
-du code de la consommation.
+**La conséquence est à connaître.** Afficher un RGE non renouvelé est une
+allégation trompeuse au sens du code de la consommation, et plus rien dans le
+site ne l'empêche. Concrètement, un client qui signe en voyant la mention puis
+se voit refuser MaPrimeRénov' a un grief direct.
 
-Une réserve importante : le site étant figé, ce retrait ne prend effet qu'à la
-publication suivante. **Le jour où la qualification est renouvelée, comme le jour
-où elle expire, prévenez-nous** — il faut relancer une publication pour que le
-site se remette à jour.
+Donc : **tenez la date de fin à jour à chaque renouvellement**, et le jour où la
+qualification tomberait pour de bon, **demandez-nous le retrait** — il n'y a
+plus ni date ni case à cocher qui le fasse.
 
 ⚠ Les **domaines qualifiés** se recopient du registre public de l'ADEME, à
 l'identique. N'en ajoutez pas « parce qu'on sait le faire » : ce qui est écrit là
@@ -356,13 +391,6 @@ Mais quelques textes ne sont pas de la rédaction. Ils sont **contraints** : leu
 contenu est imposé par la loi ou par les statuts, et une reformulation, meilleure
 fût-elle sur le plan du style, en fait un texte faux. Dans le formulaire, ils sont
 signalés par un **⚠** dans leur description.
-
-**La mission de la société** — l'entrée *Mission de la société à mission*, et le
-bloc mission de la page Démarche. Elle est reprise mot pour mot de l'article 3 des
-statuts du 11 septembre 2024. Une société à mission est **engagée** par ce texte
-(art. L210-10 du code de commerce) : le site doit dire ce que disent les statuts,
-pas une version arrangée. Si la mission doit changer, ce sont les statuts qui
-changent d'abord — le site ensuite.
 
 **L'identité légale** — SIRET, forme juridique, capital, RCS, TVA, directeur de la
 publication. Contenu imposé par l'article 6-III de la LCEN. À ne corriger qu'à
@@ -486,7 +514,9 @@ champ dans le CMS.
 - **Les couleurs, les polices, la mise en page.**
 - **L'année du copyright**, une fois par an.
 - **Changer d'hébergeur**, ou changer l'adresse du site.
-- **Le renouvellement ou l'expiration du RGE**, pour relancer une publication.
+- **Le retrait de la mention RGE**, si la qualification n'était pas renouvelée :
+  le site ne sait plus le faire seul. Le renouvellement, lui, se saisit dans le
+  CMS — il suffit d'y corriger la date de fin.
 - Toute question sur un message d'erreur que vous ne comprenez pas.
 - **Une modification urgente alors que le CMS est inaccessible.** Il n'y a pas
   de voie de secours à votre main : le contenu se modifie par
