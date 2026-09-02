@@ -119,6 +119,22 @@ const pseudoInstagram = contact.instagram
                       ))}
                     </span>
                   )}
+                  {/* Sous l'adresse et non dans une ligne à part : c'est un
+                      complément de l'adresse, pas une coordonnée de plus. Le
+                      lien mène à la fiche Google de l'établissement, d'où le
+                      visiteur lance l'itinéraire depuis là où il est — le site
+                      n'a pas à le lui demander, et n'embarque donc aucune
+                      carte : ce serait un traceur Google sur une page qui n'en
+                      pose aucun. */}
+                  {contact.ficheGoogle && (
+                    <a
+                      class="mt-2 inline-block text-encre underline underline-offset-4 hover:no-underline"
+                      href={contact.ficheGoogle}
+                      rel="noopener"
+                    >
+                      Itinéraire
+                    </a>
+                  )}
                 </li>
               )}
               {/* Le courrier va au siège, pas à l'atelier — et la raison n'a

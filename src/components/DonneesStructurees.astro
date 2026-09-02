@@ -90,6 +90,24 @@ const ouverture = atelier.horaires.map((h) => ({
   closes: h.fermeture,
 }));
 
+/**
+ * Les pages qui décrivent la même entreprise ailleurs.
+ *
+ * La fiche Google y a sa place au même titre que le compte Instagram : c'est
+ * une page qui désigne cette entreprise-ci. Sa présence change pourtant
+ * quelque chose de plus que celle d'un réseau social. Sans elle, le moteur
+ * rapproche la fiche du site par concordance du nom, de l'adresse et du
+ * téléphone — un raisonnement qui marche le plus souvent, et qu'une virgule
+ * de différence dans l'adresse suffit à défaire. Le lien, lui, l'affirme.
+ *
+ * `sameAs` plutôt que `hasMap`, qui décrirait mieux un lien Maps mais
+ * n'appartient qu'à `Place` : il faudrait le conditionner à la bascule, comme
+ * `geo`, et il disparaîtrait le jour où l'atelier retire ses horaires — c'est
+ * précisément le jour où le site aurait le plus besoin de dire que la fiche
+ * est la sienne. `sameAs` existe sur les deux types.
+ */
+const profils = [contact.instagram, contact.ficheGoogle].filter(Boolean);
+
 const fiche = {
   '@context': 'https://schema.org',
   '@type': atelier.accueille ? 'HomeAndConstructionBusiness' : 'Organization',
@@ -120,7 +138,7 @@ const fiche = {
       },
     }),
   ...(atelier.accueille && { openingHoursSpecification: ouverture }),
-  ...(contact.instagram && { sameAs: [contact.instagram] }),
+  ...(profils.length > 0 && { sameAs: profils }),
   ...(contact.siret && { identifier: { '@type': 'PropertyValue', propertyID: 'SIRET', value: contact.siret } }),
   areaServed: { '@type': 'Place', name: site.zone },
   // Les métiers, tels qu'ils sont présentés au visiteur. `itemOffered` plutôt

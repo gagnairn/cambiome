@@ -266,6 +266,21 @@ Un champ laissé vide fait **disparaître** la ligne du site au lieu d'afficher 
 blanc. C'est voulu : mieux vaut ne rien annoncer qu'annoncer un numéro qui ne
 répond plus.
 
+### Le lien de la fiche Google
+
+**L'entreprise → Coordonnées → Fiche Google.** Le jour où la fiche Google
+Business Profile existe, ouvrez-la dans Google Maps, bouton **`Partager`** puis
+**`Copier le lien`**, et collez-le dans ce champ.
+
+Un bouton **Itinéraire** apparaît alors sous l'adresse de l'atelier, sur la page
+Contact. Surtout, le lien dit à Google que la fiche et le site sont bien la même
+entreprise — c'est ce qui décide de l'apparition dans les résultats locaux, plus
+que n'importe quel mot du site.
+
+Le champ n'accepte qu'un lien Google. Coller autre chose fait échouer la
+publication avec un message explicite, plutôt que d'annoncer une fausse identité
+aux moteurs.
+
 ### Le texte d'un métier
 
 **Les métiers.** Chaque métier a quatre parties :

@@ -132,3 +132,21 @@ Le test de fumée se rejoue en local :
 - [ ] Hors dépôt : créer la fiche **Google Business Profile** avec l'adresse de
       l'atelier écrite exactement comme dans le CMS, et déposer le sitemap dans
       la **Search Console**.
+
+      Le site est prêt à l'accueillir : coller le lien de la fiche dans
+      **L'entreprise → Coordonnées → Fiche Google** ajoute le bouton
+      « Itinéraire » à la page Contact et le `sameAs` au balisage. Rien
+      d'autre à toucher, et rien ne s'affiche tant que le champ est vide.
+
+      Deux points décident du rapprochement fiche ↔ site. D'abord la
+      concordance nom / adresse / téléphone, au signe près : `CAMBIOME` seul,
+      sans mot-clé ajouté au nom, `19 bis rue de la Liberté, 38600 Fontaine`
+      (l'atelier, pas le siège), `06 27 80 42 38`. Ensuite la catégorie
+      principale, qui pèse plus lourd que tout le reste du formulaire —
+      *Charpentier*, les autres métiers en catégories secondaires.
+
+      L'adresse de l'atelier n'est pas celle immatriculée au RCS. Si la
+      vérification bute là-dessus, deux issues : déclarer l'atelier comme
+      établissement secondaire au greffe, ou créer la fiche au siège — et
+      dans ce second cas vider `atelier.adresse` dans le CMS, faute de quoi
+      le balisage déclarerait une adresse que la fiche ne connaît pas.

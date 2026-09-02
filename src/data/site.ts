@@ -41,6 +41,20 @@ const heure = (quoi: string) =>
     .string()
     .regex(/^([01]\d|2[0-3]):[0-5]\d$/, `${quoi} doit être écrite HH:MM, par exemple 08:30.`);
 
+/**
+ * Les domaines d'où sort un lien de fiche d'établissement. `goo.gl` couvre le
+ * lien court `maps.app.goo.gl` que donne le bouton « Partager », `g.page` la
+ * forme héritée, `share.google` la plus récente. On compare le domaine et non
+ * le début de l'URL : `google.com.exemple.fr` commence par le bon nom sans
+ * être Google.
+ */
+const DOMAINES_GOOGLE = ['google.com', 'google.fr', 'goo.gl', 'g.page', 'share.google'];
+
+const estHoteGoogle = (url: string) => {
+  const hote = new URL(url).hostname.toLowerCase();
+  return DOMAINES_GOOGLE.some((d) => hote === d || hote.endsWith(`.${d}`));
+};
+
 const SchemaEntreprise = z.object({
   identite: z.object({
     nom: texte('Le nom'),
@@ -80,6 +94,29 @@ const SchemaEntreprise = z.object({
     adresse: z.string().default(''),
     instagram: z
       .union([z.literal(''), z.url('Le lien Instagram est invalide.')])
+      .default(''),
+    /**
+     * Le lien vers la fiche Google Business Profile, c'est-à-dire vers
+     * l'établissement dans Google Maps. Il sert à deux choses : le bouton
+     * « Itinéraire » de la page Contact, et le `sameAs` du balisage structuré,
+     * qui dit au moteur que la fiche et le site décrivent la même entreprise —
+     * le rapprochement se fait sinon par simple concordance du nom, de
+     * l'adresse et du téléphone, et cette concordance est fragile.
+     *
+     * D'où le contrôle de l'hôte, qui n'est pas du zèle : coller ici le lien
+     * du site, du compte Instagram ou d'une page d'annuaire ferait déclarer
+     * une identité fausse aux moteurs, ce qui est pire que de n'en déclarer
+     * aucune. La forme exacte du lien n'est en revanche pas vérifiable — il y
+     * en a plusieurs, toutes valables : le lien court `maps.app.goo.gl` du
+     * bouton « Partager », l'ancien `g.page`, ou l'URL complète du lieu sur
+     * `google.com/maps`.
+     */
+    ficheGoogle: z
+      .union([z.literal(''), z.url('Le lien de la fiche Google est invalide.')])
+      .refine(
+        (url) => url === '' || estHoteGoogle(url),
+        "Ce lien ne mène pas à Google : la fiche s'obtient par le bouton « Partager » de l'établissement dans Google Maps.",
+      )
       .default(''),
   }),
   /**

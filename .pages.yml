@@ -894,6 +894,17 @@ content:
           - name: instagram
             label: Lien Instagram
             type: string
+          - name: ficheGoogle
+            label: Fiche Google
+            type: string
+            description: >-
+              Le lien vers l'établissement dans Google Maps. Pour l'obtenir :
+              ouvrir la fiche, bouton « Partager », « Copier le lien ». Il
+              ajoute un bouton « Itinéraire » sur la page Contact, et surtout
+              il dit à Google que la fiche et le site sont bien la même
+              entreprise — ce qui compte pour apparaître dans les résultats
+              locaux. Laissé vide tant que la fiche n'existe pas : le bouton ne
+              s'affiche alors pas.
 
       - name: atelier
         label: Atelier
