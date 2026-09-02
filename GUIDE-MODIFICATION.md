@@ -4,6 +4,13 @@ Ce guide s'adresse à CAMBIOME, pas à un développeur. Il explique comment ajou
 un chantier avec sa photo, corriger un numéro de téléphone ou réécrire un texte,
 depuis un simple navigateur, sans rien installer sur l'ordinateur.
 
+Tout se fait à une seule adresse :
+
+> **https://app.pagescms.org/gagnairn/cambiome/main/file**
+
+C'est la seule voie de modification décrite ici, et la seule à emprunter : rien
+de ce qui suit ne demande d'aller ailleurs.
+
 **Vous ne pouvez pas casser le site en ligne.** C'est le point le plus important,
 et il vaut la peine de comprendre pourquoi.
 
@@ -28,20 +35,28 @@ Il contient un lien : suivez-le.
 1. Sur la page qui s'ouvre, saisissez votre adresse e-mail — la même que celle à
    laquelle l'invitation est arrivée.
 2. Un **code à six chiffres** vous est envoyé par e-mail. Saisissez-le.
-3. Vous voilà connecté·e, sur le dépôt **cambiome**.
+3. Vous voilà connecté·e, sur le dépôt **cambiome**, à l'adresse
+   https://app.pagescms.org/gagnairn/cambiome/main/file. C'est de là que part
+   toute modification du site.
 
 Il n'y a **pas de mot de passe** à retenir : à chaque nouvelle connexion, un
 nouveau code à six chiffres est envoyé. Il n'y a pas non plus de compte GitHub à
 créer. Si le code n'arrive pas, regardez dans les indésirables avant de nous
 écrire.
 
-Mettez l'adresse en favori. Trois adresses sont à garder sous la main :
+Trois adresses sont à garder sous la main :
 
 | | |
 |---|---|
-| Modifier le site | https://app.pagescms.org |
+| **Modifier le site** | https://app.pagescms.org/gagnairn/cambiome/main/file |
 | Le site en ligne | https://gagnairn.github.io/cambiome |
 | L'état des publications | https://github.com/gagnairn/cambiome/actions |
+
+La première est **la seule par laquelle on modifie le site**, et c'est elle
+qu'il faut mettre en favori : elle ouvre directement la liste des contenus de
+CAMBIOME, sans passer par un choix de dépôt. Les deux autres ne servent qu'à
+regarder — le site tel que le voient les visiteurs, et l'état de la dernière
+publication. On n'écrit rien depuis elles.
 
 ---
 
@@ -53,8 +68,8 @@ Une colonne, à gauche, liste tout ce qui est modifiable :
 |---|---|
 | **Chantiers** | la galerie de réalisations, photos comprises |
 | **Textes des pages** | un dossier, une entrée par page du site |
-| **Les quatre métiers** | le contenu des quatre pages métier |
-| **Les quatre piliers de la démarche** | les quatre blocs de la page Démarche |
+| **Les métiers** | les cinq métiers |
+| **Les piliers de la démarche** | les quatre piliers |
 | **L'entreprise** | coordonnées, identité légale, assurance, hébergeur |
 | **Qualification RGE** | organisme, certificat, dates, domaines |
 | **Mission de la société à mission** | le texte statutaire |
@@ -63,6 +78,26 @@ Plus une rubrique **Media → Photos de chantiers**, qui donne accès aux images
 déjà téléversées.
 
 Chaque entrée est un formulaire : on clique dedans, on modifie, on enregistre.
+
+### Pourquoi deux entrées portent le nom d'une même page
+
+Dans « Textes des pages », vous trouverez **Nos métiers** et **Notre démarche**.
+Et plus bas, dans la colonne, **Les métiers** et **Les piliers de la démarche**.
+Ce n'est pas un doublon : ces deux entrées ne contiennent pas la même chose, et
+la seconde ne sert pas qu'à sa page.
+
+| Vous voulez modifier… | Entrée à ouvrir |
+|---|---|
+| le titre et le chapô en haut de la page Métiers | Textes des pages → **Nos métiers** |
+| le texte d'un métier, ses paragraphes, ses puces | **Les métiers** |
+| le titre et le chapô en haut de la page Démarche | Textes des pages → **Notre démarche** |
+| le texte d'un pilier | **Les piliers de la démarche** |
+
+La règle est la même dans les deux cas : l'entrée du dossier « Textes des pages »
+ne touche que **l'en-tête** de sa page ; l'entrée du bas porte le contenu, et ce
+contenu est **repris sur la page d'accueil** — les métiers en cartes, les piliers
+en liste numérotée. Modifier un métier change donc deux pages à la fois. Une
+phrase le rappelle une fois l'entrée ouverte, sous la liste.
 
 ---
 
@@ -233,7 +268,7 @@ répond plus.
 
 ### Le texte d'un métier
 
-**Les quatre métiers.** Chaque métier a quatre parties :
+**Les métiers.** Chaque métier a quatre parties :
 
 | | |
 |---|---|
@@ -242,7 +277,7 @@ répond plus.
 | **Paragraphes** | le corps du texte, un paragraphe par ligne de la liste |
 | **Liste à puces** | les points clés, un par ligne |
 
-Comme les chantiers, les quatre métiers s'affichent repliés, un bandeau par
+Comme les chantiers, les métiers s'affichent repliés, un bandeau par
 métier. Pour ajouter ou retirer un paragraphe ou une puce, utilisez
 **`Add an item`** et l'icône de corbeille de la sous-liste concernée.
 
@@ -428,7 +463,7 @@ semaines pour que Google ait parcouru l'ensemble des pages.
 ## Ce qu'il vaut mieux nous demander
 
 - **Ajouter, retirer ou renommer une page.**
-- **Ajouter ou supprimer un métier** — il y en a quatre, et ils structurent la
+- **Ajouter ou supprimer un métier** — il y en a cinq, et ils structurent la
   navigation.
 - **Changer l'identifiant d'un métier** : c'est son adresse web, la modifier casse
   les liens existants et les résultats Google.
@@ -437,45 +472,7 @@ semaines pour que Google ait parcouru l'ensemble des pages.
 - **Changer d'hébergeur**, ou basculer sur le domaine `www.cambiome.fr`.
 - **Le renouvellement ou l'expiration du RGE**, pour relancer une publication.
 - Toute question sur un message d'erreur que vous ne comprenez pas.
-
----
-
-## Annexe — modifier sans le CMS
-
-Cette annexe est un secours. Elle sert si Pages CMS est indisponible, ou si
-quelqu'un disposant d'un compte GitHub doit intervenir directement.
-
-Le contenu du site est dans le dépôt, en fichiers texte lisibles :
-
-| Fichier | Contenu |
-|---|---|
-| `src/content/realisations.yaml` | les chantiers, sous la clé `chantiers`, dans l'ordre d'affichage |
-| `src/content/entreprise.yaml` | coordonnées, identité légale, assurance, hébergeur |
-| `src/content/rge.yaml` | la qualification RGE |
-| `src/content/mission.yaml` | la mission statutaire |
-| `src/content/metiers.yaml` | les quatre métiers, sous la clé `metiers` |
-| `src/content/demarche.yaml` | les quatre piliers, sous la clé `piliers` |
-| `src/content/pages/*.yaml` | la prose de chaque page, un fichier par page |
-
-Pour en modifier un depuis GitHub :
-
-1. Ouvrez le fichier sur https://github.com/gagnairn/cambiome.
-2. Cliquez sur l'icône **crayon**, en haut à droite du fichier.
-3. Modifiez le texte.
-4. Cliquez sur **`Commit changes...`**, puis sur **`Commit changes`** dans la
-   fenêtre qui s'ouvre.
-5. La publication part comme depuis le CMS, avec les mêmes contrôles.
-
-Deux précautions propres à cette voie, dont le CMS vous dispense :
-
-- **L'indentation compte.** Ces fichiers marquent la hiérarchie par des espaces en
-  début de ligne. En ajouter ou en retirer change le sens. Recopiez l'alignement
-  des lignes voisines.
-- **Les apostrophes.** Un texte entouré d'apostrophes simples (`'…'`) qui contient
-  lui-même une apostrophe doit la doubler : `'L''entreprise'`. Le plus simple est
-  de reprendre exactement la forme d'une ligne existante.
-
-Ajouter une photo par cette voie suppose de la déposer dans
-`src/assets/realisations/` puis de référencer son nom de fichier dans
-`realisations.yaml`. C'est faisable, mais c'est précisément ce que le CMS fait
-mieux : préférez-le tant qu'il fonctionne.
+- **Une modification urgente alors que le CMS est inaccessible.** Il n'y a pas
+  de voie de secours à votre main : le contenu se modifie par
+  https://app.pagescms.org/gagnairn/cambiome/main/file et par là seulement.
+  Écrivez-nous, nous intervenons directement dans les fichiers.

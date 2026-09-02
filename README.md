@@ -66,14 +66,19 @@ une image de 44 px les rendait illisibles et rognait la marque de moitié.
 
 Côté client, il y a un guide séparé : [GUIDE-MODIFICATION.md](GUIDE-MODIFICATION.md)
 décrit l'ajout d'un chantier avec sa photo et les modifications de texte depuis
-Pages CMS (`app.pagescms.org`), sans compte GitHub ni ligne de commande. Ce qui
-suit s'adresse à qui reprend le code.
+Pages CMS, à l'adresse unique
+`app.pagescms.org/gagnairn/cambiome/main/file`, sans compte GitHub ni ligne de
+commande. Ce guide ne documente **que** cette voie : l'édition directe des YAML
+sur GitHub reste possible et fonctionne à l'identique — mêmes contrôles, même
+publication — mais elle nous est réservée, pour ne pas exposer le client à
+l'indentation et à l'échappement des apostrophes. Ce qui suit s'adresse à qui
+reprend le code.
 
 ```
 src/
 ├── content/              ← TOUT le contenu, en YAML  ⟵ ce qu'écrit le CMS
 │   ├── entreprise.yaml   ← coordonnées, atelier, identité légale, assurance, hébergeur
-│   ├── metiers.yaml      ← les quatre métiers (clé `metiers`)
+│   ├── metiers.yaml      ← les cinq métiers (clé `metiers`)
 │   ├── demarche.yaml     ← les quatre piliers (clé `piliers`)
 │   ├── realisations.yaml ← les chantiers (clé `chantiers`)
 │   ├── rge.yaml          ← la qualification RGE
@@ -601,9 +606,11 @@ concernés plutôt que d'afficher de fausses informations.
       ne le détecte pas : il ne surveille que les champs existants, et
       celui-ci n'a pas encore de champ. À adhérer d'abord (un médiateur du
       bâtiment, payant), puis à ajouter au CMS.
-- [ ] Photos supplémentaires dans la galerie — les quatre métiers y sont
-      représentés, mais la rénovation thermique n'a qu'une seule photo alors
-      que c'est le métier mis en avant par la qualification RGE
+- [ ] Photos supplémentaires dans la galerie — **l'architecture n'en a aucune** :
+      sa carte d'accueil affiche le motif de cernes et sa section de la page
+      Métiers se passe d'illustration. Un plan ou une vue de projet suffirait.
+      La rénovation thermique, elle, n'a qu'une seule photo alors que c'est le
+      métier mis en avant par la qualification RGE
 - [ ] `astro.config.mjs` → passer `HEBERGEMENT` à `'production'` au moment de
       la bascule vers `www.cambiome.fr`. Un seul mot, qui commande `site`,
       `base` et l'indexation (voir « Passer à un domaine propre »)
