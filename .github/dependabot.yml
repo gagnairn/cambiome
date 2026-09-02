@@ -11,11 +11,15 @@ version: 2
 updates:
   # Dependabot connaît la convention `uses: action@<sha> # <version>` : il met
   # à jour le SHA *et* le commentaire de version, l'épinglage reste lisible.
+  # Mensuel et non hebdomadaire : le dépôt n'a qu'une branche vivante, `main`,
+  # et chaque mise à jour en fait apparaître une seconde le temps de la
+  # fusionner. Un rendez-vous par mois plutôt que quatre suffit à ce que
+  # l'épinglage sur SHA ne prenne pas de retard, sans laisser traîner une
+  # branche ouverte trois semaines sur quatre.
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
     commit-message:
       prefix: 'CI'
 
