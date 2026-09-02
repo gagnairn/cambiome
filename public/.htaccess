@@ -26,10 +26,19 @@
 
   Header always set Cross-Origin-Opener-Policy "same-origin"
 
-  # HTTPS obligatoire deux ans. À n'activer qu'une fois le certificat en place
-  # et le site joignable en HTTPS, sinon le site devient inaccessible.
-  # `preload` volontairement omis (désinscription très lente).
-  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains" "expr=%{HTTPS} == 'on'"
+  # HTTPS obligatoire deux ans. `preload` volontairement omis (désinscription
+  # très lente).
+  #
+  # La condition teste DEUX choses, et pas seulement `%{HTTPS}`. Constaté le
+  # 2 septembre 2026 sur le cluster : en HTTPS, l'en-tête n'était pas émis —
+  # OVH termine TLS en amont d'Apache, qui voit donc `%{HTTPS} == 'off'` sur
+  # une requête pourtant chiffrée. Avec la seule première condition, cet
+  # en-tête n'aurait jamais été envoyé, sans que rien ne le signale.
+  #
+  # Le test est sûr dans les deux sens : si aucune des deux conditions n'est
+  # vraie, l'en-tête n'est pas émis — c'est-à-dire l'état d'avant. Il ne peut
+  # pas être envoyé par erreur sur une requête en clair.
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains" "expr=%{HTTPS} == 'on' || %{HTTP:X-Forwarded-Proto} == 'https'"
 </IfModule>
 
 # Redirection HTTP -> HTTPS.
@@ -47,16 +56,21 @@
 # rediriger : il suffit qu'un seul soit renseigné pour qu'aucune boucle ne soit
 # possible.
 #
-# COMMENT TRANCHER SANS DEVINER. L'en-tête HSTS ci-dessus est déjà un
-# révélateur : sa condition `expr=%{HTTPS} == 'on'` fait qu'il n'est émis que
-# si Apache considère la requête comme chiffrée. Une fois le site déposé et le
-# certificat en place :
+# CE QUI A ÉTÉ CONSTATÉ. Le 2 septembre 2026, certificat en place, l'en-tête
+# HSTS n'était pas émis en HTTPS alors que sa condition d'alors était
+# `expr=%{HTTPS} == 'on'`. Conclusion : sur ce cluster, TLS est terminé en
+# amont et Apache voit `%{HTTPS} == 'off'` sur une requête chiffrée. La forme
+# simple recommandée par OVH aurait donc bouclé.
+#
+# C'est `X-Forwarded-Proto` qui porte l'information. Avant de décommenter,
+# vérifier qu'il arrive bien jusqu'à Apache — l'en-tête HSTS le dit maintenant,
+# sa condition ayant été corrigée pour le tester aussi :
 #
 #   curl -sI https://www.cambiome.fr | grep -i strict-transport
 #
-# S'il sort, `%{HTTPS}` est fiable sur cet hébergement et la forme simple
-# suffirait. S'il ne sort pas, TLS est terminé en amont — et c'est alors la
-# condition X-Forwarded-Proto ci-dessous qui fait tout le travail.
+# S'il sort, X-Forwarded-Proto est présent et la règle ci-dessous est sûre.
+# S'il ne sort toujours pas, AUCUN des indicateurs n'est renseigné : la règle
+# bouclerait, et il ne faut pas l'activer.
 #
 # <IfModule mod_rewrite.c>
 #   RewriteEngine On
