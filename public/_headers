@@ -1,6 +1,10 @@
 # En-têtes de sécurité — Netlify, Cloudflare Pages, Vercel (via config), Deno Deploy.
 #
-# Ce fichier est ignoré par GitHub Pages, qui ne permet pas de configurer les
+# Ce fichier ne sert pas chez OVH — c'est `.htaccess` qui y porte les en-têtes,
+# et le workflow l'exclut du dépôt pour ne pas le servir publiquement sans
+# raison. Il est conservé pour la portabilité : il redeviendrait le bon format
+# le jour d'un passage chez Netlify ou Cloudflare Pages, qui ne permettent pas
+# de configurer les
 # en-têtes HTTP. Il est déjà là pour que la migration vers un vrai hébergeur
 # n'ait rien à inventer : il suffit de déployer `dist/`.
 #

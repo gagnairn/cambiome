@@ -1,8 +1,8 @@
 # En-têtes de sécurité — Apache (OVH, o2switch, Infomaniak, Ionos… la plupart
 # des hébergements mutualisés français).
 #
-# Ce fichier n'a aucun effet sur GitHub Pages ; il est là pour que la migration
-# vers un vrai hébergeur consiste à téléverser `dist/` et rien d'autre.
+# En service depuis la bascule du 2 septembre 2026. Il a été écrit bien avant,
+# pour que la migration se réduise à téléverser `dist/` — ce qui a été le cas.
 #
 # Voir public/_headers pour la version Netlify / Cloudflare Pages et le
 # commentaire qui explique pourquoi la CSP complète n'est pas répétée ici
@@ -93,9 +93,12 @@
   Options -Indexes
 </IfModule>
 
-# Page introuvable. GitHub Pages sert /404.html tout seul, par convention ;
-# Apache ne le devine pas et afficherait sa propre page, celle qui ne ressemble
-# à rien. Le chemin est absolu depuis la racine du site : c'est ce qu'attend
+# Page introuvable. Apache ne devine pas qu'il faut servir /404.html — il
+# afficherait sa propre page d'erreur, celle qui ne ressemble à rien. C'est
+# cette seule ligne qui donne au site sa page 404, ce qui explique le garde-fou
+# du job `deploy` : il refuse de transférer un artefact où ce fichier manque.
+#
+# Le chemin est absolu depuis la racine du site : c'est ce qu'attend
 # `ErrorDocument`, et cela vaut pour une URL fausse à n'importe quelle
 # profondeur. Le statut renvoyé reste bien 404 — Apache ne le remplace pas par
 # une redirection —, ce qui importe autant aux moteurs qu'aux visiteurs.

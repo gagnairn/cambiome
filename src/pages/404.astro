@@ -6,12 +6,17 @@ import { lien } from '~/lib/base';
 ---
 
 {/* `noindex` : cette page est servie en réponse à n'importe quelle URL fausse,
-    elle n'a donc pas de contenu propre à indexer. GitHub Pages la sert déjà
-    avec un statut 404, qui suffit aux moteurs ; ce ne sera plus garanti chez
-    un hébergeur, où la page est désignée par `ErrorDocument` dans .htaccess.
-    La balise, elle, vaut partout. Elle supprime du même coup le
-    `<link rel="canonical">` généré vers /404/, une adresse qui n'existe pas :
-    voir le <head> de Base.astro. */}
+    elle n'a donc pas de contenu propre à indexer.
+
+    Le statut 404 qui l'accompagne ne va pas de soi : Apache ne devine pas
+    qu'il faut servir ce fichier, c'est `ErrorDocument 404 /404.html` dans
+    public/.htaccess qui le lui dit. Si ce fichier caché venait à manquer du
+    dépôt, Apache rendrait sa propre page d'erreur — d'où le garde-fou qui
+    l'exige dans le job `deploy`.
+
+    La balise `noindex`, elle, vaut quel que soit l'hébergeur. Elle supprime du
+    même coup le `<link rel="canonical">` généré vers /404/, une adresse qui
+    n'existe pas : voir le <head> de Base.astro. */}
 <Base titre={page404.titreOnglet} description={page404.description} noindex>
   <section class="container-page flex min-h-[55vh] flex-col justify-center py-24">
     <p class="font-display text-xs tracking-[0.28em] text-ciel-600 uppercase">

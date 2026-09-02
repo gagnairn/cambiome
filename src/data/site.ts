@@ -180,13 +180,13 @@ const SchemaEntreprise = z.object({
    * de la LCEN, et la mention doit désigner l'hébergeur *réel du moment* :
    * elle sert à savoir qui détient les fichiers en cas de litige.
    *
-   * ⚠ Les valeurs du fichier sont celles d'OVH, l'hébergement cible. Tant que
-   * la bascule n'est pas faite, les pages sont servies par GitHub Pages et la
-   * mention anticipe donc la réalité. Pour revenir à l'état exact :
+   * Les valeurs du fichier sont celles d'OVH SAS, et elles sont exactes depuis
+   * la bascule du 2 septembre 2026. Elles ont anticipé la réalité pendant
+   * deux semaines et demie, le temps que l'hébergement soit prêt ; ce n'est
+   * plus le cas, et il n'y a rien à corriger ici.
    *
-   *   nom: GitHub, Inc.
-   *   adresse: 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis
-   *   telephone: "+1 877 448 4820"
+   * Changer d'hébergeur oblige à changer ces trois valeurs le jour même : la
+   * mention doit désigner qui détient les fichiers, pas qui les détenait.
    */
   hebergeur: z.object({
     nom: texte("Le nom de l'hébergeur"),

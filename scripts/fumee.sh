@@ -7,7 +7,7 @@
 # est ce qui fait la différence entre « le déploiement s'est terminé » et « le
 # site fonctionne ».
 #
-#   ./scripts/fumee.sh https://gagnairn.github.io/cambiome/
+#   ./scripts/fumee.sh https://www.cambiome.fr
 #
 # Derrière un proxy d'entreprise qui intercepte TLS, exporter
 # FUMEE_CURL_OPTS=-k pour tester en local. À n'utiliser que là : en CI, la
@@ -27,9 +27,11 @@ signaler() {
   echec=1
 }
 
-# Le CDN de Pages met quelques secondes à propager après le déploiement. Sans
-# cette attente, le job échouerait par intermittence — et un test qui clignote
-# est un test qu'on finit par ignorer.
+# Une attente avant le premier appel. Elle servait à laisser le CDN de GitHub
+# Pages propager ; chez OVH le dépôt SFTP est immédiat, mais le miroir écrit
+# les fichiers un par un et le dernier peut arriver après le premier appel.
+# Sans cette boucle, le job échouerait par intermittence — et un test qui
+# clignote est un test qu'on finit par ignorer.
 echo "Attente de la propagation de $BASE/ ..."
 for tentative in 1 2 3 4 5; do
   code=$("${CURL[@]}" -o /dev/null -w '%{http_code}' "$BASE/") && [ "$code" = 200 ] && break
