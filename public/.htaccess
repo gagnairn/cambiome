@@ -41,66 +41,60 @@
   Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains" "expr=%{HTTPS} == 'on' || %{HTTP:X-Forwarded-Proto} == 'https'"
 </IfModule>
 
-# Redirection HTTP -> HTTPS.
+# Les deux redirections qui suivent ramènent toutes les adresses possibles vers
+# une seule : https://www.cambiome.fr. Sans elles, les mêmes pages répondraient
+# à quatre adresses — avec et sans `www`, en clair et en chiffré — les moteurs
+# partageraient le référencement entre elles, et le `<link rel="canonical">`
+# généré par Astro en désignerait une seule, contredisant les trois autres.
 #
-# À DÉCOMMENTER après le premier dépôt, et pas avant : c'est la seule règle de
-# ce fichier qui puisse rendre le site inaccessible. Si Apache ne voit pas que
-# la requête est déjà chiffrée, il redirige une requête HTTPS vers elle-même,
-# indéfiniment.
+# L'ORDRE COMPTE. Le domaine nu passe en premier, et sa cible porte déjà le
+# `https://` : une requête sur http://cambiome.fr arrive donc en un seul saut,
+# là où la règle HTTPS placée avant l'aurait fait passer par https://cambiome.fr
+# puis par une seconde redirection. Deux 301 en chaîne fonctionnent, mais un
+# moteur en perd un peu à chaque saut, et le visiteur attend deux allers-retours.
+
+# Domaine nu -> www.
+#
+# La cible est en `https://` en dur : cela n'est possible que parce que les DEUX
+# noms sont couverts. Vérifié le 2 septembre 2026 — deux certificats Let's
+# Encrypt distincts, `CN=cambiome.fr` et `CN=www.cambiome.fr`. Le contrôle si
+# un doute revient :
+#
+#   echo | openssl s_client -connect cambiome.fr:443 -servername cambiome.fr \
+#     2>/dev/null | openssl x509 -noout -subject -dates
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_HOST} ^cambiome\.fr$ [NC]
+  RewriteRule ^ https://www.cambiome.fr%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# HTTP -> HTTPS.
+#
+# C'est la règle qui peut rendre le site inaccessible : si Apache ne voit pas
+# que la requête est déjà chiffrée, il la redirige vers elle-même, indéfiniment.
 #
 # OVH documente trois formes selon l'offre (« Passer son site web en HTTPS ») :
 # `%{SERVER_PORT} 80` et `%{HTTPS} off` pour le mutualisé, `%{ENV:HTTPS} !on`
-# pour le Cloud Web. Rien n'indique laquelle s'applique ici sans l'essayer, et
-# se tromper coûte le site. La règle ci-dessous exige donc que les trois
-# indicateurs ET l'en-tête de proxy disent tous « pas de TLS » avant de
-# rediriger : il suffit qu'un seul soit renseigné pour qu'aucune boucle ne soit
-# possible.
+# pour le Cloud Web. **Aucune des trois ne convient ici.** Constaté le
+# 2 septembre 2026 : TLS est terminé en amont d'Apache, qui voit
+# `%{HTTPS} == 'off'` sur une requête pourtant chiffrée. La forme recommandée
+# aurait donc bouclé.
 #
-# CE QUI A ÉTÉ CONSTATÉ. Le 2 septembre 2026, certificat en place, l'en-tête
-# HSTS n'était pas émis en HTTPS alors que sa condition d'alors était
-# `expr=%{HTTPS} == 'on'`. Conclusion : sur ce cluster, TLS est terminé en
-# amont et Apache voit `%{HTTPS} == 'off'` sur une requête chiffrée. La forme
-# simple recommandée par OVH aurait donc bouclé.
-#
-# C'est `X-Forwarded-Proto` qui porte l'information. Avant de décommenter,
-# vérifier qu'il arrive bien jusqu'à Apache — l'en-tête HSTS le dit maintenant,
-# sa condition ayant été corrigée pour le tester aussi :
-#
-#   curl -sI https://www.cambiome.fr | grep -i strict-transport
-#
-# S'il sort, X-Forwarded-Proto est présent et la règle ci-dessous est sûre.
-# S'il ne sort toujours pas, AUCUN des indicateurs n'est renseigné : la règle
-# bouclerait, et il ne faut pas l'activer.
-#
-# <IfModule mod_rewrite.c>
-#   RewriteEngine On
-#   RewriteCond %{HTTPS} !=on
-#   RewriteCond %{ENV:HTTPS} !=on
-#   RewriteCond %{SERVER_PORT} !=443
-#   RewriteCond %{HTTP:X-Forwarded-Proto} !=https
-#   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-# </IfModule>
-
-# Domaine nu -> www. L'adresse officielle du site est www.cambiome.fr : sans
-# cette redirection, les mêmes pages répondent à deux adresses, le
-# référencement se partage entre elles et le <link rel="canonical"> généré par
-# Astro n'en désigne qu'une.
-# À DÉCOMMENTER une fois le certificat valable pour les DEUX noms — la cible
-# est en `https://` en dur, donc un certificat qui ne couvrirait que `www`
-# laisserait les visiteurs du domaine nu sur une erreur de certificat, plus
-# rebutante qu'une simple page absente. Le contrôle :
-#
-#   echo | openssl s_client -connect cambiome.fr:443 -servername cambiome.fr \
-#     2>/dev/null | openssl x509 -noout -text | grep -A1 "Subject Alternative"
-#
-# Les deux noms doivent y figurer. Le DNS, lui, est en place depuis le
-# 2 septembre 2026 : les deux enregistrements A pointent sur l'hébergement.
-#
-# <IfModule mod_rewrite.c>
-#   RewriteEngine On
-#   RewriteCond %{HTTP_HOST} ^cambiome\.fr$ [NC]
-#   RewriteRule ^ https://www.cambiome.fr%{REQUEST_URI} [L,R=301]
-# </IfModule>
+# Seul `X-Forwarded-Proto` porte l'information — sa présence a été prouvée par
+# l'en-tête HSTS ci-dessus, qui n'est émis que si l'une de ces conditions est
+# vraie et qui sort bien en HTTPS. Les trois autres conditions sont conservées :
+# elles ne coûtent rien, et si OVH changeait un jour d'architecture pour
+# renseigner `%{HTTPS}`, la règle continuerait de fonctionner sans être touchée.
+# Il suffit qu'un seul des quatre indicateurs dise « TLS » pour qu'aucune
+# redirection ne parte.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{ENV:HTTPS} !=on
+  RewriteCond %{SERVER_PORT} !=443
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
 
 # Le site est statique : aucun listing de répertoire.
 <IfModule mod_autoindex.c>
