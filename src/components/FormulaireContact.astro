@@ -1,5 +1,5 @@
 ---
-import { contact, site } from '~/data/site';
+import { contact, metiers, site } from '~/data/site';
 import { lien } from '~/lib/base';
 import { telephoneInsecable } from '~/lib/texte';
 
@@ -21,9 +21,19 @@ import { telephoneInsecable } from '~/lib/texte';
  *   message ; tous les autres sont recopiés dans l'e-mail reçu, avec leur nom
  *   pour intitulé. D'où « Adresse postale du chantier » plutôt que `adresse` :
  *   c'est une étiquette lue par CAMBIOME, pas un identifiant de code ;
- * — le champ nommé exactement `email` devient l'adresse de réponse. Répondre
- *   au message reçu écrit donc à la personne, sans copier-coller. C'est la
- *   raison pour laquelle celui-là seul garde un nom en minuscules.
+ * — le champ nommé `email` ou `Email` devient l'adresse de réponse. Répondre
+ *   au message reçu écrit donc à la personne, sans copier-coller. La
+ *   documentation de Web3Forms accepte les deux graphies ; c'est `Email` qui
+ *   est retenu, pour que l'intitulé s'aligne sur les autres — en version texte
+ *   du message, l'attribut est repris tel quel et `email` y détonnait, seule
+ *   minuscule d'une liste par ailleurs en français soigné.
+ *
+ * L'ORDRE DES CHAMPS EST CELUI DU MESSAGE. Web3Forms recopie la requête dans
+ * l'ordre où le navigateur la sérialise, donc dans l'ordre du DOM. Déplacer un
+ * champ ici déplace sa ligne dans l'e-mail reçu, et réciproquement : la mise
+ * en page du formulaire et la lisibilité de la boîte de réception ne peuvent
+ * pas être réglées séparément. D'où l'enchaînement retenu — quel chantier, où,
+ * puis qui —, qui vaut dans les deux sens.
  */
 const ENDPOINT = 'https://api.web3forms.com/submit';
 
@@ -87,29 +97,52 @@ const label = 'block text-sm text-encre/80';
         <input type="hidden" name="from_name" value={`Site ${site.nom}`} />
         {/* Retour après envoi quand JavaScript est indisponible */}
         <input type="hidden" name="redirect" value={urlMerci} />
-        {/* Provenance, pour trier dans la messagerie.
+        {/* En tête, et alimenté par les métiers eux-mêmes.
 
-            La clé d'accès Web3Forms est publique — elle est dans ce HTML — et
-            le POST part du navigateur vers api.web3forms.com sans passer par
-            nous : qui la recopie peut envoyer des messages comme s'ils
-            venaient du formulaire. Web3Forms sait refuser ces envois
-            (« Restrict to Domain »), mais c'est une option payante ; côté
-            code, il n'y a rien à verrouiller, le contrôle n'aurait de sens
-            qu'à l'endroit où part le mail.
+            La liste était recopiée à la main, et avait divergé : « Architecture »
+            y manquait depuis son ajout, et les quatre autres intitulés dataient
+            d'avant leur reformulation dans le CMS. Un visiteur venu pour un
+            projet d'architecture ne pouvait pas le déclarer. Dérivée de
+            `metiers`, elle ne peut plus se désynchroniser — ajouter un métier
+            au CMS l'ajoute ici.
 
-            Cette ligne n'est donc pas une barrière : elle se recopie aussi
-            facilement que la clé. C'est une étiquette, qui permet à CAMBIOME
-            de filtrer sur la provenance — ce qui suffit contre le spam de clé
-            récoltée, automatisé et qui ne se donne pas cette peine. Devant un
-            envoi ciblé, la vraie réponse reste de changer la clé : un champ du
-            CMS, et l'ancienne devient muette.
+            Option vide en tête, et sélectionnée : sans elle le champ part sur
+            le premier métier, et qui ne touche pas au menu envoie une
+            qualification qu'il n'a pas choisie. Le champ n'est pas requis, une
+            valeur vide est donc un état légitime. */}
+        <div>
+          <label class={label} for="nature">
+            Nature du projet
+          </label>
+          <select class={champ} id="nature" name="Nature du projet">
+            <option value="">— Sélectionnez —</option>
+            {metiers.map((m) => (
+              <option>{m.titre}</option>
+            ))}
+            <option>Autre — je précise ci-dessous</option>
+          </select>
+        </div>
 
-            La valeur est celle du domaine réellement servi, pas une chaîne
-            écrite en dur : en préversion elle dira github.io, et ces messages
-            de test se distingueront des vrais. */}
-        <input type="hidden" name="Origine" value={origine} />
-
-        <div class="grid gap-6 sm:grid-cols-2">
+        <div class="mt-6 grid gap-6 sm:grid-cols-2">
+          <div>
+            <label class={label} for="adresse">
+              Adresse postale du chantier <span aria-hidden="true">*</span>
+            </label>
+            {/* Obligatoire au même titre que le téléphone, et pour la même
+                raison : sans le lieu, il n'y a ni déplacement à prévoir ni
+                devis à chiffrer, et l'objet de l'e-mail perd ce qui permet de
+                trier la boîte de réception. Pas de `pattern` ici non plus —
+                une adresse française s'écrit de trop de façons pour qu'une
+                expression régulière la valide sans en refuser de bonnes. */}
+            <input
+              class={champ}
+              id="adresse"
+              name="Adresse postale du chantier"
+              type="text"
+              required
+              autocomplete="street-address"
+            />
+          </div>
           <div>
             <label class={label} for="nom">
               Nom et prénom <span aria-hidden="true">*</span>
@@ -121,19 +154,6 @@ const label = 'block text-sm text-encre/80';
               type="text"
               required
               autocomplete="name"
-            />
-          </div>
-          <div>
-            <label class={label} for="email">
-              Email <span aria-hidden="true">*</span>
-            </label>
-            <input
-              class={champ}
-              id="email"
-              name="email"
-              type="email"
-              required
-              autocomplete="email"
             />
           </div>
           <div>
@@ -156,43 +176,18 @@ const label = 'block text-sm text-encre/80';
             />
           </div>
           <div>
-            <label class={label} for="adresse">
-              Adresse postale du chantier <span aria-hidden="true">*</span>
+            <label class={label} for="email">
+              Email <span aria-hidden="true">*</span>
             </label>
-            {/* Obligatoire au même titre que le téléphone, et pour la même
-                raison : sans le lieu, il n'y a ni déplacement à prévoir ni
-                devis à chiffrer, et l'objet de l'e-mail perd ce qui permet de
-                trier la boîte de réception. Pas de `pattern` ici non plus —
-                une adresse française s'écrit de trop de façons pour qu'une
-                expression régulière la valide sans en refuser de bonnes. */}
             <input
               class={champ}
-              id="adresse"
-              name="Adresse postale du chantier"
-              type="text"
+              id="email"
+              name="Email"
+              type="email"
               required
-              autocomplete="street-address"
+              autocomplete="email"
             />
           </div>
-        </div>
-
-        <div class="mt-6">
-          <label class={label} for="nature">
-            Nature du projet
-          </label>
-          <select class={champ} id="nature" name="Nature du projet">
-            {/* Option vide en tête, et sélectionnée. Sans elle le champ part
-                sur « Charpente / ossature bois » : qui ne touche pas au menu
-                envoie une qualification qu'il n'a pas choisie, et CAMBIOME
-                reçoit une nature de projet fausse. Le champ n'est pas requis,
-                une valeur vide est donc un état légitime. */}
-            <option value="">— Sélectionnez —</option>
-            <option>Charpente / ossature bois</option>
-            <option>Rénovation thermique</option>
-            <option>Couverture / zinguerie</option>
-            <option>Structure bois / menuiserie</option>
-            <option>Autre — je précise ci-dessous</option>
-          </select>
         </div>
 
         <div class="mt-6">
@@ -246,6 +241,25 @@ const label = 'block text-sm text-encre/80';
             </a>
           </div>
         </div>
+
+        {/* Provenance, en DERNIER — donc dernière ligne de l'e-mail reçu.
+            Elle y figurait en tête, avant tout ce qui se lit vraiment, pour
+            une valeur qui ne varie plus depuis qu'un seul domaine sert le
+            site.
+
+            Ce qu'elle reste : une étiquette de tri. La clé d'accès Web3Forms
+            est publique — elle est dans ce HTML — et le POST part du
+            navigateur sans passer par nous : qui la recopie peut envoyer des
+            messages comme s'ils venaient du formulaire. Web3Forms sait les
+            refuser (« Restrict to Domain »), mais c'est une option payante.
+
+            Cette ligne n'est donc pas une barrière, elle se recopie aussi
+            facilement que la clé. Elle permet de filtrer sur la provenance, ce
+            qui suffit contre le spam de clé récoltée, automatisé et qui ne se
+            donne pas cette peine. Devant un envoi ciblé, la vraie réponse
+            reste de changer la clé : un champ du CMS, et l'ancienne devient
+            muette. */}
+        <input type="hidden" name="Origine" value={origine} />
 
         <button
           type="submit"
