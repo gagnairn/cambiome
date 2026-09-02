@@ -78,8 +78,8 @@ reprend le code.
 src/
 ├── content/              ← TOUT le contenu, en YAML  ⟵ ce qu'écrit le CMS
 │   ├── entreprise.yaml   ← coordonnées, atelier, identité légale, assurance, hébergeur
-│   ├── metiers.yaml      ← les cinq métiers (clé `metiers`)
-│   ├── demarche.yaml     ← les quatre piliers (clé `piliers`)
+│   ├── metiers.yaml      ← les métiers (clé `metiers`)
+│   ├── demarche.yaml     ← les piliers (clé `piliers`)
 │   ├── realisations.yaml ← les chantiers (clé `chantiers`)
 │   ├── rge.yaml          ← la qualification RGE
 │   └── pages/            ← la prose des pages, un fichier par page

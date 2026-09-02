@@ -68,8 +68,8 @@ Une colonne, à gauche, liste tout ce qui est modifiable :
 |---|---|
 | **Chantiers** | la galerie de réalisations, photos comprises |
 | **Textes des pages** | un dossier, une entrée par page du site |
-| **Les métiers** | les cinq métiers |
-| **Les piliers de la démarche** | les quatre piliers |
+| **Les métiers** | les métiers |
+| **Les piliers de la démarche** | les piliers |
 | **L'entreprise** | coordonnées, identité légale, assurance, hébergeur |
 | **Qualification RGE** | organisme, certificat, dates, domaines |
 | **Mission de la société à mission** | le texte statutaire |
@@ -463,8 +463,7 @@ semaines pour que Google ait parcouru l'ensemble des pages.
 ## Ce qu'il vaut mieux nous demander
 
 - **Ajouter, retirer ou renommer une page.**
-- **Ajouter ou supprimer un métier** — il y en a cinq, et ils structurent la
-  navigation.
+- **Ajouter ou supprimer un métier** — ils structurent la navigation.
 - **Changer l'identifiant d'un métier** : c'est son adresse web, la modifier casse
   les liens existants et les résultats Google.
 - **Les couleurs, les polices, la mise en page.**
