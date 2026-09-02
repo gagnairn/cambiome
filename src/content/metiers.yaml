@@ -65,3 +65,22 @@ metiers:
       - Cuisine et mobilier sur mesure
       - Persiennes
       - Bardage claire-voie, claustras
+  - slug: architecture
+    titre: Architecture
+    chapo: Conception, calcul et architecture, du relevé de l'existant au détail
+      d'exécution.
+    texte:
+      - "Avant le chantier, il y a le projet. Relevé du bâti existant,
+        esquisse, choix des matériaux et dimensionnement de la structure :
+        nous concevons l'ouvrage en amont, et nous nous appuyons sur un bureau
+        d'études pour les calculs qui l'exigent."
+      - Concevoir et construire dans la même entreprise change la nature des
+        plans. Les détails d'étanchéité à l'air, les jonctions entre corps de
+        métier et les surprises du bâti ancien se règlent sur le papier, avec
+        ceux qui monteront l'ouvrage, plutôt que sur le toit le jour venu.
+    points:
+      - Relevé et diagnostic du bâti existant
+      - Esquisse et dessin du projet
+      - Calcul et dimensionnement de la structure bois
+      - Détails constructifs et d'exécution
+      - Coordination avec le bureau d'études structure

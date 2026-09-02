@@ -101,6 +101,8 @@ content:
                   label: Couverture et zinguerie
                 - name: structure-bois-menuiserie
                   label: Structure bois et menuiserie
+                - name: architecture
+                  label: Architecture
           - name: legende
             label: Légende
             type: text
@@ -267,7 +269,7 @@ content:
             required: true
             description: >-
               N'apparaît pas à l'écran : c'est le nom que les lecteurs d'écran
-              annoncent devant la liste des quatre métiers.
+              annoncent devant la liste des métiers.
 
       - name: page-realisations
         label: Réalisations
@@ -718,8 +720,21 @@ content:
                 required: true
 
   # ------------------------------------------------------------------ métiers
+  # Deux entrées touchent la page Métiers, et c'est voulu : « Nos métiers », dans
+  # le groupe ci-dessus, porte l'habillage de la seule page Métiers ; celle-ci
+  # porte les métiers eux-mêmes, qui servent aussi aux cartes de l'accueil et au
+  # sommaire du pied de page. Même partage pour la démarche, plus bas — d'où des
+  # intitulés parallèles, « Les métiers » et « Les piliers de la démarche », et
+  # une phrase qui dit où va le contenu.
+  #
+  # Cette phrase est portée par le *champ*, pas par l'entrée : Pages CMS ne rend
+  # `description` que sur un champ (components/entry/entry-form.tsx), et la
+  # colonne de gauche n'affiche rien d'autre que `label || name`. Une
+  # `description` posée sur l'entrée passerait la validation sans jamais
+  # s'afficher. C'est donc le libellé, et lui seul, qui distingue les deux
+  # entrées avant ouverture.
   - name: metiers
-    label: Les quatre métiers
+    label: Les métiers
     type: file
     path: src/content/metiers.yaml
     format: yaml
@@ -727,6 +742,10 @@ content:
       - name: metiers
         label: false
         type: object
+        description: >-
+          Ces textes sont affichés sur la page Métiers, en cartes sur la page
+          d'accueil et dans le sommaire du pied de page. L'en-tête de la page
+          Métiers, lui, se modifie dans « Textes des pages » → « Nos métiers ».
         list:
           min: 1
           collapsible:
@@ -774,11 +793,13 @@ content:
             description: Les prestations, une par entrée. Peut rester vide.
 
   # ----------------------------------------------------------------- démarche
-  # « Les quatre piliers » et non « Notre démarche » : la page du même nom est
-  # déjà dans le groupe ci-dessus, et deux entrées de menu identiques
+  # « Les piliers de la démarche » et non « Notre démarche » : la page du même
+  # nom est déjà dans le groupe ci-dessus, et deux entrées de menu identiques
   # obligeraient l'éditeur à ouvrir les deux pour savoir laquelle est laquelle.
+  # Sans « quatre » : le libellé ne fige pas un nombre qui peut changer, comme
+  # pour les métiers ci-dessus.
   - name: demarche
-    label: Les quatre piliers de la démarche
+    label: Les piliers de la démarche
     type: file
     path: src/content/demarche.yaml
     format: yaml
@@ -786,6 +807,10 @@ content:
       - name: piliers
         label: false
         type: object
+        description: >-
+          Ces textes sont affichés sur la page Démarche et repris sur la page
+          d'accueil. L'en-tête de la page Démarche, lui, se modifie dans
+          « Textes des pages » → « Notre démarche ».
         list:
           min: 1
           collapsible:
