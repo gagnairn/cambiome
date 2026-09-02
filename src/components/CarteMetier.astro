@@ -23,7 +23,12 @@ const { metier, evite = [] } = Astro.props;
 // en galerie — aujourd'hui la rénovation thermique, qui n'a qu'une photo. Mieux
 // vaut la répéter que laisser un motif abstrait à la place d'un ouvrage.
 const siens = realisations.filter((r) => r.metierSlug === metier.slug);
-const illustration = siens.find((r) => !evite.includes(r)) ?? siens[0];
+const chantier = siens.find((r) => !evite.includes(r)) ?? siens[0];
+
+// L'illustration du métier ne sert qu'en dernier recours : un ouvrage réalisé
+// vaut toujours mieux qu'une image d'illustration, et le jour où une photo
+// d'architecture arrive, elle prend la place sans qu'on touche à `metiers.yaml`.
+const image = chantier?.image ?? metier.illustration?.image;
 ---
 
 <a
@@ -31,7 +36,7 @@ const illustration = siens.find((r) => !evite.includes(r)) ?? siens[0];
   class="group flex flex-col overflow-hidden rounded-lg border border-sable-200 bg-white transition-shadow hover:shadow-lg hover:shadow-ciel-900/5"
 >
   {
-    illustration ? (
+    image ? (
       <div class="aspect-4/3 overflow-hidden bg-sable-100">
         {/* `widths`, `formats` et `quality` : les mêmes que
             GalerieRealisations, qui porte le raisonnement sur le format. C'est
@@ -48,7 +53,7 @@ const illustration = siens.find((r) => !evite.includes(r)) ?? siens[0];
             au lieu de la photo à sa taille d'origine — voir
             GalerieRealisations.astro. */}
         <Picture
-          src={illustration.image}
+          src={image}
           alt=""
           formats={['avif']}
           fallbackFormat="webp"

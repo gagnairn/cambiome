@@ -84,6 +84,18 @@ function comparer(chemin, champs, valeur) {
      * perdre.
      */
     if (champ.list) continue;
+    /*
+     * Même raisonnement pour un groupe de champs facultatif : absent, il ne
+     * vaut pas « perdu » mais « non renseigné ». `metiers[].illustration` en
+     * est un — il ne concerne que les métiers sans chantier publié, et exiger
+     * sa présence sur les autres reviendrait à leur imposer un bloc vide.
+     *
+     * La condition reste étroite : seulement un `type: object`, et seulement
+     * s'il n'est pas déclaré obligatoire. Les champs simples restent tous
+     * surveillés, et c'est là qu'est le risque — eux s'écrivent vides au
+     * premier enregistrement, et le contenu se perd pour de bon.
+     */
+    if (champ.type === 'object' && champ.required !== true) continue;
     signaler(`${chemin}.${cle} : décrit dans .pages.yml, absent du contenu`);
   }
   for (const cle of reels)

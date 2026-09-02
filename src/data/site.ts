@@ -15,6 +15,7 @@
  * ⚠ Ne pas déplacer ici du texte de page : la prose des pages est dans
  * `src/content/pages/`, un fichier par page, lue par `src/data/pages.ts`.
  */
+import type { ImageMetadata } from 'astro';
 import { z } from 'astro/zod';
 import { charger } from '~/lib/contenu';
 import { CODES_PLAGES } from '~/lib/horaires';
@@ -315,6 +316,26 @@ const SchemaMetiers = z
         .array(texte('Un paragraphe'))
         .min(1, 'Un métier doit avoir au moins un paragraphe.'),
       points: z.array(texte('Un point')),
+      /**
+       * Image de repli, affichée tant que le métier n'a aucun chantier.
+       *
+       * Elle illustre le métier, elle ne prétend pas être un ouvrage : c'est
+       * toute la raison de ce champ. La carte d'accueil et la page Métiers
+       * montrent normalement la première réalisation du métier, sous un titre
+       * et une légende qui l'attribuent à l'entreprise. Sans emplacement
+       * distinct, la seule façon d'illustrer un métier encore sans chantier
+       * était d'inventer une réalisation — donc de s'attribuer l'ouvrage d'un
+       * autre.
+       *
+       * Optionnelle, et volontairement dominée : dès qu'une vraie photo de
+       * chantier arrive, elle reprend la main sans qu'on ait à vider ce champ.
+       */
+      illustration: z
+        .object({
+          fichier: texte("Le fichier de l'illustration"),
+          alt: texte("La description de l'illustration"),
+        })
+        .optional(),
     }),
   )
   .min(1, 'Il faut au moins un métier.')
@@ -382,17 +403,60 @@ export const hebergeur = entreprise.hebergeur;
 
 export const rge = charger('rge', SchemaRge);
 
+/**
+ * Les illustrations de métier, indexées au build.
+ *
+ * Même mécanique que les photos de chantier (`src/data/realisations.ts`) et
+ * pour la même raison : le YAML ne porte qu'un nom de fichier, pour qu'ajouter
+ * une image reste à la portée d'un éditeur. Dossier distinct de
+ * `realisations/`, qui n'accueille que des ouvrages réalisés — et que
+ * `photos.yml` réécrit automatiquement, ce qui n'aurait pas de sens ici.
+ */
+const ILLUSTRATIONS = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/metiers/*.{jpg,jpeg,png,webp,avif}',
+  { eager: true },
+);
+
+/** Ne compare que le nom de fichier : voir `photo()` dans realisations.ts. */
+function illustrationDeMetier(reference: string, titre: string): ImageMetadata {
+  const fichier = reference.split('/').pop();
+  const trouve = Object.entries(ILLUSTRATIONS).find(
+    ([chemin]) => chemin.split('/').pop() === fichier,
+  );
+
+  if (!trouve) {
+    const disponibles = Object.keys(ILLUSTRATIONS)
+      .map((c) => c.split('/').pop())
+      .sort()
+      .join('\n  ');
+    throw new Error(
+      `Le métier « ${titre} » cite l'illustration « ${reference} », qui n'existe pas ` +
+        `dans src/assets/metiers/.\n` +
+        `Illustrations disponibles :\n  ${disponibles || '(aucune)'}`,
+    );
+  }
+
+  return trouve[1].default;
+}
+
 export type Metier = {
   slug: string;
   titre: string;
   chapo: string;
   texte: string[];
   points: string[];
+  illustration?: { image: ImageMetadata; alt: string };
 };
 
 export const metiers: Metier[] = charger(
   'metiers',
   z.object({ metiers: SchemaMetiers }),
-).metiers;
+).metiers.map((m) => ({
+  ...m,
+  illustration: m.illustration && {
+    image: illustrationDeMetier(m.illustration.fichier, m.titre),
+    alt: m.illustration.alt,
+  },
+}));
 
 export const demarche = charger('demarche', z.object({ piliers: SchemaDemarche })).piliers;

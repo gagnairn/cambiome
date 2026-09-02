@@ -84,3 +84,7 @@ metiers:
       - Calcul et dimensionnement de la structure bois
       - Détails constructifs et d'exécution
       - Coordination avec le bureau d'études structure
+    illustration:
+      fichier: architecture-plan-etabli.jpg
+      alt: Un plan d'exécution déplié sur un établi en bois, avec un crayon de
+        charpentier, un mètre pliant et un réglet métallique posés dessus.

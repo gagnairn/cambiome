@@ -8,8 +8,16 @@ import { metiers } from '~/data/site';
 import { realisations } from '~/data/realisations';
 import { pageMetiers } from '~/data/pages';
 
+// Un ouvrage réalisé d'abord ; à défaut, l'illustration déclarée sur le métier.
+// Les deux exposent `image` et `alt`, le rendu plus bas ne les distingue pas —
+// mais l'origine, elle, n'est pas la même : la photo montre un chantier de
+// l'entreprise, l'illustration ne montre que le métier. D'où deux champs et
+// non un seul (voir `illustration` dans src/data/site.ts).
 const illustrations = new Map(
-  metiers.map((m) => [m.slug, realisations.find((r) => r.metierSlug === m.slug)])
+  metiers.map((m) => [
+    m.slug,
+    realisations.find((r) => r.metierSlug === m.slug) ?? m.illustration,
+  ])
 );
 ---
 

@@ -222,7 +222,9 @@ content:
                   annoncent devant la liste des métiers.
 
           - name: metiers
-            label: Les quatre métiers
+            # Sans le nombre : il était de quatre jusqu'à l'ajout de
+            # l'architecture, et un intitulé qui compte se dément tout seul.
+            label: Les métiers
             type: file
             path: src/content/metiers.yaml
             format: yaml
