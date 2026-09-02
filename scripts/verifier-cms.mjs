@@ -56,19 +56,35 @@ function signaler(message) {
   else problemes.set(cle, { message: message.replace(/\[\d+\]/g, ''), combien: 1 });
 }
 
-/** Les noms des champs déclarés à un niveau donné. */
-const declares = (champs) => champs.filter((c) => c.name).map((c) => c.name);
+/** Les champs déclarés à un niveau donné, par nom. */
+const declares = (champs) => new Map(champs.filter((c) => c.name).map((c) => [c.name, c]));
 
 /**
  * Compare les clés déclarées et les clés réelles à un niveau, puis descend dans
  * les objets. Le chemin sert uniquement à rendre le message lisible.
  */
 function comparer(chemin, champs, valeur) {
-  const attendus = new Set(declares(champs));
+  const attendus = declares(champs);
   const reels = new Set(Object.keys(valeur ?? {}));
 
-  for (const cle of attendus)
-    if (!reels.has(cle)) signaler(`${chemin}.${cle} : décrit dans .pages.yml, absent du contenu`);
+  for (const [cle, champ] of attendus) {
+    if (reels.has(cle)) continue;
+    /*
+     * Une liste vide, Pages CMS ne l'écrit pas : il retire la clé au lieu
+     * d'enregistrer `[]`. Absence et liste vide sont donc le même état, et le
+     * signaler bloquerait la publication dès qu'un éditeur enregistre un
+     * fichier dont une liste est vide — sans avoir touché à cette liste.
+     * C'est ce qui est arrivé à `entreprise.atelier.horaires` (commit
+     * 523a792) : la CI a échoué sur les cinquante commits suivants.
+     *
+     * Le contrôle garde tout son sens ailleurs. Sur un champ simple, la clé
+     * absente s'affiche vide dans le formulaire puis s'écrit vide au premier
+     * enregistrement : là, le contenu se perd. Sur une liste, il n'y a rien à
+     * perdre.
+     */
+    if (champ.list) continue;
+    signaler(`${chemin}.${cle} : décrit dans .pages.yml, absent du contenu`);
+  }
   for (const cle of reels)
     if (!attendus.has(cle)) signaler(`${chemin}.${cle} : présent dans le contenu, absent de .pages.yml`);
 
