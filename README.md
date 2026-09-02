@@ -136,8 +136,15 @@ Trois choses à ne pas défaire :
 `npm run images` tourne **avant** `check`, et c'est ce qui rend la marque
 modifiable sans développeur : remplacer `marque/logo-noir.png` depuis le CMS met
 à jour le logo de l'en-tête, le favicon, les icônes et l'image de partage dans
-la même publication. La sortie étant déterministe, l'étape ne produit aucune
-différence tant que les logos ne bougent pas.
+la même publication. Rien n'y est commité — on régénère dans le runner, on
+construit, on jette.
+
+> ⚠ **Ne commitez pas `public/og-image.jpg` régénéré en local.** Les PNG sortent
+> identiques au bit près sur n'importe quelle machine ; ce JPEG non, parce que
+> sharp embarque `mozjpeg` et que son binaire diffère entre Linux x64 et macOS
+> arm64 — environ 170 octets d'écart sur 140 ko, même image. La CI fait foi :
+> `git checkout -- public/og-image.jpg` après un `npm run images` local, sinon
+> les deux plateformes se renvoient le fichier indéfiniment.
 
 Deux autres workflows, les seuls jobs du dépôt qui **écrivent** — d'où leurs
 fichiers séparés, `deploy.yml` n'ayant que `contents: read` :

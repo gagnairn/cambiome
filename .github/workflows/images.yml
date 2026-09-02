@@ -11,6 +11,18 @@ name: Régénération des icônes
 #
 # Deux moitiés, deux raisons : l'une tient la production, l'autre tient le
 # dépôt. Aucune ne dépend de l'autre.
+#
+# ⚠ Ce runner est la référence pour les fichiers versionnés, et il faut le
+# savoir avant de s'étonner d'un aller-retour. Les PNG sortent identiques au
+# bit près sur n'importe quelle machine, mais pas `public/og-image.jpg` : sharp
+# embarque `mozjpeg`, dont le binaire diffère entre Linux x64 et macOS arm64.
+# Le fichier varie d'environ 170 octets sur 140 ko selon la machine — même
+# image, encodage différent.
+#
+# Conséquence pratique : après un `npm run images` en local, `og-image.jpg`
+# apparaît modifié alors que rien n'a changé visuellement. Ne le commitez pas ;
+# `git checkout -- public/og-image.jpg` et laissez la CI faire foi. Sans quoi
+# les deux plateformes se renvoient le fichier à chaque passage.
 on:
   push:
     branches: [main]

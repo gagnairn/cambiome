@@ -69,10 +69,10 @@ jobs:
       # développeur relance la commande à la main. On régénère donc à chaque
       # publication : le site en ligne est toujours cohérent avec ses sources.
       #
-      # La sortie est déterministe — mêmes sources, mêmes octets — donc cette
-      # étape ne produit aucune différence tant que les logos ne bougent pas.
       # Les fichiers restent versionnés pour que `npm run dev` fonctionne sans
       # avoir rien à lancer, et `images.yml` les recommite quand ils changent.
+      # Ici rien n'est commité : on régénère dans le runner, on construit, on
+      # jette. Peu importe donc que la sortie soit identique au commit ou non.
       #
       # Elle passe AVANT `check` : c'est `derives/marque-noire.png` qu'importe
       # l'en-tête, et il doit être à jour avant qu'Astro ne le lise.
