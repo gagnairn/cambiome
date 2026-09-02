@@ -935,7 +935,7 @@ content:
               # « Lundi – vendredi » : Pages CMS interpole le contenu du champ,
               # pas l'intitulé de l'option choisie.
               collapsible:
-                summary: '{fields.jours} : {fields.ouvre} – {fields.ferme}'
+                summary: '{fields.jours} : {fields.ouverture} – {fields.fermeture}'
             description: >-
               ⚠ Ce champ ne fait pas qu'afficher une ligne. Tant qu'il est
               vide, le site dit aux moteurs de recherche « nous intervenons
@@ -958,6 +958,8 @@ content:
                   values:
                     - name: lundi-vendredi
                       label: Lundi – vendredi
+                    - name: lundi-jeudi
+                      label: Lundi – jeudi
                     - name: lundi-samedi
                       label: Lundi – samedi
                     - name: samedi-dimanche

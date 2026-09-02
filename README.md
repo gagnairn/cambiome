@@ -127,9 +127,6 @@ Le test de fumée se rejoue en local :
 - [ ] **Médiateur de la consommation** : les mentions légales n'en désignent
       aucun, alors que l'article L616-1 du code de la consommation l'impose.
       Adhérer à un médiateur du bâtiment, puis l'ajouter au CMS.
-- [ ] **Horaires de l'atelier** dans le CMS (« Entreprise » → « Atelier »). Tant
-      qu'ils sont vides, le balisage reste `Organization` : le site n'invite pas
-      à venir.
 - [ ] **Photos** : l'architecture n'en a aucune, la rénovation thermique une
       seule alors que c'est le métier porté par la qualification RGE.
 - [ ] Hors dépôt : créer la fiche **Google Business Profile** avec l'adresse de

@@ -38,6 +38,7 @@ type Jour = keyof typeof SEMAINE;
  */
 export const PLAGES = {
   'lundi-vendredi': ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'],
+  'lundi-jeudi': ['lundi', 'mardi', 'mercredi', 'jeudi'],
   'lundi-samedi': ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
   'samedi-dimanche': ['samedi', 'dimanche'],
   lundi: ['lundi'],

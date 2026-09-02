@@ -15,6 +15,10 @@ atelier:
   adresse: 19 bis rue de la Liberté, 38600 Fontaine
   latitude: 45.191075
   longitude: 5.696699
+  horaires:
+    - jours: lundi-jeudi
+      ouverture: '07:30'
+      fermeture: '17:30'
 formulaire:
   web3formsCle: 09814d19-063c-44f0-9652-ec94edf5091a
 identiteLegale:

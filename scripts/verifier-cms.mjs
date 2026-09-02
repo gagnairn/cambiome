@@ -104,6 +104,31 @@ function comparer(chemin, champs, valeur) {
 }
 
 /**
+ * Les `{fields.x}` d'un résumé de liste doivent nommer un champ qui existe.
+ *
+ * Ce gabarit intitule les lignes repliées. Pages CMS remplace par une chaîne
+ * vide tout jeton qu'il ne résout pas : un nom de champ erroné ne produit ni
+ * erreur ni trace, seulement un résumé amputé — « lundi-jeudi :  –  » — qu'on
+ * ne remarque qu'en dépliant, c'est-à-dire jamais, puisque c'est précisément ce
+ * que le résumé sert à éviter. Le contrôle ne regarde que la configuration, pas
+ * le contenu : il vaut même pour une liste vide.
+ */
+function verifierResumes(chemin, champs) {
+  for (const champ of champs ?? []) {
+    const resume = champ.list?.collapsible?.summary;
+    if (resume) {
+      const declares = new Set((champ.fields ?? []).map((c) => c.name));
+      for (const [, jeton] of resume.matchAll(/\{fields\.([^}]+)\}/g))
+        if (!declares.has(jeton))
+          signaler(
+            `${chemin}.${champ.name} : le résumé cite « ${jeton} », qui n'est pas un champ de cette liste`,
+          );
+    }
+    verifierResumes(`${chemin}.${champ.name}`, champ.fields);
+  }
+}
+
+/**
  * Les entrées de contenu, groupes défaits.
  *
  * `.pages.yml` range les textes des pages dans une entrée `type: group`, qui
@@ -146,6 +171,7 @@ for (const entree of feuilles) {
   }
 
   comparer(entree.name, entree.fields, contenu);
+  verifierResumes(entree.name, entree.fields);
 }
 
 // La liste déroulante des métiers, recopiée à la main, doit couvrir exactement
