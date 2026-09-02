@@ -48,9 +48,13 @@
 @theme {
   /* --- Charte CAMBIOME ---------------------------------------------------
      La couleur de marque est #9DC3D4, arrêtée par le client. Les neutres sont
-     volontairement chauds (pierre / bois) plutôt que gris purs, et `terre-*`,
-     la couleur des erreurs, reste le terracotta #AD7B7A relevé sur le logo
-     `bloc-terracotta.png`.
+     volontairement chauds (pierre / bois) plutôt que gris purs.
+
+     Il n'y a pas de couleur d'alerte. Une rampe terracotta a existé, retirée
+     le 2 septembre 2026 : elle ne servait qu'à deux endroits, et une teinte
+     entretenue sur dix crans pour deux usages coûte plus qu'elle ne rapporte.
+     Les deux messages qu'elle portait se distinguent autrement — voir
+     FormulaireContact.astro et mentions-legales.astro.
 
      --- La rampe ne suit pas la teinte de #9DC3D4, et c'est délibéré ---
 
@@ -87,17 +91,6 @@
   --color-ciel-700: #085565;
   --color-ciel-800: #06414e;
   --color-ciel-900: #05323c;
-
-  --color-terre-50: #faf5f5;
-  --color-terre-100: #f3e9e9;
-  --color-terre-200: #e7d3d2;
-  --color-terre-300: #d4b4b3;
-  --color-terre-400: #c09796;
-  --color-terre-500: #ad7b7a;
-  --color-terre-600: #946362;
-  --color-terre-700: #7a5150;
-  --color-terre-800: #654545;
-  --color-terre-900: #553c3c;
 
   --color-sable-50: #fbfaf8;
   --color-sable-100: #f4f1ec;

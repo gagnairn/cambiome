@@ -273,12 +273,19 @@ const label = 'block text-sm text-encre/80';
           Envoyer
         </button>
 
-        {/* Région d'annonce : vide, elle ne s'affiche pas (variante `empty:`) */}
+        {/* Région d'annonce : vide, elle ne s'affiche pas (variante `empty:`).
+
+            En erreur, le texte passe de `encre/70` à l'encre pleine. Il n'y a
+            plus de couleur d'alerte dans la charte, et il n'en faut pas : la
+            couleur n'a jamais été le seul signal ici — la région est
+            `role="status"`, donc annoncée, et son texte dit ce qui a échoué et
+            quoi faire. WCAG 1.4.1 interdit précisément de s'en remettre à la
+            couleur seule. */}
         <p
           id="contact-statut"
           role="status"
           aria-live="polite"
-          class="mt-5 text-sm leading-relaxed text-encre/70 empty:hidden data-[etat=erreur]:text-terre-700"
+          class="mt-5 text-sm leading-relaxed text-encre/70 empty:hidden data-[etat=erreur]:text-encre"
         />
       </form>
     </div>
