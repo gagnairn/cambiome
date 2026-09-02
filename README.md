@@ -93,11 +93,16 @@ Secrets attendus — en secrets et non en variables, le dépôt étant public :
 
 | Secret | Contenu |
 |---|---|
-| `OVH_SFTP_SERVEUR` | `sftp.clusterXXX.hosting.ovh.net` |
+| `OVH_SFTP_SERVEUR` | `ssh.clusterXXX.hosting.ovh.net` — **pas** `sftp.`, voir ci-dessous |
 | `OVH_SFTP_LOGIN` | login de l'hébergement |
 | `OVH_SFTP_MOTDEPASSE` | son mot de passe |
 | `OVH_SFTP_CLE_HOTE` | sortie de `ssh-keyscan <serveur>`, relevée une fois |
 | `OVH_SFTP_REPERTOIRE` | racine du site, **relative** : `www`. Un chemin absolu (`/www`) échoue |
+
+Le préfixe `ssh.` n'est pas une coquille. `sftp.clusterXXX.hosting.ovh.net`
+existe, mais pointe sur l'IP web du cluster, où rien n'écoute sur le port 22 :
+la connexion TCP est acceptée puis coupée, ce qui donne un `nc -z` trompeur et
+un `ssh-keyscan` muet. Seul `ssh.clusterXXX` répond vraiment.
 
 Trois choses à ne pas défaire :
 
