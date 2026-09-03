@@ -112,20 +112,35 @@
 #   /public    une heure — favicon, icônes, image de partage : leur nom NE
 #              change PAS d'une version à l'autre, ils doivent donc pouvoir
 #              être remplacés sans attendre un an ;
-#   HTML       laissé au défaut d'OVH. C'est la porte d'entrée, elle doit
-#              rester fraîche, et une publication doit se voir tout de suite.
+#   HTML       un quart d'heure, comme avant. C'est la porte d'entrée, elle
+#              doit rester fraîche : une publication doit se voir tout de suite.
 #
 # `immutable` dit au navigateur de ne pas même revalider lors d'un
 # rechargement de page. Sans effet de bord sur une publication : un fichier
 # republié porte un autre nom, donc une autre URL.
 #
-# ⚠ La forme `expr=` et non `<LocationMatch>`. `<Location>` et `<LocationMatch>`
-# ne sont PAS autorisés en .htaccess — Apache répond 500. `expr=` sur `Header`
-# est en revanche disponible ici, et déjà éprouvé sur ce serveur : c'est ce que
-# fait la ligne HSTS ci-dessus.
+# ⚠ Deux pièges, tous deux constatés en production.
+#
+# `<Location>` et `<LocationMatch>` ne sont PAS autorisés en .htaccess — Apache
+# répond 500. D'où la forme `expr=` sur `Header`, déjà éprouvée sur ce serveur :
+# c'est ce que fait la ligne HSTS ci-dessus.
+#
+# `ExpiresActive Off` n'est pas décoratif. Sans lui, OVH ajoute son propre
+# `Cache-Control: max-age=900` À CÔTÉ du nôtre — deux en-têtes de même nom dans
+# la réponse, ce que la RFC laisse indéfini et que chaque cache tranche à sa
+# façon. Le gain était donc annulé sans que rien ne le signale. Le quart
+# d'heure du HTML venait de ce réglage : il est reposé explicitement ci-dessous
+# pour ne pas disparaître avec lui.
+<IfModule mod_expires.c>
+  ExpiresActive Off
+</IfModule>
+
 <IfModule mod_headers.c>
-  Header always set Cache-Control "public, max-age=31536000, immutable" "expr=%{REQUEST_URI} =~ m#^/_astro/#"
+  # L'ordre compte : chaque `set` remplace le précédent dans la même table, le
+  # dernier qui s'applique l'emporte. Du plus général au plus spécifique.
+  Header always set Cache-Control "public, max-age=900"
   Header always set Cache-Control "public, max-age=3600" "expr=%{REQUEST_URI} =~ m#^/[^/]+\.(ico|png|jpg|webp|avif|svg|webmanifest)$#"
+  Header always set Cache-Control "public, max-age=31536000, immutable" "expr=%{REQUEST_URI} =~ m#^/_astro/#"
 </IfModule>
 
 # Le site est statique : aucun listing de répertoire.
