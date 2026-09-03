@@ -8,6 +8,46 @@
 # commentaire qui explique pourquoi la CSP complète n'est pas répétée ici
 # (Astro la génère en <meta> avec les hachages des scripts ; un en-tête CSP
 # supplémentaire s'intersecterait avec elle et bloquerait ces scripts).
+#
+# CE FICHIER NE S'AUTO-VÉRIFIAIT PAS, ET C'ÉTAIT SON DANGER. Les commentaires
+# qui suivent affirment des choses sur la production, et plusieurs se sont
+# révélées fausses des semaines après avoir été écrites — le double
+# `Cache-Control` d'OVH, les types MIME absents, le `:443` des redirections.
+# Aucune ne se voyait à la lecture. Deux garde-fous ont été ajoutés le
+# 3 septembre 2026 :
+#
+#   - `scripts/verifier-htaccess.sh` fait relire ce fichier par un vrai Apache
+#     AVANT le déploiement — une directive inconnue ou une expression mal
+#     écrite répondrait sinon par une erreur 500 sur tout le site ;
+#   - `scripts/fumee.sh` interroge le site publié APRÈS, et vérifie en-têtes,
+#     types MIME, durées de cache et nombre de sauts de redirection.
+#
+# Toute règle ajoutée ici doit venir avec son assertion dans `fumee.sh`. Sans
+# quoi elle redeviendra un commentaire optimiste.
+
+
+# Types MIME.
+#
+# Apache ne connaît pas ces trois extensions et servait les fichiers SANS AUCUN
+# `Content-Type`. Constaté le 3 septembre 2026 : les deux polices `.woff2`, les
+# 65 images `.avif` — le format d'image principal du site — et
+# `site.webmanifest` arrivaient tous sans type.
+#
+# Cela contredisait le `nosniff` posé plus bas : on interdit au navigateur de
+# deviner un type qu'on ne lui donne pas. Les durées de cache, elles, ne s'en
+# trouvaient pas affectées : le bloc plus bas les choisit d'après l'URL et non
+# d'après le type MIME.
+<IfModule mod_mime.c>
+  AddType font/woff2 .woff2
+  AddType image/avif .avif
+  AddType application/manifest+json .webmanifest
+</IfModule>
+
+# Le HTML sortait en `text/html` tout court. La <meta charset> d'Astro rattrape
+# dans le navigateur, mais l'en-tête fait autorité pour tout ce qui lit la page
+# sans l'interpréter. Ne touche que text/html et text/plain — donc aussi
+# robots.txt, qui est bien en UTF-8 lui aussi.
+AddDefaultCharset utf-8
 
 <IfModule mod_headers.c>
   # Clickjacking : `frame-ancestors` est la forme moderne, X-Frame-Options le
@@ -15,7 +55,8 @@
   Header always set Content-Security-Policy "frame-ancestors 'none'"
   Header always set X-Frame-Options "DENY"
 
-  # Pas de devinette de type MIME.
+  # Pas de devinette de type MIME. Voir le bloc « Types MIME » ci-dessus : cet
+  # en-tête ne vaut que si le type est effectivement annoncé.
   Header always set X-Content-Type-Options "nosniff"
 
   # URL complète en interne, domaine seul vers l'extérieur.
@@ -38,24 +79,34 @@
   # Le test est sûr dans les deux sens : si aucune des deux conditions n'est
   # vraie, l'en-tête n'est pas émis — c'est-à-dire l'état d'avant. Il ne peut
   # pas être envoyé par erreur sur une requête en clair.
-  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains" "expr=%{HTTPS} == 'on' || %{HTTP:X-Forwarded-Proto} == 'https'"
+  #
+  # `REQ_NOVARY:` et non `HTTP:`. Dans une expression Apache, lire un en-tête
+  # de requête avec `HTTP:` ajoute son nom au `Vary` de la RÉPONSE. Constaté le
+  # 3 septembre 2026 : tout le site sortait en
+  # `Vary: Accept-Encoding,X-Forwarded-Proto`, ce qui fait éclater le stockage
+  # de n'importe quel cache intermédiaire sur une dimension que le client ne
+  # fait jamais varier — c'est le proxy d'OVH qui pose cet en-tête, en amont.
+  # `REQ_NOVARY` lit exactement la même valeur sans toucher au `Vary`
+  # (Apache 2.4.4 et suivants). Le piège vaut pour les trois `expr=` du bloc
+  # « Durée de cache » plus bas, qui n'interrogent, eux, que `REQUEST_URI`.
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains" "expr=%{HTTPS} == 'on' || %{REQ_NOVARY:X-Forwarded-Proto} == 'https'"
 </IfModule>
 
-# Les deux redirections qui suivent ramènent toutes les adresses possibles vers
-# une seule : https://www.cambiome.fr. Sans elles, les mêmes pages répondraient
-# à quatre adresses — avec et sans `www`, en clair et en chiffré — les moteurs
-# partageraient le référencement entre elles, et le `<link rel="canonical">`
-# généré par Astro en désignerait une seule, contredisant les trois autres.
+# Les trois redirections qui suivent ramènent toutes les adresses possibles
+# vers une seule — celle qu'annoncent le `<link rel="canonical">` d'Astro et le
+# sitemap, soit `https://www.cambiome.fr/chemin/`. Sans elles, les mêmes pages
+# répondraient à huit adresses : avec et sans `www`, en clair et en chiffré,
+# avec et sans slash final. Les moteurs partageraient le référencement entre
+# elles, et le canonical en désignerait une seule, contredisant les sept
+# autres.
 #
-# L'ORDRE COMPTE. Le domaine nu passe en premier, et sa cible porte déjà le
-# `https://` : une requête sur http://cambiome.fr arrive donc en un seul saut,
-# là où la règle HTTPS placée avant l'aurait fait passer par https://cambiome.fr
-# puis par une seconde redirection. Deux 301 en chaîne fonctionnent, mais un
-# moteur en perd un peu à chaque saut, et le visiteur attend deux allers-retours.
-
-# Domaine nu -> www.
+# L'ORDRE COMPTE, et il est choisi pour qu'AUCUN départ ne coûte plus d'un
+# saut : chaque règle vise une cible déjà complète — `https`, `www` et slash
+# final —, si bien que la première qui s'applique est aussi la dernière. Deux
+# 301 en chaîne fonctionnent, mais un moteur en perd un peu à chaque saut, et
+# le visiteur attend deux allers-retours.
 #
-# La cible est en `https://` en dur : cela n'est possible que parce que les DEUX
+# Écrire `https://www.cambiome.fr` en dur n'est possible que parce que les DEUX
 # noms sont couverts. Vérifié le 2 septembre 2026 — deux certificats Let's
 # Encrypt distincts, `CN=cambiome.fr` et `CN=www.cambiome.fr`. Le contrôle si
 # un doute revient :
@@ -64,31 +115,62 @@
 #     2>/dev/null | openssl x509 -noout -subject -dates
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # 1. Slash final sur les pages.
+  #
+  # Astro construit chaque page dans son dossier (`/contact/index.html`) : son
+  # adresse canonique porte donc un slash final. Demandée sans, `mod_dir` le
+  # rajoutait de lui-même — et fabriquait l'adresse de destination à partir du
+  # port qu'Apache croit servir. Constaté le 3 septembre 2026 :
+  #
+  #   GET /contact  ->  301  Location: https://www.cambiome.fr:443/contact/
+  #
+  # C'est le problème que le bloc HSTS ci-dessus documente longuement, mais
+  # rencontré par une redirection que ce fichier ne contrôlait pas : TLS est
+  # terminé en amont, Apache se croit sur un port non standard et l'écrit dans
+  # l'adresse. Le visiteur voyait `www.cambiome.fr:443` dans sa barre
+  # d'adresse — sur le site d'un artisan, ça se lit comme une panne.
+  #
+  # `UseCanonicalName` corrigerait la cause, mais n'est pas autorisée en
+  # .htaccess. On devance donc `mod_dir` : `mod_rewrite` passe avant lui dans
+  # la phase `fixup`, et sa cible est écrite ici, en entier.
+  #
+  # La règle ne s'applique qu'à un dossier réellement présent (`-d`) : une
+  # adresse inventée continue de tomber en 404 plutôt que de rebondir. Les
+  # liens du site portent de toute façon déjà le slash — voir `lien()` dans
+  # src/lib/base.ts —, cette règle ne rattrape donc que ce qui vient du
+  # dehors : un lien tiers, un signet, une adresse tapée à la main.
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteCond %{REQUEST_URI} !/$
+  RewriteRule ^ https://www.cambiome.fr%{REQUEST_URI}/ [L,R=301]
+
+  # 2. Domaine nu -> www.
   RewriteCond %{HTTP_HOST} ^cambiome\.fr$ [NC]
   RewriteRule ^ https://www.cambiome.fr%{REQUEST_URI} [L,R=301]
-</IfModule>
 
-# HTTP -> HTTPS.
-#
-# C'est la règle qui peut rendre le site inaccessible : si Apache ne voit pas
-# que la requête est déjà chiffrée, il la redirige vers elle-même, indéfiniment.
-#
-# OVH documente trois formes selon l'offre (« Passer son site web en HTTPS ») :
-# `%{SERVER_PORT} 80` et `%{HTTPS} off` pour le mutualisé, `%{ENV:HTTPS} !on`
-# pour le Cloud Web. **Aucune des trois ne convient ici.** Constaté le
-# 2 septembre 2026 : TLS est terminé en amont d'Apache, qui voit
-# `%{HTTPS} == 'off'` sur une requête pourtant chiffrée. La forme recommandée
-# aurait donc bouclé.
-#
-# Seul `X-Forwarded-Proto` porte l'information — sa présence a été prouvée par
-# l'en-tête HSTS ci-dessus, qui n'est émis que si l'une de ces conditions est
-# vraie et qui sort bien en HTTPS. Les trois autres conditions sont conservées :
-# elles ne coûtent rien, et si OVH changeait un jour d'architecture pour
-# renseigner `%{HTTPS}`, la règle continuerait de fonctionner sans être touchée.
-# Il suffit qu'un seul des quatre indicateurs dise « TLS » pour qu'aucune
-# redirection ne parte.
-<IfModule mod_rewrite.c>
-  RewriteEngine On
+  # 3. HTTP -> HTTPS.
+  #
+  # C'est la règle qui peut rendre le site inaccessible : si Apache ne voit pas
+  # que la requête est déjà chiffrée, il la redirige vers elle-même,
+  # indéfiniment.
+  #
+  # OVH documente trois formes selon l'offre (« Passer son site web en
+  # HTTPS ») : `%{SERVER_PORT} 80` et `%{HTTPS} off` pour le mutualisé,
+  # `%{ENV:HTTPS} !on` pour le Cloud Web. **Aucune des trois ne convient ici.**
+  # Constaté le 2 septembre 2026 : TLS est terminé en amont d'Apache, qui voit
+  # `%{HTTPS} == 'off'` sur une requête pourtant chiffrée. La forme recommandée
+  # aurait donc bouclé.
+  #
+  # Seul `X-Forwarded-Proto` porte l'information — sa présence a été prouvée
+  # par l'en-tête HSTS ci-dessus, qui n'est émis que si l'une de ces conditions
+  # est vraie et qui sort bien en HTTPS. Les trois autres conditions sont
+  # conservées : elles ne coûtent rien, et si OVH changeait un jour
+  # d'architecture pour renseigner `%{HTTPS}`, la règle continuerait de
+  # fonctionner sans être touchée. Il suffit qu'un seul des quatre indicateurs
+  # dise « TLS » pour qu'aucune redirection ne parte.
+  #
+  # Ici `%{HTTP:…}` est sans danger, contrairement au bloc HSTS : une
+  # `RewriteCond` n'écrit pas d'en-tête `Vary`.
   RewriteCond %{HTTPS} !=on
   RewriteCond %{ENV:HTTPS} !=on
   RewriteCond %{SERVER_PORT} !=443
@@ -143,10 +225,10 @@
   Header always set Cache-Control "public, max-age=31536000, immutable" "expr=%{REQUEST_URI} =~ m#^/_astro/#"
 </IfModule>
 
-# Le site est statique : aucun listing de répertoire.
-<IfModule mod_autoindex.c>
-  Options -Indexes
-</IfModule>
+# Le site est statique : aucun listing de répertoire. `Options` est une
+# directive du cœur d'Apache et non de `mod_autoindex` — la garder sous un
+# `<IfModule mod_autoindex.c>`, comme c'était le cas, ne protégeait de rien.
+Options -Indexes
 
 # Page introuvable. Apache ne devine pas qu'il faut servir /404.html — il
 # afficherait sa propre page d'erreur, celle qui ne ressemble à rien. C'est
@@ -158,3 +240,8 @@
 # profondeur. Le statut renvoyé reste bien 404 — Apache ne le remplace pas par
 # une redirection —, ce qui importe autant aux moteurs qu'aux visiteurs.
 ErrorDocument 404 /404.html
+
+# Même raison, autre porte. `-Indexes` transforme tout dossier sans index en
+# 403, et un nom de dossier se devine — `/_astro/` répondait par la page Apache
+# par défaut, celle en HTML 2.0. Le statut reste 403 : seule la page change.
+ErrorDocument 403 /404.html

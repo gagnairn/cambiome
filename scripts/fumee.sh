@@ -11,11 +11,14 @@
 #
 # Il vérifie aussi, depuis le 3 septembre 2026, ce que `public/.htaccess`
 # AFFIRME : en-têtes de sécurité, types MIME, durées de cache et nombre de
-# sauts de redirection. La version de ce fichier en service à la bascule
-# affirmait trois choses fausses — types MIME absents, cache de quinze minutes
-# sur des fichiers immuables, redirection vers un `:443` — et rien ne le
-# disait, parce que ce script ne regardait que des codes de statut et suivait
-# les redirections avec `-L` sans compter les sauts.
+# sauts de redirection.
+#
+# Ce sont quatre pannes silencieuses qui l'ont fait écrire, toutes trouvées à
+# la main un `curl` après l'autre, aucune visible à la lecture du .htaccess :
+# des types MIME absents, un `Cache-Control` en double, un `Vary` parasite, et
+# des pages qui redirigeaient vers `…cambiome.fr:443/`. Ce script ne les voyait
+# pas — il ne regardait que des codes de statut, et suivait les redirections
+# avec `-L` sans jamais compter les sauts ni lire l'adresse d'arrivée.
 #
 # Toute règle ajoutée au .htaccess doit venir avec son assertion ici.
 #
@@ -194,27 +197,43 @@ if [ -n "$avif" ]; then verifier_type "$avif" 'image/avif'; else signaler "aucun
 
 echo
 echo "Durées de cache :"
-# Les fichiers de `_astro/` sont nommés par empreinte de leur contenu : ils ne
-# peuvent jamais devenir faux, et se gardent un an. Le HTML change à la même
-# adresse à chaque republication depuis le CMS : il doit être revalidé.
-verifier_cache() { # <chemin> <fragment attendu> <interdire Expires : oui|non>
-  local bloc cc
+# Les trois régimes que déclare le .htaccess, vérifiés un par un. Chacun est
+# posé par un `Header always set` distinct, du plus général au plus spécifique,
+# et rien dans le fichier ne dit lequel gagne réellement — c'est ici qu'on le
+# constate.
+#
+# L'en-tête est aussi COMPTÉ. Le 3 septembre 2026, la réponse en portait deux :
+# le nôtre, puis le `max-age=900` que le `mod_expires` d'OVH ajoutait à côté.
+# La RFC laisse ce cas indéfini, chaque cache le tranche à sa façon, et le gain
+# était annulé sans que rien ne le signale — `ExpiresActive Off` a coupé la
+# source. Une valeur juste ne suffit donc pas : il faut qu'elle soit seule.
+verifier_cache() { # <chemin> <valeur attendue, exacte>
+  local bloc n cc
   bloc=$("${TETE[@]}" "$BASE$1" | tr -d '\r')
+  n=$(grep -ci '^cache-control:' <<<"$bloc")
   cc=$(valeur "$bloc" Cache-Control)
-  if [ -z "$cc" ]; then
+  if [ "$n" -eq 0 ]; then
     signaler "$1 sans Cache-Control"
-  elif ! grep -qF -- "$2" <<<"$cc"; then
-    signaler "$1 → « $cc » au lieu de « $2 » (défaut de l'hébergeur ?)"
-  elif [ "$3" = oui ] && [ -n "$(valeur "$bloc" Expires)" ]; then
-    signaler "$1 → Cache-Control correct mais un Expires le contredit"
+  elif [ "$n" -gt 1 ]; then
+    signaler "$1 → $n en-têtes Cache-Control ; l'hébergeur ajoute le sien (ExpiresActive Off a-t-il sauté ?)"
+  elif [ "$cc" != "$2" ]; then
+    signaler "$1 → « $cc » au lieu de « $2 »"
+  elif [ -n "$(valeur "$bloc" Expires)" ]; then
+    signaler "$1 → Cache-Control juste, mais un Expires vient le contredire"
   else
     echo "  ✓ $1 → $cc"
   fi
 }
-[ -n "$css" ] && verifier_cache "$css" 'immutable' oui
-[ -n "$avif" ] && verifier_cache "$avif" 'immutable' oui
-verifier_cache /          'must-revalidate' oui
-verifier_cache /contact/  'must-revalidate' oui
+# `_astro/` : nommé par empreinte du contenu, donc immuable — un an.
+[ -n "$css" ]   && verifier_cache "$css"   'public, max-age=31536000, immutable'
+[ -n "$woff2" ] && verifier_cache "$woff2" 'public, max-age=31536000, immutable'
+[ -n "$avif" ]  && verifier_cache "$avif"  'public, max-age=31536000, immutable'
+# Racine : nom stable d'une version à l'autre, doit pouvoir être remplacé — une heure.
+verifier_cache /favicon.ico 'public, max-age=3600'
+verifier_cache /og-image.jpg 'public, max-age=3600'
+# HTML : porte d'entrée, une publication doit se voir vite — un quart d'heure.
+verifier_cache /         'public, max-age=900'
+verifier_cache /contact/ 'public, max-age=900'
 
 # Le .htaccess promet qu'aucune adresse ne coûte plus d'un saut et que toutes
 # arrivent sur la forme canonique. C'est la promesse qui était fausse : les

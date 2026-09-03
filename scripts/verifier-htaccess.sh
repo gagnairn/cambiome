@@ -115,6 +115,7 @@ desequilibres=$(awk '
 if [ -n "$desequilibres" ]; then
   echo "  ✗ $(basename "$htaccess") — blocs mal appariés :"
   echo
+  # shellcheck disable=SC2001  # indenter chaque ligne, pas remplacer une sous-chaîne
   echo "$desequilibres" | sed 's/^/    /'
   echo
   exit 1
