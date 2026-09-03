@@ -82,25 +82,23 @@
      tient le 300, et la rampe se prolonge en dessous. */
 
   --color-ciel-50: #f0fafc;
-  --color-ciel-100: #dbf0f5;
   --color-ciel-200: #b5e0e9;
   --color-ciel-300: #9dc3d4;
   --color-ciel-400: #34a8bf;
   --color-ciel-500: #0c7d93;
   --color-ciel-600: #0a687b;
   --color-ciel-700: #085565;
-  --color-ciel-800: #06414e;
   --color-ciel-900: #05323c;
 
   --color-sable-50: #fbfaf8;
   --color-sable-100: #f4f1ec;
   --color-sable-200: #e7e2d9;
   --color-sable-300: #d3ccbf;
-  --color-sable-400: #b3a996;
-  /* Un cran plus sombre que la charte, qui s'arrête au 400. Il ne sert qu'aux
-     bordures de champs de saisie : le 300 ne donnait que 1,60:1 sur blanc et
-     le 400 que 2,32:1, quand WCAG 1.4.11 en exige 3 pour le contour qui
-     identifie une commande. Celui-ci donne 3,69:1. */
+  /* Un cran plus sombre que la charte, qui s'arrête à #B3A996. Il ne sert
+     qu'aux bordures de champs de saisie : le 300 ne donne que 1,60:1 sur
+     blanc et la valeur de charte 2,32:1, quand WCAG 1.4.11 en exige 3 pour le
+     contour qui identifie une commande. Celui-ci donne 3,69:1 — c'est la
+     raison de son existence, et la rampe s'arrête donc ici. */
   --color-sable-500: #8f846c;
 
   --color-encre: #1a1d1f;
