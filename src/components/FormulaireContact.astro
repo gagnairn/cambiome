@@ -61,7 +61,7 @@ const messageErreur = contact.email
 // 65 % d'opacité — il était à 2,17:1.
 const champ =
   'mt-2 w-full rounded-md border border-sable-500 bg-white px-4 py-3 text-sm placeholder:text-encre/65 focus:border-ciel-500';
-const label = 'block text-sm text-encre/80';
+const label = 'block text-sm text-encre/75';
 ---
 
 {
@@ -285,14 +285,14 @@ const label = 'block text-sm text-encre/80';
           id="contact-statut"
           role="status"
           aria-live="polite"
-          class="mt-5 text-sm leading-relaxed text-encre/70 empty:hidden data-[etat=erreur]:text-encre"
+          class="mt-5 text-sm leading-relaxed text-encre/75 empty:hidden data-[etat=erreur]:text-encre"
         />
       </form>
     </div>
   ) : (
     <div class="max-w-xl rounded-lg border border-dashed border-sable-300 bg-sable-100 p-8">
       <h2 class="text-xl">Formulaire à activer</h2>
-      <p class="mt-4 text-sm leading-relaxed text-encre/70">
+      <p class="mt-4 text-sm leading-relaxed text-encre/75">
         Le site est statique : pour recevoir les messages, il faut une clé
         Web3Forms. Indiquez l'adresse de réception sur{' '}
         <a class="underline underline-offset-2" href="https://web3forms.com">

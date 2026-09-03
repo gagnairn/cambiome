@@ -101,6 +101,26 @@
      raison de son existence, et la rampe s'arrête donc ici. */
   --color-sable-500: #8f846c;
 
+  /* Le texte n'a que DEUX niveaux d'atténuation, et pas un de plus :
+
+       text-encre/75   le secondaire — chapôs, paragraphes courants, liens de
+                       navigation inactifs, intitulés de champs
+       text-encre/65   l'annotation — texte indicatif des champs, mentions en
+                       petit, intitulés posés au-dessus d'une valeur
+
+     Il y en a eu quatre, /65 /70 /75 /80, sans qu'aucune règle les sépare :
+     l'en-tête employait /75 et /80 pour le MÊME état, lien inactif, l'un sur
+     la version bureau et l'autre sur la version mobile. Ramenés à deux le
+     3 septembre 2026.
+
+     Le contraste ne contraint pas le choix, il pose seulement un plancher :
+     sur le fond le plus sombre en usage (`sable-100`), /65 donne 5,02:1 et
+     /75 6,97:1, tous deux au-dessus des 4,5:1 de WCAG AA pour du texte
+     normal. Descendre sous /65 n'est donc pas une question de goût.
+
+     Ces deux valeurs ne concernent que le TEXTE. Le voile du hero
+     (`from-encre/70`) et les filets (`border-encre/10`) suivent leur propre
+     logique et n'entrent pas dans le compte. */
   --color-encre: #1a1d1f;
 
   /* --- Surfaces de marque -------------------------------------------------
