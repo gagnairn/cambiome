@@ -45,8 +45,19 @@ import { typographie } from '~/lib/texte';
  * éditeur : il fallait écrire une ligne d'import puis la référencer. Ici, le
  * YAML ne contient qu'un nom de fichier et la résolution se fait au build.
  *
- * Le glob reste statique — Vite l'exige, et c'est ce qui permet à Astro de
- * n'inclure dans la version publiée que les images réellement citées.
+ * Le glob reste statique : Vite l'exige.
+ *
+ * ⚠ Il est `eager`, donc TOUT fichier du dossier est importé, cité ou non par
+ * `realisations.yaml` — et Astro copie dans le site publié chaque image
+ * importée. Une photo laissée là « au cas où » part donc chez le visiteur sans
+ * qu'aucune page ne l'affiche.
+ *
+ * Ce commentaire affirmait l'inverse — que seules les images citées étaient
+ * incluses. C'était faux, et ça s'est vu : `garde-corps-meleze.jpg` était
+ * expédié à 225 ko sans être référencé nulle part (audit du 3 septembre 2026).
+ *
+ * La règle est donc : ce dossier ne contient que des photos en service. Une
+ * photo à publier plus tard se garde hors du dépôt, ou dans l'historique Git.
  */
 const PHOTOS = import.meta.glob<{ default: ImageMetadata }>(
   '/src/assets/realisations/*.{jpg,jpeg,png,webp,avif}',

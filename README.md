@@ -197,6 +197,20 @@ Pour rétablir la règle : `git revert` du commit qui l'a retirée.
       Adhérer à un médiateur du bâtiment, puis l'ajouter au CMS.
 - [ ] **Photos** : l'architecture n'en a aucune, la rénovation thermique une
       seule alors que c'est le métier porté par la qualification RGE.
+
+      Une photo est en réserve dans l'historique Git et pas dans le dossier :
+      un garde-corps en gros plan devant une fenêtre à volet roulant, retiré
+      le 3 septembre 2026. Elle affichait le chantier « Garde-corps en
+      mélèze », dont le texte alternatif décrivait en réalité l'autre photo.
+      Elle ferait un chantier à part entière, avec son titre et sa légende :
+
+      ```sh
+      f=src/assets/realisations/tempimagefiqi5k.jpg
+      git show "$(git rev-list -1 HEAD -- $f)^:$f" > garde-corps-fenetre.jpg
+      ```
+
+      Toute photo replacée dans `src/assets/realisations/` est expédiée au
+      visiteur, citée ou non — voir le bloc `PHOTOS` de `src/data/realisations.ts`.
 - [ ] Hors dépôt : créer la fiche **Google Business Profile** avec l'adresse de
       l'atelier écrite exactement comme dans le CMS, et déposer le sitemap dans
       la **Search Console**.
