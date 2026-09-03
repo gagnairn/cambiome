@@ -261,6 +261,21 @@
   max-width: 57ch;
 }
 
+/* Le surtitre : la petite ligne capitale qui annonce un titre.
+
+   Recopiée à l'identique dans six endroits, et déjà divergente — la galerie
+   employait `text-[0.62rem]` là où les cinq autres avaient `text-xs`. C'est la
+   mécanique qui fait dériver toute valeur recopiée, et le dépôt y répond déjà
+   par `container-page` et `mesure-lecture`.
+
+   La taille fait partie de l'utilitaire parce que c'est celle de cinq cas sur
+   six ; la galerie la surcharge, son libellé étant posé sous une photo et non
+   au-dessus d'un titre de section. Surcharge vérifiée sur le CSS produit :
+   voir le commit. */
+@utility surtitre {
+  @apply font-display text-xs tracking-[0.28em] text-ciel-600 uppercase;
+}
+
 /* Petit filet décoratif rappelant les cernes du logo */
 @utility rule-cernes {
   background-image: repeating-linear-gradient(
