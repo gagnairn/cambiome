@@ -42,3 +42,23 @@
   # navigateurs est très lente à défaire. À n'ajouter qu'une fois le domaine
   # définitivement en HTTPS partout (voir https://hstspreload.org).
   Strict-Transport-Security: max-age=63072000; includeSubDomains
+
+# Durée de cache — pendant du bloc du même nom dans .htaccess, avec la syntaxe
+# par chemin de Netlify / Cloudflare Pages.
+#
+# `/_astro/` porte le hachage du contenu dans le nom de fichier : l'URL ne peut
+# pas désigner deux versions, un an d'`immutable` est donc sans risque. Les
+# fichiers de `public/`, eux, gardent leur nom d'une version à l'autre —
+# favicon, icônes, image de partage — et ne prennent qu'une heure. Le HTML n'est
+# pas listé : il garde le défaut de la plateforme, il doit rester frais.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.ico
+  Cache-Control: public, max-age=3600
+/*.png
+  Cache-Control: public, max-age=3600
+/*.jpg
+  Cache-Control: public, max-age=3600
+/*.webmanifest
+  Cache-Control: public, max-age=3600

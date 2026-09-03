@@ -96,6 +96,38 @@
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 </IfModule>
 
+# Durée de cache.
+#
+# OVH sert tout en `max-age=900` par défaut. C'est raisonnable pour une page,
+# absurde pour `/_astro/` : Astro y écrit le hachage du contenu dans le nom du
+# fichier, donc `pages.C-PFIhqe.css` ne peut PAS changer — une modification
+# produit un autre nom. Un visiteur qui revient un quart d'heure plus tard
+# revalidait donc CSS, polices et photos qui ne bougeront jamais.
+#
+# Trois régimes :
+#
+#   /_astro/   un an, `immutable` — le nom porte le hachage du contenu ;
+#              c'est là que vivent le CSS, les deux polices et toutes les
+#              variantes d'images produites au build ;
+#   /public    une heure — favicon, icônes, image de partage : leur nom NE
+#              change PAS d'une version à l'autre, ils doivent donc pouvoir
+#              être remplacés sans attendre un an ;
+#   HTML       laissé au défaut d'OVH. C'est la porte d'entrée, elle doit
+#              rester fraîche, et une publication doit se voir tout de suite.
+#
+# `immutable` dit au navigateur de ne pas même revalider lors d'un
+# rechargement de page. Sans effet de bord sur une publication : un fichier
+# republié porte un autre nom, donc une autre URL.
+#
+# ⚠ La forme `expr=` et non `<LocationMatch>`. `<Location>` et `<LocationMatch>`
+# ne sont PAS autorisés en .htaccess — Apache répond 500. `expr=` sur `Header`
+# est en revanche disponible ici, et déjà éprouvé sur ce serveur : c'est ce que
+# fait la ligne HSTS ci-dessus.
+<IfModule mod_headers.c>
+  Header always set Cache-Control "public, max-age=31536000, immutable" "expr=%{REQUEST_URI} =~ m#^/_astro/#"
+  Header always set Cache-Control "public, max-age=3600" "expr=%{REQUEST_URI} =~ m#^/[^/]+\.(ico|png|jpg|webp|avif|svg|webmanifest)$#"
+</IfModule>
+
 # Le site est statique : aucun listing de répertoire.
 <IfModule mod_autoindex.c>
   Options -Indexes
