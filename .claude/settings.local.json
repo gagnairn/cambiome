@@ -82,7 +82,14 @@
       "Bash(git merge *)",
       "Bash(curl -s https://gagnairn.github.io/cambiome/)",
       "Bash(grep -n \"^#\\\\{1,3\\\\} \\\\|^---$\" GUIDE-MODIFICATION.md)",
-      "Bash(echo \"exit=$?\")"
+      "Bash(echo \"exit=$?\")",
+      "Bash(awk '/^  - name: metiers$/,/^  # -+ démarche/' .pages.yml)",
+      "Bash(./scripts/fumee.sh https://www.cambiome.fr)",
+      "Bash(curl -sI https://www.cambiome.fr)",
+      "Bash(curl -sI -H \"Accept-Encoding: gzip, br\" https://www.cambiome.fr)",
+      "Bash(awk '{print $5\" o  \"$9}')",
+      "Bash(curl -sSI --max-time 12 https://www.cambiome.fr/)",
+      "Bash(curl -skI --max-time 15 https://www.cambiome.fr/)"
     ]
   }
 }
