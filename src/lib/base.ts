@@ -31,8 +31,9 @@ const estUnePage = (chemin: string) => !/\.[^/]+$/.test(chemin);
  * qu'OVH termine TLS en amont (voir la règle « slash final » de
  * public/.htaccess, qui rattrape les liens venus du dehors).
  *
- * Les 129 liens internes du site passent tous par ici, et n'en déclenchent
- * donc plus aucune. Le `.htaccess` reste le filet pour les autres : un lien
+ * Tous les liens internes du site passent par ici, et n'en déclenchent donc
+ * plus aucune. Pas de compte ici : il se périmerait, et ce qui importe est
+ * qu'il n'y ait aucune exception. Le `.htaccess` reste le filet pour les autres : un lien
  * tiers, un signet, une adresse tapée à la main.
  *
  * Les fichiers sont laissés tels quels : `/favicon.ico/` ne désigne rien.
