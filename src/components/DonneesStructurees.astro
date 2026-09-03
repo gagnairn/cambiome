@@ -161,6 +161,31 @@ const fiche = {
     validUntil: rge.fin,
   },
 };
+
+/**
+ * Sérialisation, avec les `<` neutralisés.
+ *
+ * `set:html` émet la chaîne telle quelle — c'est son objet — et
+ * `JSON.stringify` n'échappe PAS `<`. Un `</script>` saisi dans n'importe quel
+ * champ du CMS qui arrive jusqu'ici — description, baseline, titre de métier,
+ * adresse, numéro de certificat — fermerait donc la balise par anticipation, et
+ * tout ce qui suit serait interprété comme du HTML. Dans le `<head>` des neuf
+ * pages, puisque ce bloc est posé partout.
+ *
+ * Les schémas zod ne l'attrapent pas : ils valident une longueur et une
+ * présence, pas un contenu. Et la CSP ne fait que limiter les dégâts — elle
+ * bloque les scripts injectés et les gestionnaires d'événements en ligne, elle
+ * n'empêche ni la défiguration ni un lien de hameçonnage.
+ *
+ * `<` est du JSON valide : les moteurs relisent exactement la même donnée.
+ * C'est l'échappement recommandé pour tout JSON déposé dans un élément
+ * `<script>`, et le seul nécessaire — à l'intérieur d'un élément de texte brut,
+ * seule la séquence `</script` termine le bloc.
+ *
+ * Le CMS est confié à quelqu'un qui n'ouvrira jamais ce fichier : c'est
+ * précisément le cas où le garde-fou doit être dans le code.
+ */
+const jsonLd = JSON.stringify(fiche).replace(/</g, '\\u003c');
 ---
 
-<script type="application/ld+json" is:inline set:html={JSON.stringify(fiche)} />
+<script type="application/ld+json" is:inline set:html={jsonLd} />
