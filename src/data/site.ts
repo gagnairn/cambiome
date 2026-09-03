@@ -19,10 +19,27 @@ import type { ImageMetadata } from 'astro';
 import { z } from 'astro/zod';
 import { charger } from '~/lib/contenu';
 import { CODES_PLAGES } from '~/lib/horaires';
+import { typographie } from '~/lib/texte';
 
 /** Chaîne non vide, avec un message en français plutôt que « Required ». */
 const texte = (quoi: string) =>
   z.string().trim().min(1, `${quoi} ne peut pas être vide.`);
+
+/**
+ * Comme `texte`, plus les règles typographiques françaises — apostrophe
+ * courbe, espaces insécables devant `; : ! ?` et dans les guillemets.
+ *
+ * Deux helpers et non un seul, parce que ce fichier mélange deux natures. Un
+ * SIRET, un numéro de TVA, un nom de fichier d'illustration ou un slug ne sont
+ * pas de la prose : leur appliquer la typographie irait de l'inoffensif
+ * (aucune apostrophe dans « 933 226 086 00017 ») au cassant le jour où un nom
+ * de fichier en contiendrait une — l'import ne le retrouverait plus.
+ *
+ * La règle est donc : `prose` pour ce qui se lit, `texte` pour ce qui
+ * s'identifie. `src/data/pages.ts` n'a pas ce problème, il ne contient que du
+ * texte affiché, et applique la transformation à tous ses champs.
+ */
+const prose = (quoi: string) => texte(quoi).transform(typographie);
 
 /** Date ISO `AAAA-MM-JJ`, la forme comparable telle quelle. */
 const dateIso = z
@@ -58,17 +75,22 @@ const estHoteGoogle = (url: string) => {
 const SchemaEntreprise = z.object({
   identite: z.object({
     nom: texte('Le nom'),
-    baseline: texte('La baseline'),
-    accroche: texte("L'accroche"),
+    baseline: prose('La baseline'),
+    accroche: prose("L'accroche"),
     // Reprise telle quelle dans la balise <meta name="description">, que les
     // moteurs tronquent au-delà d'environ 160 signes. La limite est haute :
     // elle interdit le paragraphe entier collé par erreur, pas une phrase un
     // peu longue.
-    description: texte('La description').max(
-      320,
-      'La description du site dépasse 320 signes ; les moteurs de recherche la couperont.',
-    ),
-    zone: texte("La zone d'intervention"),
+    // `.max()` ne se chaîne pas après une transformation : la longueur se
+    // mesure donc sur la saisie, puis la typographie s'applique. C'est de toute
+    // façon la bonne base — elle substitue caractère pour caractère.
+    description: texte('La description')
+      .max(
+        320,
+        'La description du site dépasse 320 signes ; les moteurs de recherche la couperont.',
+      )
+      .transform(typographie),
+    zone: prose("La zone d'intervention"),
   }),
   /**
    * Un champ de contact laissé vide fait disparaître la ligne du site au lieu
@@ -268,7 +290,7 @@ const SchemaRge = z
     // code de la consommation ; en annoncer zéro viderait la page de son
     // objet. Au moins un, donc, et pas de liste fantôme.
     domaines: z
-      .array(texte('Un domaine qualifié'))
+      .array(prose('Un domaine qualifié'))
       .min(1, 'Il faut au moins un domaine qualifié.'),
   })
   // Le contrôle de cohérence ne s'exécute que si les deux dates ont la bonne
@@ -304,18 +326,22 @@ const SchemaMetiers = z
       // La carte de la page d'accueil et le sommaire du pied de page sont
       // dimensionnés pour un intitulé court ; au-delà, le titre passe sur
       // trois lignes et désaligne la grille.
-      titre: texte('Le titre du métier').max(
-        48,
-        'Le titre du métier dépasse 48 signes ; il déborderait des cartes de la page d’accueil.',
-      ),
-      chapo: texte('Le chapô').max(
-        160,
-        'Le chapô dépasse 160 signes ; il est affiché en gros caractères et déborderait.',
-      ),
+      titre: texte('Le titre du métier')
+        .max(
+          48,
+          'Le titre du métier dépasse 48 signes ; il déborderait des cartes de la page d’accueil.',
+        )
+        .transform(typographie),
+      chapo: texte('Le chapô')
+        .max(
+          160,
+          'Le chapô dépasse 160 signes ; il est affiché en gros caractères et déborderait.',
+        )
+        .transform(typographie),
       texte: z
-        .array(texte('Un paragraphe'))
+        .array(prose('Un paragraphe'))
         .min(1, 'Un métier doit avoir au moins un paragraphe.'),
-      points: z.array(texte('Un point')),
+      points: z.array(prose('Un point')),
       /**
        * Image de repli, affichée tant que le métier n'a aucun chantier.
        *
@@ -333,7 +359,7 @@ const SchemaMetiers = z
       illustration: z
         .object({
           fichier: texte("Le fichier de l'illustration"),
-          alt: texte("La description de l'illustration"),
+          alt: prose("La description de l'illustration"),
         })
         .optional(),
     }),
@@ -348,8 +374,8 @@ const SchemaMetiers = z
 const SchemaDemarche = z
   .array(
     z.object({
-      titre: texte('Le titre du pilier'),
-      texte: texte('Le texte du pilier'),
+      titre: prose('Le titre du pilier'),
+      texte: prose('Le texte du pilier'),
     }),
   )
   .min(1, 'Il faut au moins un pilier de démarche.');

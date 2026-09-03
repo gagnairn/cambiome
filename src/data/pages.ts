@@ -27,11 +27,29 @@
 import { z } from 'astro/zod';
 import { charger } from '~/lib/contenu';
 import { remplir, scinder } from '~/lib/gabarit';
+import { typographie } from '~/lib/texte';
 import { rge, site } from '~/data/site';
 
-/** Chaîne non vide, avec un message en français plutôt que « Required ». */
-const texte = (quoi: string) =>
+/**
+ * Chaîne non vide, avec un message en français plutôt que « Required », et
+ * passée aux règles typographiques françaises.
+ *
+ * La typographie est appliquée ICI plutôt qu'à chaque affichage : tout ce que
+ * décrit ce module est du texte destiné à l'écran — titres, chapôs,
+ * paragraphes, libellés de bouton, mentions légales. Il n'y contient ni
+ * identifiant, ni URL, ni date, ni référence de fichier, contrairement à
+ * `site.ts` où les deux natures cohabitent et où la distinction doit être
+ * portée champ par champ.
+ *
+ * Conséquence à connaître : la valeur validée n'est plus exactement celle du
+ * YAML. Les apostrophes y sont courbes et certaines espaces insécables. Les
+ * jetons `{nom}`, `{zone}`… traversent la transformation intacts, `remplir` et
+ * `scinder` continuent donc de les retrouver.
+ */
+const nonVide = (quoi: string) =>
   z.string().trim().min(1, `${quoi} ne peut pas être vide.`);
+
+const texte = (quoi: string) => nonVide(quoi).transform(typographie);
 
 /**
  * Exige d'un texte qu'il porte les jetons annoncés.
@@ -63,8 +81,13 @@ const avecJetons = (schema: z.ZodType<string>, quoi: string, ...noms: string[]) 
  * des 160 signes utiles sur le site construit. Ce plafond-ci n'arrête que le
  * paragraphe entier collé par mégarde dans le champ.
  */
-const description = texte('La description')
-  .max(320, 'La description de la page dépasse 320 signes ; les moteurs la couperont.');
+// `nonVide` et non `texte` : `.max()` ne se chaîne pas après une
+// transformation. La longueur se mesure donc sur la saisie, ce qui est de
+// toute façon la bonne base — la typographie substitue caractère pour
+// caractère et ne change pas le compte.
+const description = nonVide('La description')
+  .max(320, 'La description de la page dépasse 320 signes ; les moteurs la couperont.')
+  .transform(typographie);
 
 /** L'en-tête commun à toutes les pages hors accueil. */
 const enTete = {

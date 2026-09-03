@@ -28,7 +28,7 @@ const manquants = [
 const forme = `${contact.formeJuridique} (${contact.formeJuridiqueLongue})`;
 const formeEtCapital = contact.capital
   ? `${forme} au capital de ${contact.capital}`
-  : `${forme} — capital social : ⚠ à compléter`;
+  : `${forme} — capital social : ⚠ à compléter`;
 
 // L'adresse où exercer ses droits RGPD : l'email s'il est renseigné, le
 // téléphone à défaut. La phrase qui l'accueille vient du CMS, mais pas ce
@@ -68,16 +68,16 @@ const ouNousEcrire = contact.email
       <div>
         <h2 class="text-xl text-encre">{pageMentions.titreEditeur}</h2>
         <ul class="mt-4 space-y-1.5">
-          <li>Dénomination : {site.nom}</li>
-          <li>Forme juridique : {formeEtCapital}</li>
-          <li>Siège social : {aRemplir(contact.adresse)}</li>
-          <li>SIRET : {aRemplir(contact.siret)}</li>
-          <li>Immatriculation : {aRemplir(contact.rcs)}</li>
-          <li>TVA intracommunautaire : {aRemplir(contact.tva)}</li>
-          <li>Téléphone : {aRemplir(telephoneInsecable(contact.telephone))}</li>
-          <li>Email : {aRemplir(contact.email)}</li>
+          <li>Dénomination : {site.nom}</li>
+          <li>Forme juridique : {formeEtCapital}</li>
+          <li>Siège social : {aRemplir(contact.adresse)}</li>
+          <li>SIRET : {aRemplir(contact.siret)}</li>
+          <li>Immatriculation : {aRemplir(contact.rcs)}</li>
+          <li>TVA intracommunautaire : {aRemplir(contact.tva)}</li>
+          <li>Téléphone : {aRemplir(telephoneInsecable(contact.telephone))}</li>
+          <li>Email : {aRemplir(contact.email)}</li>
           <li>
-            Directeur de la publication : {aRemplir(contact.directeurPublication)}
+            Directeur de la publication : {aRemplir(contact.directeurPublication)}
           </li>
         </ul>
       </div>
@@ -99,7 +99,7 @@ const ouNousEcrire = contact.email
           décennale, contrat n° {aRemplir(contact.assurance.contrat)}.
         </p>
         <p class="mt-2">
-          Couverture géographique : {contact.assurance.couverture}.
+          Couverture géographique : {contact.assurance.couverture}.
         </p>
       </div>
 
@@ -108,7 +108,7 @@ const ouNousEcrire = contact.email
         {/* Le téléphone est libellé : le numéro d'OVH est un court « 1007 »
             qu'on ne reconnaîtrait pas comme tel en fin d'énumération. */}
         <p class="mt-4">
-          {hebergeur.nom} — {hebergeur.adresse}. Téléphone : {hebergeur.telephone}.
+          {hebergeur.nom} — {hebergeur.adresse}. Téléphone : {hebergeur.telephone}.
         </p>
       </div>
 

@@ -35,6 +35,7 @@ import type { ImageMetadata } from 'astro';
 import { z } from 'astro/zod';
 import { charger } from '~/lib/contenu';
 import { metiers } from '~/data/site';
+import { typographie } from '~/lib/texte';
 
 /**
  * Index de toutes les photos du dossier, construit au build.
@@ -108,9 +109,14 @@ const SchemaChantiers = z
         .max(
           60,
           'Le titre du chantier dépasse 60 signes ; il tiendrait sur trois lignes sous la photo.',
-        ),
+        )
+        .transform(typographie),
       /** Étiquette affichée au-dessus du titre, libre — « Zinguerie », « Ossature bois ». */
-      metier: z.string().trim().min(1, "L'étiquette de métier ne peut pas être vide."),
+      metier: z
+        .string()
+        .trim()
+        .min(1, "L'étiquette de métier ne peut pas être vide.")
+        .transform(typographie),
       /**
        * Rattache le chantier à l'un des métiers de `metiers.yaml`. La
        * cohérence entre les deux fichiers est vérifiée plus bas : un slug
@@ -118,7 +124,11 @@ const SchemaChantiers = z
        * Métiers, sans que rien ne le signale.
        */
       metierSlug: z.string().trim().min(1, 'Le métier du chantier est obligatoire.'),
-      legende: z.string().trim().min(1, 'La légende ne peut pas être vide.'),
+      legende: z
+        .string()
+        .trim()
+        .min(1, 'La légende ne peut pas être vide.')
+        .transform(typographie),
       /**
        * Texte alternatif : décrit l'image, ne répète pas le titre. Obligatoire
        * — c'est ce que lisent les personnes aveugles et les moteurs de
@@ -127,7 +137,8 @@ const SchemaChantiers = z
       alt: z
         .string()
         .trim()
-        .min(1, "La description de la photo (alt) est obligatoire : elle est lue par les personnes aveugles."),
+        .min(1, "La description de la photo (alt) est obligatoire : elle est lue par les personnes aveugles.")
+        .transform(typographie),
       image: z.string().trim().min(1, 'Le chantier doit citer une photo.'),
     }),
   )
