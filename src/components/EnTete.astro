@@ -17,11 +17,15 @@ const actif = (href: string) => ici === href.replace(/\/$/, '');
 
 <header class="sticky top-0 z-40 border-b border-sable-200 bg-sable-50/90 backdrop-blur">
   <div class="container-page flex h-20 items-center justify-between gap-4">
-    <a
-      href={lien('/')}
-      class="flex items-center gap-3"
-      aria-label={`${site.nom} — accueil`}
-    >
+    {/* Pas d'`aria-label` ici, et c'est délibéré.
+        Le lien contient déjà son nom en texte — « CAMBIOME » et sa baseline —,
+        qui devient donc son nom accessible. Une étiquette ajoutée ne ferait que
+        le redire, et elle avait dérivé : elle annonçait « CAMBIOME — accueil »
+        quand le lien affiche « CAMBIOME Habitats d'Avenir ». Un utilisateur
+        pilotant la page à la voix prononce ce qu'il lit, et n'était pas compris
+        — WCAG 2.5.3, « Label in Name ». Sans étiquette, les deux ne peuvent
+        plus diverger. */}
+    <a href={lien('/')} class="flex items-center gap-3">
       {/* La marque seule : le nom et la baseline sont juste à droite, en
           texte. `densities` sert les écrans à forte densité — sans lui, une
           image de 44 px est étirée et les cernes se brouillent. */}
