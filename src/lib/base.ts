@@ -32,9 +32,10 @@ const estUnePage = (chemin: string) => !/\.[^/]+$/.test(chemin);
  * public/.htaccess, qui rattrape les liens venus du dehors).
  *
  * Tous les liens internes du site passent par ici, et n'en déclenchent donc
- * plus aucune. Pas de compte ici : il se périmerait, et ce qui importe est
- * qu'il n'y ait aucune exception. Le `.htaccess` reste le filet pour les autres : un lien
- * tiers, un signet, une adresse tapée à la main.
+ * plus aucune. Pas de compte chiffré : il se périmerait, et ce qui importe
+ * est qu'il n'y ait aucune exception, pas combien il y en a. Le `.htaccess`
+ * reste le filet pour les autres : un lien tiers, un signet, une adresse
+ * tapée à la main.
  *
  * Les fichiers sont laissés tels quels : `/favicon.ico/` ne désigne rien.
  */
