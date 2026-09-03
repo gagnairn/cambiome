@@ -140,7 +140,22 @@ const fiche = {
   ...(atelier.accueille && { openingHoursSpecification: ouverture }),
   ...(profils.length > 0 && { sameAs: profils }),
   ...(contact.siret && { identifier: { '@type': 'PropertyValue', propertyID: 'SIRET', value: contact.siret } }),
-  areaServed: { '@type': 'Place', name: site.zone },
+  /*
+   * La zone desservie, déclarée deux fois parce qu'elle se lit de deux façons.
+   *
+   * `Place` porte la formule écrite pour le visiteur — « Grenoble et son
+   * bassin, du Vercors à la Chartreuse » — qu'aucun moteur ne sait relier à
+   * une commune. Les `City` qui suivent le peuvent, elles.
+   *
+   * C'est ici, et pas dans le texte des pages, que les communes ont leur
+   * place. Les semer dans la prose d'un site de moins de quatre mille mots se
+   * voit, et Google le traite comme une page satellite. Une déclaration
+   * structurée dit la même chose sans rien prétendre au lecteur.
+   */
+  areaServed: [
+    { '@type': 'Place', name: site.zone },
+    ...site.communes.map((nom) => ({ '@type': 'City', name: nom })),
+  ],
   // Les métiers, tels qu'ils sont présentés au visiteur. `itemOffered` plutôt
   // qu'une simple liste de mots-clés : ce sont des prestations.
   makesOffer: metiers.map((m) => ({

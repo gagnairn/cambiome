@@ -239,7 +239,14 @@ const colonnesBandeau = nbEntrees === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
 
   <div class="border-t border-sur-marque/25">
     <div class="container-page py-6 text-center text-xs">
-      <p>© {annee} {site.nom}. Tous droits réservés.</p>
+      {/* La zone d'intervention, sur les neuf pages. Elle n'y était pas : le
+          seul ancrage géographique du site vivait dans le balisage structuré
+          et dans deux phrases de l'accueil. Une entreprise locale se cherche
+          par son secteur, et une ligne présente partout vaut mieux qu'une
+          mention isolée. Elle reste au singulier — la formule rédigée, pas la
+          liste des communes, qui est déclarée aux moteurs par le balisage. */}
+      <p>{site.zone}.</p>
+      <p class="mt-2">© {annee} {site.nom}. Tous droits réservés.</p>
     </div>
   </div>
 </footer>

@@ -91,6 +91,18 @@ const SchemaEntreprise = z.object({
       )
       .transform(typographie),
     zone: prose("La zone d'intervention"),
+    /**
+     * Les communes desservies, une par entrée. Elles ne s'affichent nulle
+     * part : elles alimentent `areaServed` du balisage structuré, où un moteur
+     * les lit comme une déclaration de zone. C'est la façon de dire « nous
+     * intervenons ici » sans semer des noms de villes dans les pages, ce que
+     * Google traite depuis longtemps comme une page satellite — surtout sur un
+     * site de moins de quatre mille mots.
+     *
+     * `zone` reste la formule lue par le visiteur ; celle-ci est la liste lue
+     * par la machine. Vide, le balisage retombe sur la seule `zone`.
+     */
+    communes: z.array(texte('Une commune')).default([]),
   }),
   /**
    * Un champ de contact laissé vide fait disparaître la ligne du site au lieu

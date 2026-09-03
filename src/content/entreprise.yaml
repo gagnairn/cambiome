@@ -5,7 +5,16 @@ identite:
   description: "Charpente, ossature bois, couverture, zinguerie et rénovation
     thermique à Grenoble. Éco-construction : isolation bio-sourcée, ventilation
     et étanchéité à l'air."
-  zone: Grenoble et son bassin
+  zone: Grenoble et son bassin, du Vercors à la Chartreuse
+  communes:
+    - Grenoble
+    - Fontaine
+    - Seyssins
+    - Seyssinet-Pariset
+    - Sassenage
+    - Échirolles
+    - Eybens
+    - Saint-Martin-d'Hères
 coordonnees:
   email: contact@cambiome.fr
   telephone: 06 27 80 42 38

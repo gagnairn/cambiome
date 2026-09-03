@@ -854,6 +854,19 @@ content:
                 label: Zone d'intervention
                 type: string
                 required: true
+                description: >-
+                  La phrase que lisent les visiteurs, sur la page Contact et
+                  dans la description du site.
+              - name: communes
+                label: Communes desservies
+                type: string
+                list: true
+                description: >-
+                  Une commune par entrée. Elles ne s'affichent sur aucune page :
+                  elles sont déclarées aux moteurs de recherche, qui les lisent
+                  pour savoir où vous intervenez. C'est la bonne façon de le
+                  dire — écrire ces noms dans les textes du site serait vu par
+                  Google comme une tentative de tricher, et pénalisé.
 
           - name: coordonnees
             label: Coordonnées
