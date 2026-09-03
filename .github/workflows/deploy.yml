@@ -84,6 +84,16 @@ jobs:
 
       - run: npm run build
 
+      # `npm run verifier` fait aussi relire `dist/.htaccess` par Apache. Le
+      # paquet `-bin` fournit le binaire et les modules sans installer ni
+      # démarrer de service : `apache2 -t` ne fait qu'analyser un fichier.
+      #
+      # C'est le seul fichier du dépôt dont une faute de frappe rend le site
+      # entier inaccessible — Apache répond 500 sur une directive qu'il ne
+      # comprend pas, pages comprises. Le test de fumée le verrait, mais après
+      # le dépôt.
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends apache2-bin
+
       # `check` ne regarde pas les URL. Cette étape relit le site construit et
       # refuse de déployer un lien interne mort — le favicon servi en 404
       # pendant deux commits serait tombé ici.

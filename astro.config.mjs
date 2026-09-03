@@ -36,6 +36,18 @@ const ADRESSES = {
 
 export default defineConfig({
   ...ADRESSES[HEBERGEMENT],
+
+  // Chaque page est construite dans son dossier (`/contact/index.html`) : son
+  // adresse porte un slash final, et c'est celle qu'annoncent le canonical et
+  // le sitemap. `lien()` (src/lib/base.ts) l'ajoute à tous les liens du site ;
+  // ce réglage est là pour que le serveur de développement applique la même
+  // règle que la production. Sans lui, `/contact` répondrait ici et coûterait
+  // une redirection en ligne — l'écart ne se verrait qu'une fois publié.
+  //
+  // Ne change rien à la sortie du build : les fichiers étaient déjà écrits
+  // ainsi.
+  trailingSlash: 'always',
+
   // La page de confirmation d'envoi n'a rien à faire dans l'index.
   integrations: [
     sitemap({

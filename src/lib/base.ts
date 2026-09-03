@@ -13,5 +13,29 @@
  */
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-/** Construit une URL interne. `lien('/contact')` -> `/cambiome/contact`. */
-export const lien = (chemin: string) => `${base}${chemin}`;
+/**
+ * Une page, par opposition à un fichier : le dernier segment n'a pas
+ * d'extension. Vrai pour `/contact`, faux pour `/favicon.ico`.
+ */
+const estUnePage = (chemin: string) => !/\.[^/]+$/.test(chemin);
+
+/**
+ * Construit une URL interne. `lien('/contact')` -> `/cambiome/contact/`.
+ *
+ * LE SLASH FINAL N'EST PAS COSMÉTIQUE. Astro construit chaque page dans son
+ * dossier (`/contact/index.html`) : l'adresse canonique porte donc un slash,
+ * et c'est celle qu'annoncent le `<link rel="canonical">` et le sitemap.
+ * Demandée sans, Apache le rajoute par une 301 — un aller-retour à chaque
+ * clic, sur une adresse de destination qu'il fabrique lui-même. Il la
+ * fabriquait mal : `https://www.cambiome.fr:443/contact/`, port compris, parce
+ * qu'OVH termine TLS en amont (voir la règle « slash final » de
+ * public/.htaccess, qui rattrape les liens venus du dehors).
+ *
+ * Les 129 liens internes du site passent tous par ici, et n'en déclenchent
+ * donc plus aucune. Le `.htaccess` reste le filet pour les autres : un lien
+ * tiers, un signet, une adresse tapée à la main.
+ *
+ * Les fichiers sont laissés tels quels : `/favicon.ico/` ne désigne rien.
+ */
+export const lien = (chemin: string) =>
+  `${base}${chemin}${estUnePage(chemin) && !chemin.endsWith('/') ? '/' : ''}`;
