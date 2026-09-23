@@ -6,7 +6,7 @@ chantiers:
       faîtage ; toits de tuiles, clocher et falaise en arrière-plan.
     alt: Charpente neuve montée sur un bâti de village, arêtier et chevrons posés
       avant couverture.
-    image: charpente-aretier.jpg
+    image: src/assets/realisations/charpente-aretier.jpg
   - titre: Extension maison en poutres en I
     metier: Ossature bois
     metierSlug: charpente-ossature-bois
@@ -16,7 +16,7 @@ chantiers:
       un enduit de finition sur Nergalto. "
     alt: Extension maison individuelle en murs ossature bois et charpente en poutres
       en I.
-    image: charpente-poutre-en-i.jpg
+    image: src/assets/realisations/charpente-poutre-en-i.jpg
   - titre: Couverture à tasseaux d'une lucarne
     metier: Couverture
     metierSlug: couverture-zinguerie
@@ -24,7 +24,7 @@ chantiers:
       toiture à Échirolles.
     alt: Lucarnes 4 pans recevant une couverture sur tasseaux sur les 2 brisis et
       les 2 terrassons.
-    image: couverture-a-tasseaux.jpg
+    image: src/assets/realisations/couverture-a-tasseaux.jpg
   - titre: Création d'une salle de réunion
     metier: Rénovation thermique
     metierSlug: renovation-thermique
@@ -32,7 +32,7 @@ chantiers:
       ossature, frein-vapeur continu du sol au plafond : une étanchéité à l'air
       performante nécessite une attention particulière des détails et raccords."
     alt: Création d'une salle de réunion en murs ossature bois en zone non chauffée.
-    image: isolation-fibre-de-bois.jpg
+    image: src/assets/realisations/isolation-fibre-de-bois.jpg
   - titre: Pignon claire-voie et bardage épaufré
     metier: Menuiserie
     metierSlug: structure-bois-menuiserie
@@ -40,14 +40,14 @@ chantiers:
       apparente lambris épicéa brossé sous le faîtage, lames de bardage épaufré
       et carrelet claire-voie mélèze sous la pergolat."
     alt: Pignon de grange recevant deux types de  bardages mélèze.
-    image: bardage-meleze-pignon.jpg
+    image: src/assets/realisations/bardage-meleze-pignon.jpg
   - titre: Structure de lucarne
     metier: Charpente
     metierSlug: charpente-ossature-bois
     legende: Structure bois avec rupture de pente d'une jacobine sur Echirolles. La
       charpente recevra une couverture en zinc sur tasseaux.
     alt: Structure d'une lucarne jacobine 4 pans.
-    image: lucarne-structure.jpg
+    image: src/assets/realisations/lucarne-structure.jpg
   - titre: Charpente et chevrons porteurs
     metier: Charpente
     metierSlug: charpente-ossature-bois
@@ -57,7 +57,7 @@ chantiers:
       pannes."
     alt: Charpente neuve en bois clair vue de l'intérieur du comble, pannes et
       chevrons assemblés sur ferrures se découpant sur un ciel bleu.
-    image: charpente-chevrons-porteurs.jpg
+    image: src/assets/realisations/charpente-chevrons-porteurs.jpg
   - titre: Soudure de chéneau
     metier: Zinguerie
     metierSlug: couverture-zinguerie
@@ -65,7 +65,7 @@ chantiers:
       dilatation si nécessaire et on fait plaisir à nos clients avec de beaux
       récupérateurs d'eau de pluie.
     alt: Fond d'un chéneau de zinc neuf
-    image: soudure-cheneau.jpg
+    image: src/assets/realisations/soudure-cheneau.jpg
   - titre: Pergola
     metier: Structure bois
     metierSlug: structure-bois-menuiserie
@@ -76,7 +76,7 @@ chantiers:
     alt: Pergola en bois clair adossée à une maison blanche à volets rouges, ses
       chevrons se détachant sur un ciel nuageux ; rosier grimpant au premier
       plan.
-    image: pergola-bioclimatique.jpg
+    image: src/assets/realisations/pergola-bioclimatique.jpg
   - titre: Balcon suspendu
     metier: Structure bois
     metierSlug: structure-bois-menuiserie
@@ -85,7 +85,7 @@ chantiers:
       lisse haute permet un appui des coudes et des mains confortable.
     alt: Balcon en bois suspendu à la façade d'une maison en bardage bois vertical,
       vu en contre-plongée sur ciel bleu.
-    image: balcon-suspendu.jpg
+    image: src/assets/realisations/balcon-suspendu.jpg
   - titre: Habillage d'acrotères
     metier: Zinguerie
     metierSlug: couverture-zinguerie
@@ -94,7 +94,7 @@ chantiers:
       raffiné.
     alt: Pièce de zinc pliée en angle posée sur un établi d'atelier, plis nets et
       surface satinée.
-    image: habillage-acroteres.jpg
+    image: src/assets/realisations/habillage-acroteres.jpg
   - titre: Garde-corps en mélèze
     metier: Structure bois
     metierSlug: structure-bois-menuiserie
@@ -111,7 +111,7 @@ chantiers:
       d'aronde dans un comble ancien, sous charpente d'origine conservée.
     alt: Comble ancien aux murs de pierre, solives neuves en bois clair posées au
       sol sous une charpente ancienne en bois sombre.
-    image: solivage-queue-daronde.jpg
+    image: src/assets/realisations/solivage-queue-daronde.jpg
   - titre: Renfort de charpente en chêne
     metier: Charpente
     metierSlug: charpente-ossature-bois
@@ -119,4 +119,4 @@ chantiers:
     alt: "Vue en contre-plongée sous l'avancée d'un toit : une console de chêne
       clair fraîchement taillée soutient les chevrons anciens en bois sombre,
       contre un mur de pierres apparentes."
-    image: consoles-chene.jpg
+    image: src/assets/realisations/consoles-chene.jpg
