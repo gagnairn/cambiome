@@ -120,3 +120,9 @@ chantiers:
       clair fraîchement taillée soutient les chevrons anciens en bois sombre,
       contre un mur de pierres apparentes."
     image: consoles-chene.jpg
+  - titre: Escalier en bois
+    metier: Structure bois
+    metierSlug: structure-bois-menuiserie
+    legende: légende
+    alt: Description
+    image: src/assets/realisations/escalier-frene.jpeg
