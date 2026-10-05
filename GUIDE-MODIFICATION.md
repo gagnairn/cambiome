@@ -186,8 +186,16 @@ Dans le champ **Photo**, cliquez, puis choisissez le fichier sur votre ordinateu
 — ou faites-le glisser dessus.
 
 **Téléversez la photo telle qu'elle sort de l'appareil ou du téléphone.** Ne la
-réduisez pas à l'avance : une fois publiée, une tâche automatique la ramène à
-2400 pixels de large et la réenregistre allégée. C'est fait pour vous.
+réduisez pas à l'avance, quel que soit son poids : une fois publiée, une tâche
+automatique la ramène à 2400 pixels de large et la réenregistre allégée. C'est
+fait pour vous.
+
+**Format accepté : JPEG ou PNG.** Pas le HEIC que les iPhone utilisent par
+défaut — le site ne sait pas l'afficher. Si votre photo refuse de s'envoyer,
+changez le réglage de l'appareil une bonne fois pour toutes : **Réglages >
+Appareil photo > Formats > « Le plus compatible »**. Les photos déjà prises en
+HEIC se convertissent en JPEG depuis l'app Photos (partager → enregistrer en
+tant que JPEG) ou l'app Aperçu sur Mac.
 
 Le nom du fichier est nettoyé à l'arrivée : les espaces, accents et parenthèses
 d'un `IMG_2026-08-14 (1).jpg` disparaissent. C'est normal.

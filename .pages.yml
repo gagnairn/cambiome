@@ -41,6 +41,12 @@ media:
     # « IMG_2026-08-14 (1).jpg ». On les assainit à l'arrivée : les espaces et
     # les parenthèses compliquent tout par la suite.
     rename: safe
+    # Pas de `heic` dans la liste ci-dessus, et volontairement : `sharp`, qui
+    # redimensionne les photos après coup (`scripts/redimensionner-photos.mjs`),
+    # ne sait pas le décoder — ni Chrome ni Firefox ne l'afficheraient de toute
+    # façon. Le réglage se corrige sur le téléphone, pas ici : Réglages >
+    # Appareil photo > Formats > « Le plus compatible ». Voir
+    # GUIDE-MODIFICATION.md, section « La photo ».
 
   # Dossier séparé, et pas par goût du rangement : `photos.yml` redimensionne
   # automatiquement tout ce qui arrive dans `realisations/`, et surtout ce
@@ -560,9 +566,11 @@ content:
                     type: image
                     required: true
                     description: >-
-                      Téléversez la photo telle qu'elle sort de l'appareil : elle est allégée
-                      automatiquement après publication. Cadrez serré sur l'ouvrage, en
-                      paysage de préférence.
+                      Format JPEG ou PNG (pas HEIC — sur iPhone : Réglages > Appareil photo >
+                      Formats > « Le plus compatible »). Téléversez la photo telle qu'elle
+                      sort de l'appareil, quel que soit son poids : elle est redimensionnée
+                      et allégée automatiquement après publication. Cadrez serré sur
+                      l'ouvrage, en paysage de préférence.
                     options:
                       media: chantiers
 
