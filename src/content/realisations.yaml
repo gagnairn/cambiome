@@ -115,7 +115,7 @@ chantiers:
   - titre: Renfort de charpente en chêne
     metier: Charpente
     metierSlug: charpente-ossature-bois
-    legende: Consoles de renfort de charpente taillés dans du chêne.
+    legende: Consoles de renfort de charpente taillées dans du chêne.
     alt: "Vue en contre-plongée sous l'avancée d'un toit : une console de chêne
       clair fraîchement taillée soutient les chevrons anciens en bois sombre,
       contre un mur de pierres apparentes."
@@ -123,6 +123,16 @@ chantiers:
   - titre: Escalier en bois
     metier: Structure bois
     metierSlug: structure-bois-menuiserie
-    legende: légende
-    alt: Description
-    image: src/assets/realisations/escalier-frene.jpeg
+    legende: Cet escalier se distingue par sa conception particulière avec les
+      premières marches sur crémaillère permettant de desservir le palier. Le
+      reste des marches sont sur limon et présentent des demi contre-marches
+      pour permette le passage confortable des pieds malgré la contrainte de
+      raideur. Des sections de bois généreuses et une réalisation entièrement en
+      frêne ne manque pas de séduire nos client.e.s
+    alt: Cet escalier se distingue par sa conception particulière avec les premières
+      marches sur crémaillère permettant de desservir le palier. Le reste des
+      marches sont sur limon et présentes des demi contre-marches pour permettre
+      le passage confortable des pieds malgré la contrainte de raideur. Des
+      sections de bois généreuses et une réalisation entièrement en frêne ne
+      manque pas de séduire nos client.e.s
+    image: src/assets/realisations/img5938.jpg
